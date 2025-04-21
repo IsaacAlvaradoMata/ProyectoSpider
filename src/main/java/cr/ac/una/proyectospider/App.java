@@ -16,7 +16,7 @@ public class App extends Application {
 
 
         stage.setTitle("Spider");
-        stage.getIcons().add(new Image(getClass().getResourceAsStream("/cr/ac/una/tareatorneos/resources/Spider.png")));
+        stage.getIcons().add(new Image(getClass().getResourceAsStream("/cr/ac/una/proyectospider/resources/Spider.png")));
         stage.setScene(scene);
         stage.setMinWidth(1350);
         stage.setMinHeight(800);
