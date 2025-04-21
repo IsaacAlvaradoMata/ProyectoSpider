@@ -78,13 +78,15 @@ public class FlowController {
         return loader;
     }
 
-    public void goMain() {
+    public void goMain(String viewName) {
         try {
-            this.mainStage.setScene(new Scene(FXMLLoader.load(App.class.getResource("view/PrincipalView.fxml"), this.idioma)));
+            this.mainStage.setScene(
+                    new Scene(FXMLLoader.load(App.class.getResource("view/" + viewName + ".fxml"), this.idioma)));
             MFXThemeManager.addOn(this.mainStage.getScene(), Themes.DEFAULT, Themes.LEGACY);
             this.mainStage.show();
         } catch (IOException ex) {
-            java.util.logging.Logger.getLogger(FlowController.class.getName()).log(Level.SEVERE, "Error inicializando la vista base.", ex);
+            java.util.logging.Logger.getLogger(FlowController.class.getName()).log(Level.SEVERE,
+                    "Error inicializando la vista base.", ex);
         }
     }
 

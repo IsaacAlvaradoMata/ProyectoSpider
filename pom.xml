@@ -41,7 +41,7 @@
                 <artifactId>javafx-maven-plugin</artifactId>
                 <version>0.0.8</version>
                 <configuration>
-                    <mainClass>cr.ac.una.unaplanilla2025.App</mainClass>
+                    <mainClass>cr.ac.una.proyectospider.App</mainClass>
                 </configuration>
                 <executions>
                     <execution>
