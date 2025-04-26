@@ -22,7 +22,7 @@ public class App extends Application {
         stage.setMinHeight(800);
 
         FlowController.getInstance().InitializeFlow(stage, null);
-        FlowController.getInstance().goMain("prueba");
+        FlowController.getInstance().goMain("IntroView");
     }
 
     public static void main(String[] args) {

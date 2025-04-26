@@ -1,10 +1,27 @@
-.jfx-Subtitulo-label {    
-    -fx-font-size: 14px;    
-    -fx-padding: 5 0 5 0;     
-    -fx-text-fill: GOLD;    
-    -fx-font-weight: bold;  
+@font-face {
+    font-family: "Cynatar";
+    src: url("../resources/Cynatar.otf");
 }
 
-#imgSpider {
-    -fx-image: url('../resources/Spider.png');
+/*VISTA INTRO*/
+
+.Background{
+    -fx-background-color: linear-gradient(to bottom, #0f0f0f, #260033, #4a0033);
+}
+
+.label-title {
+    -fx-font-family: "Cynatar";
+    -fx-font-size: 60px;
+    -fx-text-fill: #ffc107; /* Dorado más cálido y legible */
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(gaussian, #ff8f00, 15, 0.6, 0, 0); /* Glow reducido */
+    -fx-alignment: center;
+}
+
+.sp-imagelogo{
+    -fx-effect: dropshadow(gaussian, #ffc107, 35, 0.8, 0, 0);
+}
+
+#imgLogoSpider {
+    -fx-image: url('../resources/LogoSpiderIcon.png');
 }
