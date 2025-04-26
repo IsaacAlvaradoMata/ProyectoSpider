@@ -8,35 +8,48 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane fx:id="root" styleClass="Background" stylesheets="@StyleSpider.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cr.ac.una.proyectospider.controller.IntroController">
+<BorderPane fx:id="root" prefHeight="800.0" styleClass="Background" stylesheets="@StyleSpider.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cr.ac.una.proyectospider.controller.IntroController">
    <center>
       <AnchorPane id="AnchorPane" prefHeight="600.0" prefWidth="800.0">
          <children>
-            <AnchorPane prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
+            <StackPane fx:id="spBackground" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <children>
-                  <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <ImageView fx:id="imgBackground" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" />
+                  <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0">
                      <children>
-                        <VBox alignment="CENTER" maxHeight="1.7976931348623157E308" VBox.vgrow="ALWAYS">
+                        <VBox fx:id="vboxLogo" alignment="TOP_CENTER" maxHeight="-Infinity" prefHeight="500.0" prefWidth="800.0" VBox.vgrow="ALWAYS">
                            <VBox.margin>
-                              <Insets top="80.0" />
+                              <Insets />
                            </VBox.margin>
                            <children>
-                              <StackPane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="270.0" prefWidth="270.0" styleClass="sp-imagelogo">
+                              <StackPane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="400.0" prefWidth="400.0" styleClass="sp-imagelogo">
                                  <children>
-                                    <ImageView fx:id="imgLogoSpider" fitHeight="270.0" fitWidth="270.0" pickOnBounds="true" preserveRatio="true" />
+                                    <ImageView fx:id="imgLogoSpider" fitHeight="400.0" fitWidth="400.0" pickOnBounds="true" preserveRatio="true" />
                                  </children>
+                                 <VBox.margin>
+                                    <Insets top="80.0" />
+                                 </VBox.margin>
                               </StackPane>
                            </children>
                         </VBox>
-                        <VBox alignment="TOP_CENTER" maxHeight="1.7976931348623157E308" VBox.vgrow="ALWAYS">
+                        <VBox>
                            <children>
-                              <Label fx:id="lblTitulo" alignment="TOP_CENTER" contentDisplay="TOP" maxHeight="1.7976931348623157E308" styleClass="label-title" text="Solitario Spider" />
+                              <VBox fx:id="vboxTitle" alignment="TOP_CENTER" maxHeight="1.7976931348623157E308">
+                                 <children>
+                                    <Label fx:id="lblTitulo" alignment="TOP_CENTER" contentDisplay="TOP" maxHeight="1.7976931348623157E308" styleClass="label-title" text="SOLITARIO" />
+                                 </children>
+                              </VBox>
+                              <VBox fx:id="vboxTitle2" alignment="TOP_CENTER" maxHeight="1.7976931348623157E308">
+                                 <children>
+                                    <Label fx:id="lblTitulo2" alignment="TOP_CENTER" contentDisplay="TOP" maxHeight="1.7976931348623157E308" styleClass="label-title" text="SPIDER" />
+                                 </children>
+                              </VBox>
                            </children>
                         </VBox>
                      </children>
                   </VBox>
                </children>
-            </AnchorPane>
+            </StackPane>
          </children>
       </AnchorPane>
    </center>

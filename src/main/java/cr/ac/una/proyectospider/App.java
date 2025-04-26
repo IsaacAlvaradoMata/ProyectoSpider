@@ -15,8 +15,8 @@ public class App extends Application {
     public void start(Stage stage) throws IOException {
 
 
-        stage.setTitle("Spider");
-        stage.getIcons().add(new Image(getClass().getResourceAsStream("/cr/ac/una/proyectospider/resources/Spider.png")));
+        stage.setTitle("Solitario Spider");
+        stage.getIcons().add(new Image(getClass().getResourceAsStream("/cr/ac/una/proyectospider/resources/LogoSpiderIcon.png")));
         stage.setScene(scene);
         stage.setMinWidth(1350);
         stage.setMinHeight(800);
