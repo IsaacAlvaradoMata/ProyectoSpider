@@ -1,6 +1,7 @@
 package cr.ac.una.proyectospider;
 
 import cr.ac.una.proyectospider.util.FlowController;
+import cr.ac.una.proyectospider.util.FontDepartment;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -20,8 +21,10 @@ public class App extends Application {
         stage.setScene(scene);
         stage.setMinWidth(1350);
         stage.setMinHeight(800);
+        FontDepartment.loadFonts();
 
         FlowController.getInstance().InitializeFlow(stage, null);
+//        FlowController.getInstance().preloadViewsAsync();
         FlowController.getInstance().goMain("IntroView");
     }
 

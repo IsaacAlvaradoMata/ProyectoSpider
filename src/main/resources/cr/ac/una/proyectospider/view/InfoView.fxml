@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane fx:id="root" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cr.ac.una.proyectospider.controller.InfoController">
+   <center>
+      <AnchorPane>
+         <children>
+            <StackPane fx:id="spBackgroundInfo" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <children>
+                  <ImageView fx:id="imgBackgroundInfo" pickOnBounds="true" />
+                  <BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="1300.0" stylesheets="@StyleSpider.css">
+                     <center>
+                        <AnchorPane id="AnchorPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="600.0" prefWidth="800.0">
+                           <children>
+                              <StackPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                 <children>
+                                    <VBox alignment="TOP_CENTER" maxWidth="1.7976931348623157E308" spacing="20.0">
+                                       <children>
+                                          <Label fx:id="lblTitulo" styleClass="label-title-info" text="PROYECTO SOLITARIO SPIDER" />
+                                          <StackPane fx:id="spLogo" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="120.0" prefWidth="120.0" styleClass="sp-imagelogo">
+                                             <children>
+                                                <ImageView fx:id="imgLogoInfo" fitHeight="120.0" fitWidth="120.0" pickOnBounds="true" preserveRatio="true" />
+                                             </children>
+                                          </StackPane>
+                                          <HBox alignment="TOP_CENTER" spacing="80.0">
+                                             <children>
+                                                <VBox alignment="TOP_CENTER" spacing="20.0">
+                                                   <children>
+                                                      <VBox fx:id="vbTerminalContainer" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="400.0" prefWidth="860.0" style="-fx-background-color: black;" styleClass="terminal-box">
+                                                         <children>
+                                                            <HBox alignment="TOP_RIGHT" prefHeight="100.0" prefWidth="200.0" spacing="10.0" style="-fx-background-color: grey;">
+                                                               <children>
+                                                                  <ImageView fx:id="imgHideTerminal" fitHeight="17.0" fitWidth="17.0" pickOnBounds="true" preserveRatio="true" />
+                                                                  <ImageView fx:id="imgReziseTerminal" fitHeight="17.0" fitWidth="17.0" layoutX="10.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true" />
+                                                                  <ImageView fx:id="imgCloseTerminal" fitHeight="17.0" fitWidth="17.0" layoutX="30.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true" />
+                                                               </children>
+                                                               <padding>
+                                                                  <Insets bottom="5.0" right="10.0" top="5.0" />
+                                                               </padding>
+                                                            </HBox>
+                                                            <StackPane fx:id="spGlitchEffect" style="-fx-background-color: black;">
+                                                               <children>
+                                                                  <Canvas fx:id="canvasTrail" height="444.0" width="856.0" />
+                                                                  <VBox fx:id="vbGlitchEffect">
+                                                                     <children>
+                                                                        <VBox fx:id="vbLablesTitulosTerminal" alignment="CENTER" spacing="15.0" styleClass="terminal-box-containers">
+                                                                           <children>
+                                                                              <Label fx:id="lblAccesoSistema" styleClass="terminal-label-titles" text="ACCESO AL SISTEMA" />
+                                                                              <Label fx:id="lblHackeando" alignment="CENTER" contentDisplay="CENTER" layoutX="375.0" layoutY="10.0" maxWidth="1.7976931348623157E308" styleClass="label-hackeando" text="HACKEANDO..." VBox.vgrow="ALWAYS">
+                                                                                 <VBox.margin>
+                                                                                    <Insets top="20.0" />
+                                                                                 </VBox.margin>
+                                                                              </Label>
+                                                                           </children>
+                                                                           <padding>
+                                                                              <Insets bottom="60.0" top="10.0" />
+                                                                           </padding>
+                                                                        </VBox>
+                                                                        <VBox fx:id="vbLablesInfoTerminal" spacing="10.0" styleClass="terminal-box-containers">
+                                                                           <children>
+                                                                              <Label fx:id="lblNombreProyecto" styleClass="terminal-label-subtitles" text="Nombre del proyecto: Solitario Spider" />
+                                                                              <Label fx:id="lblNombreCurso" styleClass="terminal-label-subtitles" text="Nombre del curso: Programación II - I Ciclo 2025" />
+                                                                              <Label fx:id="lblProfesor" styleClass="terminal-label-subtitles" text="Nombre del profesor: Máster Carlos Carranza Blanco" />
+                                                                              <Label fx:id="lblEstudiantesAutores" styleClass="terminal-label-subtitles" text="Nombre de los estudiantes: Isaac Alvarado Mata, Matiw Rivera Cascante, Emmanuel Gamboa Retana" />
+                                                                              <Label fx:id="lblFecha" styleClass="terminal-label-subtitles" text="Fecha de desarrollo: Abril 2025 - Junio 2025" />
+                                                                              <Label fx:id="lblSede" styleClass="terminal-label-subtitles" text="Sede: Universidad Nacional - Sede Regional Brunca" />
+                                                                              <Label fx:id="lblDivision" styleClass="terminal-label-subtitles" text="División: Ciencias Exactas, Naturales y Tecnología" />
+                                                                              <Label fx:id="lblTecnologias" styleClass="terminal-label-subtitles" text="Tecnologías usadas: JavaFX 23, Maven, Oracle 21c XE, Apache Netbeans / Intellij" />
+                                                                              <Label fx:id="lblFrase" styleClass="terminal-label-subtitles" text="&quot;El código es el arte de darle vida a la lógica.&quot;" />
+                                                                           </children>
+                                                                           <padding>
+                                                                              <Insets bottom="15.0" left="5.0" />
+                                                                           </padding>
+                                                                        </VBox>
+                                                                     </children>
+                                                                  </VBox>
+                                                               </children>
+                                                            </StackPane>
+                                                         </children>
+                                                      </VBox>
+                                                      <ImageView fx:id="btnVolver" fitHeight="70.0" fitWidth="170.0" onMouseClicked="#onMouseClickedbtnVolver" pickOnBounds="true" preserveRatio="true" styleClass="neon-image-button">
+                                                         <VBox.margin>
+                                                            <Insets />
+                                                         </VBox.margin>
+                                                      </ImageView>
+                                                   </children>
+                                                </VBox>
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                       <padding>
+                                          <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                                       </padding>
+                                    </VBox>
+                                 </children>
+                              </StackPane>
+                           </children>
+                        </AnchorPane>
+                     </center>
+                     <left>
+                        <VBox alignment="CENTER" spacing="20.0" BorderPane.alignment="CENTER">
+                           <children>
+                              <Label fx:id="lbUniversitario" styleClass="label-title-info" text="LOGO UNIVERSITARIO">
+                                 <VBox.margin>
+                                    <Insets bottom="15.0" />
+                                 </VBox.margin></Label>
+                              <StackPane fx:id="spUniversidad" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="100.0" prefWidth="100.0" styleClass="sp-imagelogo">
+                                 <children>
+                                    <ImageView fx:id="imgUniversidad" fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true" />
+                                 </children>
+                              </StackPane>
+                              <Label fx:id="lblDesarrolladores" styleClass="label-title-info" text="DESARROLLADORES">
+                                 <VBox.margin>
+                                    <Insets bottom="15.0" top="15.0" />
+                                 </VBox.margin>
+                              </Label>
+                              <StackPane fx:id="spIsaac" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="100.0" prefWidth="100.0" styleClass="sp-imagelogo">
+                                 <children>
+                                    <ImageView fx:id="imgIsaac" fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true" />
+                                 </children>
+                                 <VBox.margin>
+                                    <Insets bottom="30.0" />
+                                 </VBox.margin>
+                              </StackPane>
+                              <StackPane fx:id="spMatiw" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="100.0" prefWidth="100.0" styleClass="sp-imagelogo">
+                                 <children>
+                                    <ImageView fx:id="imgMatiw" fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true" />
+                                 </children>
+                                 <VBox.margin>
+                                    <Insets bottom="30.0" />
+                                 </VBox.margin>
+                              </StackPane>
+                              <StackPane fx:id="spEmmanuel" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="100.0" prefWidth="100.0" styleClass="sp-imagelogo">
+                                 <children>
+                                    <ImageView fx:id="imgEmmanuel" fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true" />
+                                 </children>
+                              </StackPane>
+                           </children>
+                           <padding>
+                              <Insets left="60.0" />
+                           </padding>
+                        </VBox>
+                     </left>
+                  </BorderPane>
+               </children>
+            </StackPane>
+         </children>
+      </AnchorPane>
+   </center>
+</BorderPane>

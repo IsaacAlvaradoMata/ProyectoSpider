@@ -125,7 +125,7 @@ public class FlowController {
                 VBox.setVgrow(loadedView, Priority.ALWAYS);
 
                 // Agregar un margen de 20 píxeles al contenido cargado
-                VBox.setMargin(loadedView, new Insets(20));
+                VBox.setMargin(loadedView, new Insets(0));
 
                 // Agregar la vista cargada al VBox
                 vBox.getChildren().add(loadedView);
@@ -201,6 +201,19 @@ public class FlowController {
         stage.showAndWait();
 
     }
+
+//    public void preloadViewsAsync() {
+//        new Thread(() -> {
+//            getLoader("LoginView");
+////            getLoader("IntroView");
+////            getLoader("PrincipalMenuView");
+////            getLoader("PersonalizationView");
+////            getLoader("PointsView");
+////            getLoader("HelpView");
+//            // ... cualquier otra vista
+//            System.out.println("✅ Vistas precargadas correctamente.");
+//        }).start();
+//    }
 
     public Controller getController(String viewName) {
         return getLoader(viewName).getController();
