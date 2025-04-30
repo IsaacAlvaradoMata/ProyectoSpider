@@ -82,8 +82,12 @@ public class IntroController extends Controller implements Initializable {
 
     @FXML
     private void onMouseClickedButtonComenzar(MouseEvent event) {
+        AnimationDepartment.stopAllAnimations();
         AnimationDepartment.glitchFadeOut(spBackground, Duration.seconds(1.1), () -> {
+//            FlowController.getInstance().limpiarLoader("LoginView");
             FlowController.getInstance().goView("LoginView");
+            LoginController controller = (LoginController) FlowController.getInstance().getController("LoginView");
+            controller.RunLoginView();
 
 
         });

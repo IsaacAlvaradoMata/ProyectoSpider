@@ -16,33 +16,34 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
 import javafx.util.Duration;
 
 
 public class LoginController extends Controller implements Initializable {
 
     @FXML
-    public BorderPane root;
+    private BorderPane root;
     @FXML
-    public StackPane spBackgroundLogin;
+    private StackPane spBackgroundLogin;
     @FXML
-    public ImageView imgBackgroundLogin;
+    private ImageView imgBackgroundLogin;
     @FXML
-    public StackPane spLoginInfo;
+    private StackPane spLoginInfo;
     @FXML
-    public ImageView imgLoginInfo;
+    private ImageView imgLoginInfo;
     @FXML
-    public TextField txtfildLogin;
+    private TextField txtfildLogin;
     @FXML
-    public ImageView btnRegistrarJugador;
+    private ImageView btnRegistrarJugador;
     @FXML
-    public ImageView BtnIniciarSesion;
+    private ImageView BtnIniciarSesion;
     @FXML
-    public ImageView btnAcercaDe;
+    private ImageView btnAcercaDe;
     @FXML
-    public Label lblTitulo;
+    private Label lblTitulo;
     @FXML
-    public StackPane spTextFieldContainer;
+    private StackPane spTextFieldContainer;
 
 
 
@@ -50,47 +51,161 @@ public class LoginController extends Controller implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        root.setOpacity(0);
+//Platform.runLater(() -> {
+//        imgBackgroundLogin.fitWidthProperty().bind(root.getScene().widthProperty());
+//        imgBackgroundLogin.fitHeightProperty().bind(root.getScene().heightProperty());
+//        imgBackgroundLogin.setImage(new Image(getClass().getResourceAsStream("/cr/ac/una/proyectospider/resources/LoginBackground.gif")));
+//        imgBackgroundLogin.setPreserveRatio(false);
+//        imgBackgroundLogin.setSmooth(true);
+//        imgBackgroundLogin.setOpacity(0.6);
+//});
+
+//        root.setOpacity(0);
+//
+//        Platform.runLater(() -> {
+//            root.requestFocus();
+//            imgBackgroundLogin.fitWidthProperty().bind(root.getScene().widthProperty());
+//            imgBackgroundLogin.fitHeightProperty().bind(root.getScene().heightProperty());
+//            imgBackgroundLogin.setImage(new Image(getClass().getResourceAsStream("/cr/ac/una/proyectospider/resources/LoginBackground.gif")));
+//            imgBackgroundLogin.setPreserveRatio(false);
+//            imgBackgroundLogin.setSmooth(true);
+//            imgBackgroundLogin.setOpacity(0.4);
+//            spLoginInfo.setOpacity(0);
+//            lblTitulo.setOpacity(0);
+//            txtfildLogin.setOpacity(0);
+//            btnRegistrarJugador.setOpacity(0);
+//            BtnIniciarSesion.setOpacity(0);
+//            btnAcercaDe.setOpacity(0);
+//
+//            Platform.runLater(() -> {
+//                AnimationDepartment.glitchFadeIn(root, Duration.seconds(0.6));
+//            });
+//
+//            AnimationDepartment.slideFromTop(spLoginInfo, Duration.seconds(1));
+//            spLoginInfo.setTranslateY(0);
+//            AnimationDepartment.subtleBounce(spLoginInfo, 2);
+//            AnimationDepartment.fadeIn(lblTitulo,Duration.seconds(2.2));
+//            AnimationDepartment.glitchTextWithFlicker(lblTitulo);
+//            AnimationDepartment.slideInFromBottom(txtfildLogin, 3);
+//            AnimationDepartment.animateNeonBorderWithLED(spTextFieldContainer, txtfildLogin, 3.5); // Delay de 1.5 segundos
+//            double sceneHeight = root.getHeight();
+//            AnimationDepartment.slideUpWithEpicBounceClean(btnRegistrarJugador ,Duration.seconds(3.2) , sceneHeight);
+//            AnimationDepartment.slideUpWithEpicBounceClean(BtnIniciarSesion ,Duration.seconds(3.4) , sceneHeight);
+//            AnimationDepartment.slideUpWithEpicBounceClean(btnAcercaDe ,Duration.seconds(3.6) , sceneHeight);
+//            AnimationDepartment.animateNeonGlow(BtnIniciarSesion);
+//            AnimationDepartment.animateNeonGlow(btnAcercaDe);
+//            AnimationDepartment.animateNeonGlow(btnRegistrarJugador);
+
+
+//        });
+    }
+
+
+    public void RunLoginView() {
+        ResetLoginView();
+        System.out.println("Run Login View");
+
+        // 🟡 Reposicionar y asegurar fondo en el índice 0
+        if (!spBackgroundLogin.getChildren().contains(imgBackgroundLogin)) {
+            spBackgroundLogin.getChildren().add(0, imgBackgroundLogin);
+        } else {
+            spBackgroundLogin.getChildren().remove(imgBackgroundLogin);
+            spBackgroundLogin.getChildren().add(0, imgBackgroundLogin);
+        }
+
+        // 🔁 Re-bind y recarga de imagen
+        if (root.getScene() != null) {
+            imgBackgroundLogin.fitWidthProperty().bind(root.getScene().widthProperty());
+            imgBackgroundLogin.fitHeightProperty().bind(root.getScene().heightProperty());
+        }
+
+        imgBackgroundLogin.setImage(new Image(getClass().getResourceAsStream("/cr/ac/una/proyectospider/resources/LoginBackground.gif")));
+        imgBackgroundLogin.setPreserveRatio(false);
+        imgBackgroundLogin.setSmooth(true);
+        imgBackgroundLogin.setOpacity(0.6);
+        imgBackgroundLogin.setVisible(true);
 
         Platform.runLater(() -> {
             root.requestFocus();
-            imgBackgroundLogin.fitWidthProperty().bind(root.getScene().widthProperty());
-            imgBackgroundLogin.fitHeightProperty().bind(root.getScene().heightProperty());
-            imgBackgroundLogin.setImage(new Image(getClass().getResourceAsStream("/cr/ac/una/proyectospider/resources/LoginBackground.gif")));
-            imgBackgroundLogin.setPreserveRatio(false);
-            imgBackgroundLogin.setSmooth(true);
-            imgBackgroundLogin.setOpacity(0.4);
-            spLoginInfo.setOpacity(0);
-            lblTitulo.setOpacity(0);
-            txtfildLogin.setOpacity(0);
-            btnRegistrarJugador.setOpacity(0);
-            BtnIniciarSesion.setOpacity(0);
-            btnAcercaDe.setOpacity(0);
+            root.setVisible(true);
+            root.setOpacity(1); // 🔓 Forzar visibilidad total
 
-            Platform.runLater(() -> {
-                AnimationDepartment.glitchFadeIn(root, Duration.seconds(0.6));
-            });
+            root.applyCss();
+            root.layout(); // ⬅️ Refresca el layout completamente
+
+            double sceneHeight = root.getScene().getHeight();
+            AnimationDepartment.glitchFadeIn(root, Duration.seconds(0.6));
+            System.out.println("se hizo el glitchFadeIn");
 
             AnimationDepartment.slideFromTop(spLoginInfo, Duration.seconds(1));
             spLoginInfo.setTranslateY(0);
             AnimationDepartment.subtleBounce(spLoginInfo, 2);
-            AnimationDepartment.fadeIn(lblTitulo,Duration.seconds(2.2));
+            AnimationDepartment.fadeIn(lblTitulo, Duration.seconds(2.2));
             AnimationDepartment.glitchTextWithFlicker(lblTitulo);
             AnimationDepartment.slideInFromBottom(txtfildLogin, 3);
-            AnimationDepartment.animateNeonBorderWithLED(spTextFieldContainer, txtfildLogin, 3.5); // Delay de 1.5 segundos
-            double sceneHeight = root.getHeight();
-            AnimationDepartment.slideUpWithEpicBounceClean(btnRegistrarJugador ,Duration.seconds(3.2) , sceneHeight);
-            AnimationDepartment.slideUpWithEpicBounceClean(BtnIniciarSesion ,Duration.seconds(3.4) , sceneHeight);
-            AnimationDepartment.slideUpWithEpicBounceClean(btnAcercaDe ,Duration.seconds(3.6) , sceneHeight);
+            AnimationDepartment.animateNeonBorderWithLED(spTextFieldContainer, txtfildLogin, 3.5);
+            AnimationDepartment.slideUpWithEpicBounceClean(btnRegistrarJugador, Duration.seconds(3.2), sceneHeight);
+            AnimationDepartment.slideUpWithEpicBounceClean(BtnIniciarSesion, Duration.seconds(3.4), sceneHeight);
+            AnimationDepartment.slideUpWithEpicBounceClean(btnAcercaDe, Duration.seconds(3.6), sceneHeight);
             AnimationDepartment.animateNeonGlow(BtnIniciarSesion);
             AnimationDepartment.animateNeonGlow(btnAcercaDe);
             AnimationDepartment.animateNeonGlow(btnRegistrarJugador);
-
+            System.out.println("Scene bounds: " + root.getScene().getWidth() + "x" + root.getScene().getHeight());
 
         });
+
+        System.out.println("Run final");
     }
 
 
+
+
+
+
+    public void ResetLoginView() {
+            // Reset visual
+            System.out.println("Reset Login View");
+            root.setOpacity(0);
+
+        imgBackgroundLogin.setOpacity(0.6);
+        imgBackgroundLogin.setTranslateX(0);
+        imgBackgroundLogin.setTranslateY(0);
+        imgBackgroundLogin.setEffect(null);
+        imgBackgroundLogin.setVisible(true);
+
+            spLoginInfo.setOpacity(0);
+            spLoginInfo.setTranslateY(0);
+
+            lblTitulo.setOpacity(0);
+            lblTitulo.setTranslateX(0);
+            lblTitulo.setTranslateY(0);
+            lblTitulo.setScaleX(1.0);
+            lblTitulo.setScaleY(1.0);
+            lblTitulo.setTextFill(Color.web("#ffc107")); // Restaurar color original
+
+            txtfildLogin.setOpacity(0);
+            txtfildLogin.setTranslateY(0);
+            txtfildLogin.setText("");
+
+            btnRegistrarJugador.setOpacity(0);
+            btnRegistrarJugador.setTranslateY(0);
+
+            BtnIniciarSesion.setOpacity(0);
+            BtnIniciarSesion.setTranslateY(0);
+
+            btnAcercaDe.setOpacity(0);
+            btnAcercaDe.setTranslateY(0);
+        root.setEffect(null);
+        root.setOpacity(1);
+        root.setVisible(true);
+            spBackgroundLogin.setEffect(null);
+        spBackgroundLogin.setOpacity(1);
+        spBackgroundLogin.setVisible(true);
+
+            // 👇 Limpieza opcional por si estás agregando más efectos con `animateNeonBorderWithLED`
+//            spTextFieldContainer.getChildren().removeIf(node ->
+//                    node instanceof Rectangle && ((Rectangle) node).getStroke() != null);
+        }
 
 
     @Override
@@ -104,12 +219,19 @@ public class LoginController extends Controller implements Initializable {
 
     @FXML
     private void onMouseClickedbtnIniciarSesion(MouseEvent event) {
+        AnimationDepartment.stopAllAnimations();
+        FlowController.getInstance().goView("MenuView");
     }
 
     @FXML
     private void onMouseClickedbtnAcercaDe(MouseEvent event) {
+        AnimationDepartment.stopAllAnimations();
         AnimationDepartment.glitchFadeOut(spBackgroundLogin, Duration.seconds(1.1), () -> {
             FlowController.getInstance().goView("InfoView");
+            InfoController controller = (InfoController) FlowController.getInstance().getController("InfoView");
+            controller.RunInfoView();
+
+
         });
     }
 
