@@ -21,7 +21,7 @@ import javafx.util.Duration;
  *
  * @author crossac09
  */
-public class MenuController extends Controller implements Initializable{
+public class MenuController extends Controller implements Initializable {
 
     @FXML
     private AnchorPane root;

@@ -69,7 +69,7 @@
 
 .label-subtitle {
     -fx-font-family: "Cynatar";
-    -fx-font-size: 40px;
+    -fx-font-size: 50px;
     -fx-text-fill: #ffc107; /* Dorado más cálido y legible */
     -fx-font-weight: bold;
     -fx-effect: dropshadow(gaussian, #ff8f00, 15, 0.6, 0, 0); /* Glow reducido */

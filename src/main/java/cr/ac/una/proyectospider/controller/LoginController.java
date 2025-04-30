@@ -46,58 +46,9 @@ public class LoginController extends Controller implements Initializable {
     private StackPane spTextFieldContainer;
 
 
-
-
-
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-//Platform.runLater(() -> {
-//        imgBackgroundLogin.fitWidthProperty().bind(root.getScene().widthProperty());
-//        imgBackgroundLogin.fitHeightProperty().bind(root.getScene().heightProperty());
-//        imgBackgroundLogin.setImage(new Image(getClass().getResourceAsStream("/cr/ac/una/proyectospider/resources/LoginBackground.gif")));
-//        imgBackgroundLogin.setPreserveRatio(false);
-//        imgBackgroundLogin.setSmooth(true);
-//        imgBackgroundLogin.setOpacity(0.6);
-//});
 
-//        root.setOpacity(0);
-//
-//        Platform.runLater(() -> {
-//            root.requestFocus();
-//            imgBackgroundLogin.fitWidthProperty().bind(root.getScene().widthProperty());
-//            imgBackgroundLogin.fitHeightProperty().bind(root.getScene().heightProperty());
-//            imgBackgroundLogin.setImage(new Image(getClass().getResourceAsStream("/cr/ac/una/proyectospider/resources/LoginBackground.gif")));
-//            imgBackgroundLogin.setPreserveRatio(false);
-//            imgBackgroundLogin.setSmooth(true);
-//            imgBackgroundLogin.setOpacity(0.4);
-//            spLoginInfo.setOpacity(0);
-//            lblTitulo.setOpacity(0);
-//            txtfildLogin.setOpacity(0);
-//            btnRegistrarJugador.setOpacity(0);
-//            BtnIniciarSesion.setOpacity(0);
-//            btnAcercaDe.setOpacity(0);
-//
-//            Platform.runLater(() -> {
-//                AnimationDepartment.glitchFadeIn(root, Duration.seconds(0.6));
-//            });
-//
-//            AnimationDepartment.slideFromTop(spLoginInfo, Duration.seconds(1));
-//            spLoginInfo.setTranslateY(0);
-//            AnimationDepartment.subtleBounce(spLoginInfo, 2);
-//            AnimationDepartment.fadeIn(lblTitulo,Duration.seconds(2.2));
-//            AnimationDepartment.glitchTextWithFlicker(lblTitulo);
-//            AnimationDepartment.slideInFromBottom(txtfildLogin, 3);
-//            AnimationDepartment.animateNeonBorderWithLED(spTextFieldContainer, txtfildLogin, 3.5); // Delay de 1.5 segundos
-//            double sceneHeight = root.getHeight();
-//            AnimationDepartment.slideUpWithEpicBounceClean(btnRegistrarJugador ,Duration.seconds(3.2) , sceneHeight);
-//            AnimationDepartment.slideUpWithEpicBounceClean(BtnIniciarSesion ,Duration.seconds(3.4) , sceneHeight);
-//            AnimationDepartment.slideUpWithEpicBounceClean(btnAcercaDe ,Duration.seconds(3.6) , sceneHeight);
-//            AnimationDepartment.animateNeonGlow(BtnIniciarSesion);
-//            AnimationDepartment.animateNeonGlow(btnAcercaDe);
-//            AnimationDepartment.animateNeonGlow(btnRegistrarJugador);
-
-
-//        });
     }
 
 
@@ -122,7 +73,7 @@ public class LoginController extends Controller implements Initializable {
         imgBackgroundLogin.setImage(new Image(getClass().getResourceAsStream("/cr/ac/una/proyectospider/resources/LoginBackground.gif")));
         imgBackgroundLogin.setPreserveRatio(false);
         imgBackgroundLogin.setSmooth(true);
-        imgBackgroundLogin.setOpacity(0.6);
+        imgBackgroundLogin.setOpacity(0.5);
         imgBackgroundLogin.setVisible(true);
 
         Platform.runLater(() -> {
@@ -158,54 +109,47 @@ public class LoginController extends Controller implements Initializable {
     }
 
 
-
-
-
-
     public void ResetLoginView() {
-            // Reset visual
-            System.out.println("Reset Login View");
-            root.setOpacity(0);
+        // Reset visual
+        System.out.println("Reset Login View");
+        root.setOpacity(0);
 
-        imgBackgroundLogin.setOpacity(0.6);
+        imgBackgroundLogin.setOpacity(0.5);
         imgBackgroundLogin.setTranslateX(0);
         imgBackgroundLogin.setTranslateY(0);
         imgBackgroundLogin.setEffect(null);
         imgBackgroundLogin.setVisible(true);
 
-            spLoginInfo.setOpacity(0);
-            spLoginInfo.setTranslateY(0);
+        spLoginInfo.setOpacity(0);
+        spLoginInfo.setTranslateY(0);
 
-            lblTitulo.setOpacity(0);
-            lblTitulo.setTranslateX(0);
-            lblTitulo.setTranslateY(0);
-            lblTitulo.setScaleX(1.0);
-            lblTitulo.setScaleY(1.0);
-            lblTitulo.setTextFill(Color.web("#ffc107")); // Restaurar color original
+        lblTitulo.setOpacity(0);
+        lblTitulo.setTranslateX(0);
+        lblTitulo.setTranslateY(0);
+        lblTitulo.setScaleX(1.0);
+        lblTitulo.setScaleY(1.0);
+        lblTitulo.setTextFill(Color.web("#ffc107")); // Restaurar color original
 
-            txtfildLogin.setOpacity(0);
-            txtfildLogin.setTranslateY(0);
-            txtfildLogin.setText("");
+        txtfildLogin.setOpacity(0);
+        txtfildLogin.setTranslateY(0);
+        txtfildLogin.setText("");
 
-            btnRegistrarJugador.setOpacity(0);
-            btnRegistrarJugador.setTranslateY(0);
+        btnRegistrarJugador.setOpacity(0);
+        btnRegistrarJugador.setTranslateY(0);
 
-            BtnIniciarSesion.setOpacity(0);
-            BtnIniciarSesion.setTranslateY(0);
+        BtnIniciarSesion.setOpacity(0);
+        BtnIniciarSesion.setTranslateY(0);
 
-            btnAcercaDe.setOpacity(0);
-            btnAcercaDe.setTranslateY(0);
+        btnAcercaDe.setOpacity(0);
+        btnAcercaDe.setTranslateY(0);
         root.setEffect(null);
         root.setOpacity(1);
         root.setVisible(true);
-            spBackgroundLogin.setEffect(null);
+        spBackgroundLogin.setEffect(null);
         spBackgroundLogin.setOpacity(1);
         spBackgroundLogin.setVisible(true);
 
-            // 👇 Limpieza opcional por si estás agregando más efectos con `animateNeonBorderWithLED`
-//            spTextFieldContainer.getChildren().removeIf(node ->
-//                    node instanceof Rectangle && ((Rectangle) node).getStroke() != null);
-        }
+    }
 
 
     @Override

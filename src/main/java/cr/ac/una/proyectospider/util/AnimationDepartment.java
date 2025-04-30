@@ -58,8 +58,6 @@ public class AnimationDepartment {
     }
 
 
-
-
     public static void glitchTextWithFlicker(Label label) {
         Timeline glitchCycle = new Timeline();
         glitchCycle.setCycleCount(Animation.INDEFINITE);
@@ -218,7 +216,6 @@ public class AnimationDepartment {
     }
 
 
-
     public static void subtleBounce(Node node, double delaySeconds) {
         double originalY = node.getTranslateY(); // Guarda posición actual
 
@@ -319,8 +316,6 @@ public class AnimationDepartment {
     }
 
 
-
-
     //    GLITCH DE SALIDA
     public static void glitchFadeOut(Node targetNode, Duration totalDuration, Runnable onFinished) {
         DropShadow dropShadow = new DropShadow(20, Color.web("#ff00ff"));
@@ -394,7 +389,7 @@ public class AnimationDepartment {
         glitchFadeEffect.play();
     }
 
-//    GLITCH DE ENTRADA
+    //    GLITCH DE ENTRADA
     public static void glitchFadeIn(Node targetNode, Duration totalDuration) {
         DropShadow magentaShadow = new DropShadow(20, Color.web("#ff00ff"));
         DropShadow cyanShadow = new DropShadow(20, Color.web("#00ffff"));
@@ -444,26 +439,26 @@ public class AnimationDepartment {
         glitchInEffect.play();
     }
 
-//    EFECTO ESCRITURA
-public static void typewriterEffect(Label label, String text, Duration delay, double speedPerChar) {
-    label.setText("");
-    label.setOpacity(1);
-    PauseTransition initialDelay = new PauseTransition(delay);
-    initialDelay.setOnFinished(event -> {
-        Timeline typer = new Timeline();
-        for (int i = 0; i < text.length(); i++) {
-            final int index = i;
-            KeyFrame kf = new KeyFrame(Duration.seconds(i * speedPerChar), e -> {
-                label.setText(text.substring(0, index + 1));
-            });
-            typer.getKeyFrames().add(kf);
-        }
-        typer.play();
-        activeAnimations.add(typer);
-    });
-    initialDelay.play();
-    activeAnimations.add(initialDelay);
-}
+    //    EFECTO ESCRITURA
+    public static void typewriterEffect(Label label, String text, Duration delay, double speedPerChar) {
+        label.setText("");
+        label.setOpacity(1);
+        PauseTransition initialDelay = new PauseTransition(delay);
+        initialDelay.setOnFinished(event -> {
+            Timeline typer = new Timeline();
+            for (int i = 0; i < text.length(); i++) {
+                final int index = i;
+                KeyFrame kf = new KeyFrame(Duration.seconds(i * speedPerChar), e -> {
+                    label.setText(text.substring(0, index + 1));
+                });
+                typer.getKeyFrames().add(kf);
+            }
+            typer.play();
+            activeAnimations.add(typer);
+        });
+        initialDelay.play();
+        activeAnimations.add(initialDelay);
+    }
 
 //    ANIMACION DE LABEL HACKEANDO
 
@@ -527,10 +522,14 @@ public static void typewriterEffect(Label label, String text, Duration delay, do
             double h = terminal.getHeight();
             double depth = 40;
 
-            curve.setUlx(0 + depth);  curve.setUly(0);
-            curve.setUrx(w - depth);  curve.setUry(0);
-            curve.setLlx(0);          curve.setLly(h);
-            curve.setLrx(w);          curve.setLry(h);
+            curve.setUlx(0 + depth);
+            curve.setUly(0);
+            curve.setUrx(w - depth);
+            curve.setUry(0);
+            curve.setLlx(0);
+            curve.setLly(h);
+            curve.setLrx(w);
+            curve.setLry(h);
 
             ColorAdjust dark = new ColorAdjust();
             dark.setBrightness(-0.25);
@@ -568,16 +567,6 @@ public static void typewriterEffect(Label label, String text, Duration delay, do
         glitchLoop.play();
         activeAnimations.add(glitchLoop);
     }
-
-
-
-
-
-
-
-
-
-
 
 
 }

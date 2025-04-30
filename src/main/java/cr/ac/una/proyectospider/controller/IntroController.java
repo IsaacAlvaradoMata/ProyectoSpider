@@ -47,7 +47,6 @@ public class IntroController extends Controller implements Initializable {
     private ImageView imgButtonComenzar;
 
 
-
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         imgBackground.fitWidthProperty().bind(Mainroot.widthProperty());
@@ -68,7 +67,7 @@ public class IntroController extends Controller implements Initializable {
             AnimationDepartment.titleSplitEntrance(vboxTitle, vboxTitle2, 2);
             AnimationDepartment.glitchTextWithFlicker(lblTitulo);
             AnimationDepartment.glitchTextWithFlicker(lblTitulo2);
-            AnimationDepartment.fadeIn(imgButtonComenzar,Duration.seconds(5.0));
+            AnimationDepartment.fadeIn(imgButtonComenzar, Duration.seconds(5.0));
             AnimationDepartment.animateNeonGlow(imgButtonComenzar);
 
         });
@@ -84,7 +83,6 @@ public class IntroController extends Controller implements Initializable {
     private void onMouseClickedButtonComenzar(MouseEvent event) {
         AnimationDepartment.stopAllAnimations();
         AnimationDepartment.glitchFadeOut(spBackground, Duration.seconds(1.1), () -> {
-//            FlowController.getInstance().limpiarLoader("LoginView");
             FlowController.getInstance().goView("LoginView");
             LoginController controller = (LoginController) FlowController.getInstance().getController("LoginView");
             controller.RunLoginView();
@@ -92,11 +90,6 @@ public class IntroController extends Controller implements Initializable {
 
         });
     }
-
-
-
-
-
 
 
 }
