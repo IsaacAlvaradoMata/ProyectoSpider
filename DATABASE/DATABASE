@@ -1,283 +1,132 @@
-/*
-Created: 25/4/2025
-Model: Spider
-Database: Oracle 19c
-*/
+-- SEQUENCES -------------------------------------------------------------
 
--- Create sequences section -------------------------------------------------
+CREATE SEQUENCE SEQ_JUGADOR START WITH 1 INCREMENT BY 1 NOMAXVALUE NOMINVALUE NOCYCLE CACHE 20;
+CREATE SEQUENCE SEQ_PARTIDA START WITH 1 INCREMENT BY 1 NOMAXVALUE NOMINVALUE NOCYCLE CACHE 20;
+CREATE SEQUENCE SEQ_CARTASPARTIDA START WITH 1 INCREMENT BY 1 NOMAXVALUE NOMINVALUE NOCYCLE CACHE 20;
 
-CREATE SEQUENCE spider_jugador_seq01
- INCREMENT BY 1
- START WITH 1
- NOMAXVALUE
- NOMINVALUE
- NOCACHE
-;
+-- TABLE JUGADOR ---------------------------------------------------------
 
-CREATE SEQUENCE spider_jugadorconfiguracion_seq01
- INCREMENT BY 1
- START WITH 1
- NOMAXVALUE
- NOMINVALUE
- NOCACHE
-;
-
-CREATE SEQUENCE spider_estadisticasjugador_seq01
- INCREMENT BY 1
- START WITH 1
- NOMAXVALUE
- NOMINVALUE
- NOCACHE
-;
-
-CREATE SEQUENCE spider_partida_seq01
- INCREMENT BY 1
- START WITH 1
- NOMAXVALUE
- NOMINVALUE
- NOCACHE
-;
-
-CREATE SEQUENCE spider_estadisticaspartida_seq01
- INCREMENT BY 1
- START WITH 1
- NOMAXVALUE
- NOMINVALUE
- NOCACHE
-;
-
-CREATE SEQUENCE spider_cartaspartida_seq01
- INCREMENT BY 1
- START WITH 1
- NOMAXVALUE
- NOMINVALUE
- NOCACHE
-;
-
--- Create tables section -------------------------------------------------
-
--- Table Jugador
-CREATE TABLE jugador (
-  id_jugador NUMBER NOT NULL,
-  nombre_usuario VARCHAR2(50) NOT NULL,
-  imagen_fondo BLOB,
-  estilo_cartas NUMBER(1),
-  version NUMBER DEFAULT 1 NOT NULL
+CREATE TABLE Jugador (
+  Id_Jugador NUMBER CONSTRAINT PK_JUGADOR PRIMARY KEY,
+  Nombre_Usuario VARCHAR2(50) CONSTRAINT UK_JUGADOR_USUARIO UNIQUE NOT NULL,
+  Partidas_Jugadas NUMBER,
+  Partidas_Ganadas NUMBER,
+  Puntos_Acumulados NUMBER,
+  Estilo_Cartas NUMBER,
+  Imagen_Fondo BLOB
 );
 
-CREATE UNIQUE INDEX jugador_ind01 ON jugador (nombre_usuario);
+COMMENT ON COLUMN Jugador.Id_Jugador IS 'Id asignado al jugador';
+COMMENT ON COLUMN Jugador.Nombre_Usuario IS 'Nombre del usuario';
+COMMENT ON COLUMN Jugador.Partidas_Jugadas IS 'Total de partidas jugadas';
+COMMENT ON COLUMN Jugador.Partidas_Ganadas IS 'Total de partidas ganadas';
+COMMENT ON COLUMN Jugador.Puntos_Acumulados IS 'Puntos totales acumulados en la partida';
+COMMENT ON COLUMN Jugador.Estilo_Cartas IS 'Estilo de cartas elegido por el jugador';
+COMMENT ON COLUMN Jugador.Imagen_Fondo IS 'Imagen de fondo elegida por el jugador';
 
-ALTER TABLE jugador ADD CONSTRAINT jugador_pk PRIMARY KEY (id_jugador);
+-- TABLE PARTIDA ---------------------------------------------------------
 
-COMMENT ON TABLE jugador IS 'Tabla que almacena los datos principales de los jugadores.';
-COMMENT ON COLUMN jugador.id_jugador IS 'Identificador �nico del jugador.';
-COMMENT ON COLUMN jugador.nombre_usuario IS 'Nombre de usuario del jugador, �nico.';
-COMMENT ON COLUMN jugador.imagen_fondo IS 'Imagen de fondo personalizada del jugador.';
-COMMENT ON COLUMN jugador.estilo_cartas IS 'N�mero de estilo de cartas preferido.';
-COMMENT ON COLUMN jugador.version IS 'Versi�n del registro del jugador.';
-
--- Table JugadorConfiguracion
-CREATE TABLE jugador_configuracion (
-  id_configuracion NUMBER NOT NULL,
-  id_jugador NUMBER NOT NULL,
-  configuracion JSON,
-  version NUMBER DEFAULT 1 NOT NULL
+CREATE TABLE Partida (
+  Id_Partida NUMBER CONSTRAINT PK_PARTIDA PRIMARY KEY,
+  Id_Jugador NUMBER NOT NULL,
+  Fecha_Inicio TIMESTAMP(6) DEFAULT CURRENT_TIMESTAMP,
+  Fecha_Fin TIMESTAMP(6),
+  Puntos NUMBER CONSTRAINT CK_PARTIDA_PUNTOS CHECK (Puntos >= 0),
+  Tiempo_Jugado NUMBER CONSTRAINT CK_PARTIDA_TIEMPO_JUGADO CHECK (Tiempo_Jugado >= 0),
+  Estado VARCHAR2(20) NOT NULL CONSTRAINT CK_PARTIDA_ESTADO CHECK (Estado IN ('EN_JUEGO', 'PAUSADA', 'TERMINADA', 'PERDIDA')),
+  Dificultad VARCHAR2(20) DEFAULT 'MEDIA' NOT NULL CONSTRAINT CK_PARTIDA_DIFICULTAD CHECK (Dificultad IN ('FACIL', 'MEDIA', 'DIFICIL'))
 );
 
-ALTER TABLE jugador_configuracion ADD CONSTRAINT jugadorconfiguracion_pk PRIMARY KEY (id_configuracion);
+COMMENT ON COLUMN Partida.Id_Partida IS 'Id de la partida';
+COMMENT ON COLUMN Partida.Id_Jugador IS 'Id del jugador';
+COMMENT ON COLUMN Partida.Fecha_Inicio IS 'Fecha de inicio de la partida';
+COMMENT ON COLUMN Partida.Fecha_Fin IS 'Fecha de fin de la partida';
+COMMENT ON COLUMN Partida.Puntos IS 'Puntos de la partida';
+COMMENT ON COLUMN Partida.Tiempo_Jugado IS 'Tiempo jugado de la partida';
+COMMENT ON COLUMN Partida.Estado IS 'Estado de la partida';
+COMMENT ON COLUMN Partida.Dificultad IS 'Dificultad de la partida';
 
-COMMENT ON TABLE jugador_configuracion IS 'Configuraciones espec�ficas personalizadas por jugador.';
-COMMENT ON COLUMN jugador_configuracion.id_configuracion IS 'Identificador �nico de configuraci�n.';
-COMMENT ON COLUMN jugador_configuracion.id_jugador IS 'Jugador al cual pertenece la configuraci�n.';
-COMMENT ON COLUMN jugador_configuracion.configuracion IS 'Configuraciones guardadas en formato JSON.';
-COMMENT ON COLUMN jugador_configuracion.version IS 'Versi�n del registro.';
+CREATE INDEX IX_Relationship2 ON Partida (Id_Jugador);
 
--- Table EstadisticasJugador
-CREATE TABLE estadisticas_jugador (
-  id_estadistica NUMBER NOT NULL,
-  id_jugador NUMBER NOT NULL,
-  partidas_ganadas NUMBER DEFAULT 0,
-  puntos_acumulados NUMBER DEFAULT 0,
-  version NUMBER DEFAULT 1 NOT NULL
+-- TABLE CARTASPARTIDA ----------------------------------------------------
+
+CREATE TABLE CartasPartida (
+  Id_Carta_Partida NUMBER CONSTRAINT PK_CARTASPARTIDA PRIMARY KEY,
+  Id_Partida NUMBER NOT NULL,
+  Palo VARCHAR2(20) NOT NULL,
+  Valor VARCHAR2(25) NOT NULL,
+  Columna NUMBER NOT NULL,
+  Orden NUMBER NOT NULL,
+  Boca_Arriba NUMBER NOT NULL CONSTRAINT CK_CARTASPARTIDA_BOCA_ARRIBA CHECK (Boca_Arriba IN (0, 1)),
+  En_Mazo NUMBER NOT NULL CONSTRAINT CK_CARTASPARTIDA_EN_MAZO CHECK (En_Mazo IN (0, 1)),
+  En_Pila NUMBER NOT NULL CONSTRAINT CK_CARTASPARTIDA_EN_PILA CHECK (En_Pila IN (0, 1)),
+  Retirada NUMBER NOT NULL CONSTRAINT CK_CARTASPARTIDA_RETIRADA CHECK (Retirada IN (0, 1))
 );
 
-ALTER TABLE estadisticas_jugador ADD CONSTRAINT estadisticasjugador_pk PRIMARY KEY (id_estadistica);
+COMMENT ON COLUMN CartasPartida.Id_Carta_Partida IS 'Id de la carta';
+COMMENT ON COLUMN CartasPartida.Id_Partida IS 'Id de la partida';
+COMMENT ON COLUMN CartasPartida.Palo IS 'Palo elegido por el jugador';
+COMMENT ON COLUMN CartasPartida.Valor IS 'Valor de la carta';
+COMMENT ON COLUMN CartasPartida.Columna IS 'Columna de la carta';
+COMMENT ON COLUMN CartasPartida.Orden IS 'Orden de las cartas';
+COMMENT ON COLUMN CartasPartida.Boca_Arriba IS 'Estado de la carta (1=Si, 0=No)';
+COMMENT ON COLUMN CartasPartida.En_Mazo IS 'Estado de la carta (1=Si, 0=No)';
+COMMENT ON COLUMN CartasPartida.En_Pila IS 'Estado de la carta (1=Si, 0=No)';
+COMMENT ON COLUMN CartasPartida.Retirada IS 'Estado de la carta (1=Si, 0=No)';
 
-COMMENT ON TABLE estadisticas_jugador IS 'Estad�sticas acumuladas por cada jugador.';
-COMMENT ON COLUMN estadisticas_jugador.id_estadistica IS 'Identificador de la estad�stica.';
-COMMENT ON COLUMN estadisticas_jugador.id_jugador IS 'Jugador relacionado a la estad�stica.';
-COMMENT ON COLUMN estadisticas_jugador.partidas_ganadas IS 'Cantidad de partidas ganadas.';
-COMMENT ON COLUMN estadisticas_jugador.puntos_acumulados IS 'Cantidad de puntos acumulados.';
-COMMENT ON COLUMN estadisticas_jugador.version IS 'Versi�n del registro.';
+CREATE INDEX IX_Relationship4 ON CartasPartida (Id_Partida);
 
--- Table Partida
-CREATE TABLE partida (
-  id_partida NUMBER NOT NULL,
-  id_jugador NUMBER NOT NULL,
-  fecha_inicio TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  fecha_fin TIMESTAMP,
-  dificultad VARCHAR2(20),
-  estado VARCHAR2(20),
-  version NUMBER DEFAULT 1 NOT NULL
-);
+-- FOREIGN KEYS -----------------------------------------------------------
 
-ALTER TABLE partida ADD CONSTRAINT partida_pk PRIMARY KEY (id_partida);
+ALTER TABLE Partida ADD CONSTRAINT FK_Partida_Jugador
+  FOREIGN KEY (Id_Jugador) REFERENCES Jugador(Id_Jugador) ON DELETE CASCADE;
 
-COMMENT ON TABLE partida IS 'Partidas individuales jugadas por los usuarios.';
-COMMENT ON COLUMN partida.id_partida IS 'Identificador �nico de la partida.';
-COMMENT ON COLUMN partida.id_jugador IS 'Jugador que juega esta partida.';
-COMMENT ON COLUMN partida.fecha_inicio IS 'Fecha y hora de inicio de la partida.';
-COMMENT ON COLUMN partida.fecha_fin IS 'Fecha y hora de finalizaci�n.';
-COMMENT ON COLUMN partida.dificultad IS 'Dificultad seleccionada en la partida.';
-COMMENT ON COLUMN partida.estado IS 'Estado actual de la partida.';
-COMMENT ON COLUMN partida.version IS 'Versi�n del registro.';
+ALTER TABLE CartasPartida ADD CONSTRAINT FK_CartasPartida_Partida
+  FOREIGN KEY (Id_Partida) REFERENCES Partida(Id_Partida) ON DELETE CASCADE;
 
--- Table EstadisticasPartida
-CREATE TABLE estadisticas_partida (
-  id_estadistica_partida NUMBER NOT NULL,
-  id_partida NUMBER NOT NULL,
-  tiempo_jugado NUMBER,
-  puntos_partida NUMBER,
-  version NUMBER DEFAULT 1 NOT NULL
-);
+-- TRIGGERS ---------------------------------------------------------------
 
-ALTER TABLE estadisticas_partida ADD CONSTRAINT estadisticaspartida_pk PRIMARY KEY (id_estadistica_partida);
-
-COMMENT ON TABLE estadisticas_partida IS 'Estad�sticas espec�ficas para cada partida individual.';
-COMMENT ON COLUMN estadisticas_partida.id_estadistica_partida IS 'Identificador �nico.';
-COMMENT ON COLUMN estadisticas_partida.id_partida IS 'Partida relacionada.';
-COMMENT ON COLUMN estadisticas_partida.tiempo_jugado IS 'Tiempo jugado en segundos.';
-COMMENT ON COLUMN estadisticas_partida.puntos_partida IS 'Puntos obtenidos en la partida.';
-COMMENT ON COLUMN estadisticas_partida.version IS 'Versi�n del registro.';
-
--- Table CartasPartida
-CREATE TABLE cartas_partida (
-  id_carta_partida NUMBER NOT NULL,
-  id_partida NUMBER NOT NULL,
-  cartas JSON,
-  version NUMBER DEFAULT 1 NOT NULL
-);
-
-ALTER TABLE cartas_partida ADD CONSTRAINT cartaspartida_pk PRIMARY KEY (id_carta_partida);
-
-COMMENT ON TABLE cartas_partida IS 'Cartas utilizadas en una partida.';
-COMMENT ON COLUMN cartas_partida.id_carta_partida IS 'Identificador �nico de carta en partida.';
-COMMENT ON COLUMN cartas_partida.id_partida IS 'Partida asociada a las cartas.';
-COMMENT ON COLUMN cartas_partida.cartas IS 'Informaci�n de las cartas en formato JSON.';
-COMMENT ON COLUMN cartas_partida.version IS 'Versi�n del registro.';
-
--- Create foreign keys section -------------------------------------------------
-
-ALTER TABLE jugador_configuracion ADD CONSTRAINT jugadorconfiguracion_fk01 FOREIGN KEY (id_jugador) REFERENCES jugador (id_jugador);
-
-ALTER TABLE estadisticas_jugador ADD CONSTRAINT estadisticasjugador_fk01 FOREIGN KEY (id_jugador) REFERENCES jugador (id_jugador);
-
-ALTER TABLE partida ADD CONSTRAINT partida_fk01 FOREIGN KEY (id_jugador) REFERENCES jugador (id_jugador);
-
-ALTER TABLE estadisticas_partida ADD CONSTRAINT estadisticaspartida_fk01 FOREIGN KEY (id_partida) REFERENCES partida (id_partida);
-
-ALTER TABLE cartas_partida ADD CONSTRAINT cartaspartida_fk01 FOREIGN KEY (id_partida) REFERENCES partida (id_partida);
-
--- Create triggers section -------------------------------------------------
-
--- Triggers para Jugador
-CREATE OR REPLACE TRIGGER jugador_trg01
-BEFORE INSERT ON jugador FOR EACH ROW
+-- Jugador
+CREATE OR REPLACE TRIGGER ts_Jugador_SEQ_JUGADOR
+BEFORE INSERT ON Jugador FOR EACH ROW
 BEGIN
-  IF :new.id_jugador IS NULL THEN
-     :new.id_jugador := spider_jugador_seq01.NEXTVAL;
-  END IF;
+  :new.Id_Jugador := SEQ_JUGADOR.NEXTVAL;
 END;
 /
 
-CREATE OR REPLACE TRIGGER jugador_trg02
-AFTER UPDATE OF id_jugador ON jugador FOR EACH ROW
+CREATE OR REPLACE TRIGGER tsu_Jugador_SEQ_JUGADOR
+AFTER UPDATE OF Id_Jugador ON Jugador FOR EACH ROW
 BEGIN
-  RAISE_APPLICATION_ERROR(-20010,'No se puede actualizar el campo id_jugador.');
+  RAISE_APPLICATION_ERROR(-20010,'Cannot update column Id_Jugador in table Jugador as it uses sequence.');
 END;
 /
 
--- Triggers para JugadorConfiguracion
-CREATE OR REPLACE TRIGGER jugadorconfiguracion_trg01
-BEFORE INSERT ON jugador_configuracion FOR EACH ROW
+-- Partida
+CREATE OR REPLACE TRIGGER ts_Partida_SEQ_PARTIDA
+BEFORE INSERT ON Partida FOR EACH ROW
 BEGIN
-  IF :new.id_configuracion IS NULL THEN
-     :new.id_configuracion := spider_jugadorconfiguracion_seq01.NEXTVAL;
-  END IF;
+  :new.Id_Partida := SEQ_PARTIDA.NEXTVAL;
 END;
 /
 
-CREATE OR REPLACE TRIGGER jugadorconfiguracion_trg02
-AFTER UPDATE OF id_configuracion ON jugador_configuracion FOR EACH ROW
+CREATE OR REPLACE TRIGGER tsu_Partida_SEQ_PARTIDA
+AFTER UPDATE OF Id_Partida ON Partida FOR EACH ROW
 BEGIN
-  RAISE_APPLICATION_ERROR(-20011,'No se puede actualizar el campo id_configuracion.');
+  RAISE_APPLICATION_ERROR(-20010,'Cannot update column Id_Partida in table Partida as it uses sequence.');
 END;
 /
 
--- Triggers para EstadisticasJugador
-CREATE OR REPLACE TRIGGER estadisticasjugador_trg01
-BEFORE INSERT ON estadisticas_jugador FOR EACH ROW
+-- CartasPartida
+CREATE OR REPLACE TRIGGER ts_CartasPartida_SEQ_CARTASPARTIDA
+BEFORE INSERT ON CartasPartida FOR EACH ROW
 BEGIN
-  IF :new.id_estadistica IS NULL THEN
-     :new.id_estadistica := spider_estadisticasjugador_seq01.NEXTVAL;
-  END IF;
+  :new.Id_Carta_Partida := SEQ_CARTASPARTIDA.NEXTVAL;
 END;
 /
 
-CREATE OR REPLACE TRIGGER estadisticasjugador_trg02
-AFTER UPDATE OF id_estadistica ON estadisticas_jugador FOR EACH ROW
+CREATE OR REPLACE TRIGGER tsu_CartasPartida_SEQ_CARTASPARTIDA
+AFTER UPDATE OF Id_Carta_Partida ON CartasPartida FOR EACH ROW
 BEGIN
-  RAISE_APPLICATION_ERROR(-20012,'No se puede actualizar el campo id_estadistica.');
-END;
-/
-
--- Triggers para Partida
-CREATE OR REPLACE TRIGGER partida_trg01
-BEFORE INSERT ON partida FOR EACH ROW
-BEGIN
-  IF :new.id_partida IS NULL THEN
-     :new.id_partida := spider_partida_seq01.NEXTVAL;
-  END IF;
-END;
-/
-
-CREATE OR REPLACE TRIGGER partida_trg02
-AFTER UPDATE OF id_partida ON partida FOR EACH ROW
-BEGIN
-  RAISE_APPLICATION_ERROR(-20013,'No se puede actualizar el campo id_partida.');
-END;
-/
-
--- Triggers para EstadisticasPartida
-CREATE OR REPLACE TRIGGER estadisticaspartida_trg01
-BEFORE INSERT ON estadisticas_partida FOR EACH ROW
-BEGIN
-  IF :new.id_estadistica_partida IS NULL THEN
-     :new.id_estadistica_partida := spider_estadisticaspartida_seq01.NEXTVAL;
-  END IF;
-END;
-/
-
-CREATE OR REPLACE TRIGGER estadisticaspartida_trg02
-AFTER UPDATE OF id_estadistica_partida ON estadisticas_partida FOR EACH ROW
-BEGIN
-  RAISE_APPLICATION_ERROR(-20014,'No se puede actualizar el campo id_estadistica_partida.');
-END;
-/
-
--- Triggers para CartasPartida
-CREATE OR REPLACE TRIGGER cartaspartida_trg01
-BEFORE INSERT ON cartas_partida FOR EACH ROW
-BEGIN
-  IF :new.id_carta_partida IS NULL THEN
-     :new.id_carta_partida := spider_cartaspartida_seq01.NEXTVAL;
-  END IF;
-END;
-/
-
-CREATE OR REPLACE TRIGGER cartaspartida_trg02
-AFTER UPDATE OF id_carta_partida ON cartas_partida FOR EACH ROW
-BEGIN
-  RAISE_APPLICATION_ERROR(-20015,'No se puede actualizar el campo id_carta_partida.');
+  RAISE_APPLICATION_ERROR(-20010,'Cannot update column Id_Carta_Partida in table CartasPartida as it uses sequence.');
 END;
 /
