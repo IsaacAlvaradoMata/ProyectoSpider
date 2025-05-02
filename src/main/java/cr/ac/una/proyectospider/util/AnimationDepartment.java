@@ -568,6 +568,46 @@ public class AnimationDepartment {
         activeAnimations.add(glitchLoop);
     }
 
+    public static void slideFromLeft(Node node, Duration delay) {
+        node.setOpacity(0);
+        node.setTranslateX(-200); // ⬅️ Fuera del viewport a la izquierda
+
+        TranslateTransition slide = new TranslateTransition(Duration.millis(800), node);
+        slide.setFromX(-200);
+        slide.setToX(0);
+        slide.setDelay(delay);
+        slide.setInterpolator(Interpolator.EASE_OUT);
+
+        FadeTransition fade = new FadeTransition(Duration.millis(800), node);
+        fade.setFromValue(0);
+        fade.setToValue(1);
+        fade.setDelay(delay);
+
+        ParallelTransition anim = new ParallelTransition(slide, fade);
+        anim.play();
+        activeAnimations.add(anim);
+    }
+
+    public static void slideFromRight(Node node, Duration delay) {
+        node.setOpacity(0);
+        node.setTranslateX(200); // ➡️ Fuera del viewport a la derecha
+
+        TranslateTransition slide = new TranslateTransition(Duration.millis(800), node);
+        slide.setFromX(200);
+        slide.setToX(0);
+        slide.setDelay(delay);
+        slide.setInterpolator(Interpolator.EASE_OUT);
+
+        FadeTransition fade = new FadeTransition(Duration.millis(800), node);
+        fade.setFromValue(0);
+        fade.setToValue(1);
+        fade.setDelay(delay);
+
+        ParallelTransition anim = new ParallelTransition(slide, fade);
+        anim.play();
+        activeAnimations.add(anim);
+    }
+
 
 }
 

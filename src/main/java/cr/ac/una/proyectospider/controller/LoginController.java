@@ -164,7 +164,11 @@ public class LoginController extends Controller implements Initializable {
     @FXML
     private void onMouseClickedbtnIniciarSesion(MouseEvent event) {
         AnimationDepartment.stopAllAnimations();
-        FlowController.getInstance().goView("MenuView");
+        AnimationDepartment.glitchFadeOut(spBackgroundLogin, Duration.seconds(1.1), () -> {
+            FlowController.getInstance().goView("MenuView");
+            MenuController controller = (MenuController) FlowController.getInstance().getController("MenuView");
+            controller.RunMenuView();
+        });
     }
 
     @FXML
@@ -174,8 +178,6 @@ public class LoginController extends Controller implements Initializable {
             FlowController.getInstance().goView("InfoView");
             InfoController controller = (InfoController) FlowController.getInstance().getController("InfoView");
             controller.RunInfoView();
-
-
         });
     }
 

@@ -204,9 +204,140 @@
 
 
 
+/*VISTA MENU*/
+
+#btnNuevaPartida {
+    -fx-image: url('../resources/ButtonNuevaPartida.png');
+}
+
+#btnContinuarPartida {
+    -fx-image: url('../resources/ButtonContinuarPartida.png');
+}
+
+#btnPersonalizacion {
+    -fx-image: url('../resources/ButtonPersonalizacion.png');
+}
+
+#btnVerPuntajes {
+    -fx-image: url('../resources/ButtonVerPuntajes.png');
+}
+
+#btnAyuda {
+    -fx-image: url('../resources/ButtonAyuda.png');
+}
+
+#btnCerrarSesion {
+    -fx-image: url('../resources/ButtonCerrarSesion.png');
+}
+
+#imgMenuLogo {
+    -fx-image: url('../resources/LogoSpiderIcon.png');
+}
+
+/*IMAGENES DE EJEMPLO PARA FONDO Y ESTILO DE CARTAS*/
+
+#imgFondoActual {
+    -fx-image: url('../resources/TableGame.png');
+}
+
+#imgCartasActual {
+    -fx-image: url('../resources/EstiloCartas1.png');
+}
 
 
 
+.label-title-menu {
+    -fx-font-family: "Cynatar";
+    -fx-font-size: 40px;
+    -fx-text-fill: #ffc107; /* Dorado más cálido y legible */
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(gaussian, #ff8f00, 15, 0.6, 0, 0); /* Glow reducido */
+    -fx-alignment: center;
+}
+
+.label-subtitle-menu {
+    -fx-font-family: "Cynatar";
+    -fx-font-size: 27px;
+    -fx-text-fill: #ffc107; /* Dorado más cálido y legible */
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(gaussian, #ff8f00, 15, 0.6, 0, 0); /* Glow reducido */
+    -fx-alignment: center;
+}
+
+.label-info-menu {
+    -fx-font-family: "Cynatar";
+    -fx-font-size: 25px;
+    -fx-text-fill: #00ffff; /* Dorado más cálido y legible */
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(gaussian, #ff00ff, 15, 0.6, 0, 0); /* Glow reducido */
+    -fx-alignment: center;
+}
 
 
+/* === Cyberpunk TableView Base === */
+.table-view {
+    -fx-font-family: "Cynatar";
+    -fx-background-color: transparent;
+    -fx-table-cell-border-color: #00ffff33;
+    -fx-border-color: #ff00ff;
+    -fx-border-width: 2px;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+    -fx-effect: dropshadow(gaussian, #ff00ff, 10, 0.5, 0, 0);
+    -fx-text-fill: #00ffff;
+}
 
+/* === Column headers === */
+.table-view .column-header {
+    -fx-font-family: "Cynatar";
+    -fx-background-color: linear-gradient(to bottom, #220033, #110022);
+    -fx-border-color: #ff00ff;
+    -fx-border-width: 0 0 1 0;
+}
+
+.table-view .column-header .label {
+    -fx-font-family: "Cynatar";
+    -fx-text-fill: #ff00ff;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+}
+
+/* === Table rows === */
+.table-row-cell {
+    -fx-background-color: transparent;
+    -fx-border-color: #ff00ff22;
+    -fx-border-width: 0 0 1 0;
+}
+
+.table-row-cell:selected {
+    -fx-background-color: #ff00ff33;
+    -fx-text-fill: #00ffff;
+}
+
+/* === Table cells === */
+.table-cell {
+    -fx-text-fill: #39ff14;
+    -fx-font-size: 13px;
+    -fx-alignment: CENTER;
+}
+
+/* === Scrollbar === */
+.table-view .scroll-bar:vertical,
+.table-view .scroll-bar:horizontal {
+    -fx-background-color: transparent;
+}
+
+.scroll-bar .thumb {
+    -fx-background-color: #ff00ff99;
+    -fx-background-insets: 2;
+    -fx-background-radius: 8;
+}
+
+.scroll-bar .track {
+    -fx-background-color: #220033;
+}
+
+/* === Focus border === */
+.table-view:focused {
+    -fx-border-color: #00ffff;
+}
