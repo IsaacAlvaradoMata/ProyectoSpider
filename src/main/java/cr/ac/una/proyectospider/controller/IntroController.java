@@ -54,6 +54,8 @@ public class IntroController extends Controller implements Initializable {
         imgBackground.setImage(new Image(getClass().getResourceAsStream("/cr/ac/una/proyectospider/resources/BackgroundIntro.gif")));
         imgBackground.setOpacity(0.4);
         imgBackground.setSmooth(true);
+        imgButtonComenzar.setDisable(true);
+
         vboxLogo.setOpacity(0);
         vboxTitle.setOpacity(0);
         vboxTitle.setTranslateY(0);
@@ -69,6 +71,7 @@ public class IntroController extends Controller implements Initializable {
             AnimationDepartment.glitchTextWithFlicker(lblTitulo2);
             AnimationDepartment.fadeIn(imgButtonComenzar, Duration.seconds(5.0));
             AnimationDepartment.animateNeonGlow(imgButtonComenzar);
+            imgButtonComenzar.setDisable(false);
 
         });
 
@@ -81,12 +84,13 @@ public class IntroController extends Controller implements Initializable {
 
     @FXML
     private void onMouseClickedButtonComenzar(MouseEvent event) {
+        imgButtonComenzar.setDisable(true);
         AnimationDepartment.stopAllAnimations();
         AnimationDepartment.glitchFadeOut(spBackground, Duration.seconds(1.1), () -> {
             FlowController.getInstance().goView("LoginView");
             LoginController controller = (LoginController) FlowController.getInstance().getController("LoginView");
             controller.RunLoginView();
-
+            Platform.runLater(() -> imgButtonComenzar.setDisable(false));
 
         });
     }

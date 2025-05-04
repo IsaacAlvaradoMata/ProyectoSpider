@@ -19,7 +19,7 @@ public class App extends Application {
         stage.setTitle("Solitario Spider");
         stage.getIcons().add(new Image(getClass().getResourceAsStream("/cr/ac/una/proyectospider/resources/LogoSpiderIcon.png")));
         stage.setScene(scene);
-        stage.setMinWidth(1350);
+        stage.setMinWidth(1450);
         stage.setMinHeight(800);
         FontDepartment.loadFonts();
 

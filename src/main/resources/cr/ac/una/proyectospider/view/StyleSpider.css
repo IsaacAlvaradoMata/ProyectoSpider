@@ -274,70 +274,53 @@
 }
 
 
-/* === Cyberpunk TableView Base === */
-.table-view {
+
+.table-view-menu {
     -fx-font-family: "Cynatar";
-    -fx-background-color: transparent;
-    -fx-table-cell-border-color: #00ffff33;
+    -fx-font-size: 18px;
+    -fx-background-color: #0d0d0d; /* fondo oscuro */
+    -fx-text-fill: #ffffff;
     -fx-border-color: #ff00ff;
     -fx-border-width: 2px;
     -fx-border-radius: 6px;
     -fx-background-radius: 6px;
-    -fx-effect: dropshadow(gaussian, #ff00ff, 10, 0.5, 0, 0);
-    -fx-text-fill: #00ffff;
 }
 
-/* === Column headers === */
-.table-view .column-header {
-    -fx-font-family: "Cynatar";
-    -fx-background-color: linear-gradient(to bottom, #220033, #110022);
-    -fx-border-color: #ff00ff;
-    -fx-border-width: 0 0 1 0;
+/* Cabecera */
+.table-view-menu .column-header {
+    -fx-background-color: #1a001a;
 }
 
-.table-view .column-header .label {
-    -fx-font-family: "Cynatar";
-    -fx-text-fill: #ff00ff;
+.table-view-menu .column-header .label {
+    -fx-text-fill: #ffc107;
+    -fx-font-size: 16px;
     -fx-font-weight: bold;
-    -fx-font-size: 14px;
 }
 
-/* === Table rows === */
-.table-row-cell {
-    -fx-background-color: transparent;
-    -fx-border-color: #ff00ff22;
-    -fx-border-width: 0 0 1 0;
-}
-
-.table-row-cell:selected {
-    -fx-background-color: #ff00ff33;
-    -fx-text-fill: #00ffff;
-}
-
-/* === Table cells === */
-.table-cell {
-    -fx-text-fill: #39ff14;
-    -fx-font-size: 13px;
+/* Celdas */
+.table-view-menu .table-cell {
+    -fx-text-fill: #39ff14 !important;
     -fx-alignment: CENTER;
 }
 
-/* === Scrollbar === */
-.table-view .scroll-bar:vertical,
-.table-view .scroll-bar:horizontal {
-    -fx-background-color: transparent;
-}
+/*!* Filas *!*/
+/*.table-row-cell {*/
+/*    -fx-background-color: #1a001a;*/
+/*    -fx-border-color: #333333;*/
+/*    -fx-border-width: 0 0 1 0;*/
+/*}*/
 
-.scroll-bar .thumb {
-    -fx-background-color: #ff00ff99;
-    -fx-background-insets: 2;
-    -fx-background-radius: 8;
-}
+/*!* Hover *!*/
+/*.table-row-cell:hover {*/
+/*    -fx-background-color: #330033;*/
+/*}*/
 
-.scroll-bar .track {
-    -fx-background-color: #220033;
-}
+/*!* Selección *!*/
+/*.table-row-cell:selected {*/
+/*    -fx-background-color: #ff00ff44;*/
+/*}*/
 
-/* === Focus border === */
-.table-view:focused {
-    -fx-border-color: #00ffff;
-}
+/*.table-row-cell:selected .table-cell {*/
+/*    -fx-text-fill: white !important;*/
+/*    -fx-font-weight: bold;*/
+/*}*/

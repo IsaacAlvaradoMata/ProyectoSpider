@@ -7,14 +7,19 @@ package cr.ac.una.proyectospider.controller;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import cr.ac.una.proyectospider.model.PartidaMock;
 import cr.ac.una.proyectospider.util.AnimationDepartment;
 import cr.ac.una.proyectospider.util.FlowController;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -77,7 +82,7 @@ public class MenuController extends Controller implements Initializable {
     @FXML
     private Label lblPartidasPausadas;
     @FXML
-    private TableView<?> tblviewPartidasPausadas;
+    private TableView<PartidaMock> tblviewPartidasPausadas;
 
 
     @Override
@@ -92,6 +97,7 @@ public class MenuController extends Controller implements Initializable {
 
     public void RunMenuView() {
         ResetMenuView();
+        populateTableView();
         System.out.println("Run Menu View");
 
         // 🟡 Reposicionar y asegurar fondo en el índice 0
@@ -173,7 +179,7 @@ public class MenuController extends Controller implements Initializable {
             t4.play();
 
 
-            PauseTransition t5 = new PauseTransition(Duration.seconds(7));
+            PauseTransition t5 = new PauseTransition(Duration.seconds(6.5));
             t5.setOnFinished(e -> {
             AnimationDepartment.slideUpWithEpicBounceClean(btnNuevaPartida, Duration.seconds(0), sceneHeight);
             AnimationDepartment.slideUpWithEpicBounceClean(btnContinuarPartida, Duration.seconds(0.2), sceneHeight);
@@ -190,6 +196,15 @@ public class MenuController extends Controller implements Initializable {
             });
             t5.play();
 
+            ObservableList<PartidaMock> partidas = FXCollections.observableArrayList();
+            for (int i = 1; i <= 15; i++) {
+                partidas.add(new PartidaMock(
+                        "2025-05-" + (i < 10 ? "0" + i : i),
+                        (Math.random() * 1000 + 500) + " pts",
+                        (10 + i) + " min"
+                ));
+            }
+            tblviewPartidasPausadas.setItems(partidas);
 
 
         });
@@ -202,7 +217,7 @@ public class MenuController extends Controller implements Initializable {
 
         AnimationDepartment.stopAllAnimations();
         root.setOpacity(0);
-        root.setVisible(true);
+//        root.setVisible(true);
 
         imgBackgroundMenu.setOpacity(0.7);
         imgBackgroundMenu.setTranslateX(0);
@@ -256,18 +271,6 @@ public class MenuController extends Controller implements Initializable {
     }
 
 
-
-
-
-    private void btnprueba(ActionEvent event) {
-        AnimationDepartment.stopAllAnimations();
-        AnimationDepartment.glitchFadeOut(root, Duration.seconds(1.1), () -> {
-            FlowController.getInstance().goView("LoginView");
-            LoginController controller = (LoginController) FlowController.getInstance().getController("LoginView");
-            controller.RunLoginView();
-        });
-    }
-
     @FXML
     private void onMouseClickedbtnNuevaPartida(MouseEvent event) {
     }
@@ -290,12 +293,31 @@ public class MenuController extends Controller implements Initializable {
 
     @FXML
     private void onMouseClickedbtnCerrarSesion(MouseEvent event) {
+        btnCerrarSesion.setDisable(true);
         AnimationDepartment.stopAllAnimations();
 
         AnimationDepartment.glitchFadeOut(spBackgroundMenu, Duration.seconds(1.1), () -> {
             FlowController.getInstance().goView("LoginView");
             LoginController controller = (LoginController) FlowController.getInstance().getController("LoginView");
             controller.RunLoginView();
+            Platform.runLater(() -> btnCerrarSesion.setDisable(false));
+
         });
+    }
+
+    private void populateTableView(){
+        TableColumn<PartidaMock, String> colFecha = new TableColumn<>("Fecha");
+        colFecha.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getFecha()));
+
+        TableColumn<PartidaMock, String> colPuntaje = new TableColumn<>("Puntaje");
+        colPuntaje.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getPuntaje()));
+
+        TableColumn<PartidaMock, String> colTiempo = new TableColumn<>("Tiempo Jugado");
+        colTiempo.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getTiempo()));
+
+// Aplica estilos opcionales si tienes CSS
+        tblviewPartidasPausadas.getColumns().setAll(colFecha, colPuntaje, colTiempo);
+
+
     }
 }

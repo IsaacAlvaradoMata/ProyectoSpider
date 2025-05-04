@@ -301,11 +301,14 @@ public class InfoController extends Controller implements Initializable {
     @FXML
     private void onMouseClickedbtnVolver(MouseEvent event) {
         AnimationDepartment.stopAllAnimations();
+        btnVolver.setDisable(true);
 
         AnimationDepartment.glitchFadeOut(spBackgroundInfo, Duration.seconds(1.1), () -> {
             FlowController.getInstance().goView("LoginView");
             LoginController controller = (LoginController) FlowController.getInstance().getController("LoginView");
             controller.RunLoginView();
+            Platform.runLater(() -> btnVolver.setDisable(false));
+
         });
 
     }

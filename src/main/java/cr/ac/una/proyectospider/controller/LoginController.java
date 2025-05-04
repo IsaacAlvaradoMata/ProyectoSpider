@@ -163,21 +163,26 @@ public class LoginController extends Controller implements Initializable {
 
     @FXML
     private void onMouseClickedbtnIniciarSesion(MouseEvent event) {
+        BtnIniciarSesion.setDisable(true);
         AnimationDepartment.stopAllAnimations();
         AnimationDepartment.glitchFadeOut(spBackgroundLogin, Duration.seconds(1.1), () -> {
             FlowController.getInstance().goView("MenuView");
             MenuController controller = (MenuController) FlowController.getInstance().getController("MenuView");
             controller.RunMenuView();
+            Platform.runLater(() -> BtnIniciarSesion.setDisable(false));
+
         });
     }
 
     @FXML
     private void onMouseClickedbtnAcercaDe(MouseEvent event) {
+        btnAcercaDe.setDisable(true);
         AnimationDepartment.stopAllAnimations();
         AnimationDepartment.glitchFadeOut(spBackgroundLogin, Duration.seconds(1.1), () -> {
             FlowController.getInstance().goView("InfoView");
             InfoController controller = (InfoController) FlowController.getInstance().getController("InfoView");
             controller.RunInfoView();
+            Platform.runLater(() -> btnAcercaDe.setDisable(false));
         });
     }
 
