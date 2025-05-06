@@ -1,5 +1,7 @@
 package cr.ac.una.proyectospider.controller;
 
+import cr.ac.una.proyectospider.model.JugadorDto;
+import cr.ac.una.proyectospider.service.JugadorService;
 import cr.ac.una.proyectospider.util.AnimationDepartment;
 import cr.ac.una.proyectospider.util.FlowController;
 
@@ -159,7 +161,25 @@ public class LoginController extends Controller implements Initializable {
 
     @FXML
     private void onMouseClickedbtnRegistrarJugador(MouseEvent event) {
+        String nombre = txtfildLogin.getText();
+
+        if (nombre == null || nombre.trim().isEmpty()) {
+            System.out.println("⚠️ Debes ingresar un nombre de usuario.");
+            return;
+        }
+
+        JugadorService jugadorService = new JugadorService();
+        JugadorDto nuevoJugador = jugadorService.registrarJugador(nombre.trim());
+
+        if (nuevoJugador != null) {
+            System.out.println("✅ Jugador registrado con ID: " + nuevoJugador.idJugadorProperty().get());
+            // Opcional: guardar en AppContext
+            // AppContext.getInstance().set("jugadorActivo", nuevoJugador);
+        } else {
+            System.err.println("❌ No se pudo registrar el jugador.");
+        }
     }
+
 
     @FXML
     private void onMouseClickedbtnIniciarSesion(MouseEvent event) {
