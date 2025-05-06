@@ -22,8 +22,7 @@ public class JugadorService {
                     .orElse(null);
 
             if (existente != null) {
-                System.out.println("⚠️ Ya existe el jugador: " + nombreUsuario);
-                return new JugadorDto(existente);
+                return null;  // 🔁 cambio clave: si ya existe, retorna null
             }
 
             Jugador nuevo = new Jugador();
@@ -38,8 +37,9 @@ public class JugadorService {
             em.persist(nuevo);
             em.getTransaction().commit();
 
-            return new JugadorDto(nuevo);
+            return new JugadorDto(nuevo);  // sólo si fue insertado
         } catch (Exception e) {
+            em.getTransaction().rollback();
             System.err.println("❌ Error al registrar jugador: " + e.getMessage());
             return null;
         } finally {

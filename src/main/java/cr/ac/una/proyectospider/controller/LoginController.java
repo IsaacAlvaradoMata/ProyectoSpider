@@ -11,6 +11,7 @@ import java.util.ResourceBundle;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
@@ -164,21 +165,41 @@ public class LoginController extends Controller implements Initializable {
         String nombre = txtfildLogin.getText();
 
         if (nombre == null || nombre.trim().isEmpty()) {
-            System.out.println("⚠️ Debes ingresar un nombre de usuario.");
+            Alert alerta = new Alert(Alert.AlertType.WARNING);
+            alerta.setTitle("Campo vacío");
+            alerta.setHeaderText(null);
+            alerta.setContentText("Por favor ingrese un nombre de usuario.");
+            alerta.showAndWait();
             return;
         }
 
         JugadorService jugadorService = new JugadorService();
-        JugadorDto nuevoJugador = jugadorService.registrarJugador(nombre.trim());
+        JugadorDto jugador = jugadorService.registrarJugador(nombre.trim());
 
-        if (nuevoJugador != null) {
-            System.out.println("✅ Jugador registrado con ID: " + nuevoJugador.idJugadorProperty().get());
-            // Opcional: guardar en AppContext
-            // AppContext.getInstance().set("jugadorActivo", nuevoJugador);
-        } else {
-            System.err.println("❌ No se pudo registrar el jugador.");
+        if (jugador == null) {
+            // Ya existe jugador
+            Alert existe = new Alert(Alert.AlertType.WARNING);
+            existe.setTitle("Usuario existente");
+            existe.setHeaderText(null);
+            existe.setContentText("Ya existe un jugador con ese nombre. Usa el botón de iniciar sesión.");
+            existe.showAndWait();
+            return;
         }
+
+        // Registro exitoso
+        Alert exito = new Alert(Alert.AlertType.INFORMATION);
+        exito.setTitle("Registro exitoso");
+        exito.setHeaderText(null);
+        exito.setContentText("¡Jugador registrado exitosamente!");
+
+        exito.showAndWait().ifPresent(response -> {
+            FlowController.getInstance().goView("MenuView");
+            MenuController controller = (MenuController) FlowController.getInstance().getController("MenuView");
+            controller.RunMenuView();
+        });
     }
+
+
 
 
     @FXML
