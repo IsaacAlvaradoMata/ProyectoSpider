@@ -1,11 +1,153 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
 
-<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cr.ac.una.proyectospider.controller.HelpController">
-    
-</AnchorPane>
+<BorderPane fx:id="root" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="800.0" prefWidth="1300.0" styleClass="Background" stylesheets="@StyleSpider.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cr.ac.una.proyectospider.controller.HelpController">
+   <center>
+      <AnchorPane>
+         <children>
+            <StackPane fx:id="spBackgroundHelp" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <children>
+                  <ImageView fx:id="imgBackgroundHelp" pickOnBounds="true" />
+                  <BorderPane prefHeight="200.0" prefWidth="200.0">
+                     <top>
+                        <VBox alignment="CENTER" prefHeight="90.0" prefWidth="1300.0" BorderPane.alignment="CENTER">
+                           <children>
+                              <HBox alignment="CENTER" spacing="30.0">
+                                 <children>
+                                    <StackPane fx:id="spHelpIcon1" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="52.0" prefWidth="52.0">
+                                       <children>
+                                          <ImageView fx:id="imgHelpIcon1" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true" />
+                                       </children>
+                                    </StackPane>
+                                    <Label fx:id="lblAyuda" styleClass="label-titleee-ayudaa" text="AYUDA" />
+                                    <StackPane fx:id="spHelpIcon2" layoutX="499.0" layoutY="10.0" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="52.0" prefWidth="52.0">
+                                       <children>
+                                          <ImageView fx:id="imgHelpIcon2" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true" />
+                                       </children>
+                                    </StackPane>
+                                 </children>
+                              </HBox>
+                           </children>
+                           <padding>
+                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                           </padding>
+                        </VBox>
+                     </top>
+                     <center>
+                        <VBox alignment="TOP_CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="622.0" prefWidth="930.0" BorderPane.alignment="CENTER">
+                           <children>
+                              <TabPane fx:id="tabpaneCentroDeInfo" prefHeight="716.0" prefWidth="919.0" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
+                                <tabs>
+                                    <Tab fx:id="tabGeneral" text="GENERAL">
+                                       <content>
+                                          <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                                       </content>
+                                    </Tab>
+                                  <Tab fx:id="tabOjetivoJuego" text="OBJETIVO DEL JUEGO">
+                                    <content>
+                                      <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                                    </content>
+                                  </Tab>
+                                  <Tab fx:id="tabControles" text="CONTROLES">
+                                    <content>
+                                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                                    </content>
+                                  </Tab>
+                                    <Tab fx:id="tabDificultades" text="DIFICULTADES">
+                                       <content>
+                                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                                       </content>
+                                    </Tab>
+                                    <Tab fx:id="tabCondiciones" text="CONDICIONES DE RESULTADO">
+                                       <content>
+                                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                                       </content>
+                                    </Tab>
+                                    <Tab fx:id="tabExplicacion" text="EXPLICACION DE PUNTAJES">
+                                       <content>
+                                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                                       </content>
+                                    </Tab>
+                                </tabs>
+                              </TabPane>
+                           </children>
+                        </VBox>
+                     </center>
+                     <left>
+                        <VBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="622.0" prefWidth="381.0" spacing="25.0" BorderPane.alignment="CENTER">
+                           <children>
+                              <StackPane fx:id="spObjetivo">
+                                 <children>
+                                    <ImageView fx:id="btnObjetivo" fitHeight="100.0" fitWidth="250.0" onMouseClicked="#OnMouseClickedBtnObjetivo" pickOnBounds="true" preserveRatio="true" />
+                                    <Label fx:id="lblIObjetivo" styleClass="label-titlee-ayudaa" text="OBJETIVO">
+                                       <StackPane.margin>
+                                          <Insets left="70.0" />
+                                       </StackPane.margin>
+                                    </Label>
+                                 </children>
+                              </StackPane>
+                              <StackPane fx:id="spDificultades">
+                                 <children>
+                                    <ImageView fx:id="btnDificultades" fitHeight="100.0" fitWidth="250.0" onMouseClicked="#OnMouseClickedBtnControles" pickOnBounds="true" preserveRatio="true" />
+                                    <Label fx:id="lblDificultades" styleClass="label-titlee-ayudaa" text="DIFICULTADES">
+                                       <StackPane.margin>
+                                          <Insets left="72.0" />
+                                       </StackPane.margin>
+                                    </Label>
+                                 </children>
+                              </StackPane>
+                              <StackPane fx:id="spControles">
+                                 <children>
+                                    <ImageView fx:id="btnControles" fitHeight="100.0" fitWidth="250.0" onMouseClicked="#OnMouseClickedBtnDificultades" pickOnBounds="true" preserveRatio="true" />
+                                    <Label fx:id="lblControles" styleClass="label-titlee-ayudaa" text="CONTROLES">
+                                       <padding>
+                                          <Insets left="75.0" />
+                                       </padding>
+                                    </Label>
+                                 </children>
+                              </StackPane>
+                              <StackPane fx:id="spCondiciones">
+                                 <children>
+                                    <ImageView fx:id="btnCondiciones" fitHeight="100.0" fitWidth="250.0" onMouseClicked="#OnMouseClickedBtnCondiciones" pickOnBounds="true" preserveRatio="true" />
+                                    <Label fx:id="lblCondiciones" styleClass="label-titlee-ayudaa" text="CONDICIONES">
+                                       <StackPane.margin>
+                                          <Insets left="73.0" />
+                                       </StackPane.margin>
+                                    </Label>
+                                 </children>
+                              </StackPane>
+                              <StackPane fx:id="spExplicacion">
+                                 <children>
+                                    <ImageView fx:id="btnExplicacion" fitHeight="100.0" fitWidth="250.0" onMouseClicked="#OnMouseClickedBtnExplicacion" pickOnBounds="true" preserveRatio="true" />
+                                    <Label fx:id="lblExplicacion" styleClass="label-titlee-ayudaa" text="EXPLICACIÓN">
+                                       <StackPane.margin>
+                                          <Insets left="75.0" />
+                                       </StackPane.margin>
+                                    </Label>
+                                 </children>
+                              </StackPane>
+                              <ImageView fx:id="btnVolver" fitHeight="100.0" fitWidth="150.0" onMouseClicked="#OnMouseClickedBtnBolver" pickOnBounds="true" preserveRatio="true" styleClass="neon-image-button">
+                                 <VBox.margin>
+                                    <Insets bottom="40.0" top="30.0" />
+                                 </VBox.margin>
+                              </ImageView>
+                           </children>
+                        </VBox>
+                     </left>
+                  </BorderPane>
+               </children>
+            </StackPane>
+         </children>
+      </AnchorPane>
+   </center>
+</BorderPane>

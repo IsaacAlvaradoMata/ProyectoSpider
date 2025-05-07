@@ -608,6 +608,59 @@ public class AnimationDepartment {
         activeAnimations.add(anim);
     }
 
+    public static void floatingSideToSide(Node node, double moveDistance, double cycleDuration) {
+        TranslateTransition translate = new TranslateTransition(Duration.seconds(cycleDuration), node);
+        translate.setByX(moveDistance);
+        translate.setAutoReverse(true);
+        translate.setCycleCount(Animation.INDEFINITE);
+        translate.setInterpolator(Interpolator.EASE_BOTH);
+        translate.play();
+        activeAnimations.add(translate);
+    }
+
+    public static void slideLoopLeft(Node node, double distance, double durationSeconds) {
+        TranslateTransition slide = new TranslateTransition(Duration.seconds(durationSeconds), node);
+        slide.setFromX(0);
+        slide.setToX(-distance);
+        slide.setAutoReverse(true);
+        slide.setCycleCount(Animation.INDEFINITE);
+        slide.setInterpolator(Interpolator.EASE_BOTH);
+        slide.play();
+        activeAnimations.add(slide);
+    }
+
+    public static void slideLoopRight(Node node, double distance, double durationSeconds) {
+        TranslateTransition slide = new TranslateTransition(Duration.seconds(durationSeconds), node);
+        slide.setFromX(0);
+        slide.setToX(distance);
+        slide.setAutoReverse(true);
+        slide.setCycleCount(Animation.INDEFINITE);
+        slide.setInterpolator(Interpolator.EASE_BOTH);
+        slide.play();
+        activeAnimations.add(slide);
+    }
+
+    public static void slideLoopWithScale(Node node, double distance, double durationSeconds) {
+        TranslateTransition slide = new TranslateTransition(Duration.seconds(durationSeconds), node);
+        slide.setFromX(0);
+        slide.setToX(distance);
+        slide.setAutoReverse(true);
+        slide.setCycleCount(Animation.INDEFINITE);
+        slide.setInterpolator(Interpolator.EASE_BOTH);
+
+        ScaleTransition scale = new ScaleTransition(Duration.seconds(durationSeconds / 2), node);
+        scale.setToX(1.2);
+        scale.setToY(1.2);
+        scale.setAutoReverse(true);
+        scale.setCycleCount(Animation.INDEFINITE);
+        scale.setInterpolator(Interpolator.EASE_BOTH);
+
+        ParallelTransition combo = new ParallelTransition(slide, scale);
+        combo.play();
+        activeAnimations.add(combo);
+    }
+
+
 
 }
 

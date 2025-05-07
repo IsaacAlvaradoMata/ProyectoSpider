@@ -146,7 +146,7 @@ public class MenuController extends Controller implements Initializable {
             });
             t2.play();
 
-            PauseTransition t3 = new PauseTransition(Duration.seconds(4));
+            PauseTransition t3 = new PauseTransition(Duration.seconds(3));
             t3.setOnFinished(e -> {
                 AnimationDepartment.slideFromLeft(lblJugadorRegistrado, Duration.ZERO);
                 AnimationDepartment.slideFromLeft(lblPuntajeAcomulado, Duration.ZERO);
@@ -165,7 +165,7 @@ public class MenuController extends Controller implements Initializable {
             });
             t3.play();
 
-            PauseTransition t4 = new PauseTransition(Duration.seconds(5.5));
+            PauseTransition t4 = new PauseTransition(Duration.seconds(3.5));
             t4.setOnFinished(e -> {
                 AnimationDepartment.slideFromLeft(lblJugadorRegistradoDinamico, Duration.ZERO);
                 AnimationDepartment.slideFromLeft(lblPuntajeAcomuladoDinamico, Duration.ZERO);
@@ -179,7 +179,7 @@ public class MenuController extends Controller implements Initializable {
             t4.play();
 
 
-            PauseTransition t5 = new PauseTransition(Duration.seconds(6.5));
+            PauseTransition t5 = new PauseTransition(Duration.seconds(4));
             t5.setOnFinished(e -> {
             AnimationDepartment.slideUpWithEpicBounceClean(btnNuevaPartida, Duration.seconds(0), sceneHeight);
             AnimationDepartment.slideUpWithEpicBounceClean(btnContinuarPartida, Duration.seconds(0.2), sceneHeight);
@@ -289,6 +289,16 @@ public class MenuController extends Controller implements Initializable {
 
     @FXML
     private void onMouseClickedbtnAyuda(MouseEvent event) {
+        btnAyuda.setDisable(true);
+        AnimationDepartment.stopAllAnimations();
+
+        AnimationDepartment.glitchFadeOut(spBackgroundMenu, Duration.seconds(1.1), () -> {
+            FlowController.getInstance().goView("HelpView");
+            HelpController controller = (HelpController) FlowController.getInstance().getController("HelpView");
+            controller.RunHelpView();
+            Platform.runLater(() -> btnAyuda.setDisable(false));
+
+        });
     }
 
     @FXML
