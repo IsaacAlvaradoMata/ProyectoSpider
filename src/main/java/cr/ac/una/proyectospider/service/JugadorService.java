@@ -46,4 +46,17 @@ public class JugadorService {
             em.close();
         }
     }
+    public JugadorDto buscarJugadorPorNombre(String nombreUsuario) {
+        EntityManager em = emf.createEntityManager();
+        try {
+            Jugador jugador = em.createNamedQuery("Jugador.findByNombreUsuario", Jugador.class)
+                    .setParameter("nombreUsuario", nombreUsuario)
+                    .getResultStream()
+                    .findFirst()
+                    .orElse(null);
+            return jugador != null ? new JugadorDto(jugador) : null;
+        } finally {
+            em.close();
+        }
+    }
 }

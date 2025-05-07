@@ -7,8 +7,10 @@ package cr.ac.una.proyectospider.controller;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import cr.ac.una.proyectospider.model.JugadorDto;
 import cr.ac.una.proyectospider.model.PartidaMock;
 import cr.ac.una.proyectospider.util.AnimationDepartment;
+import cr.ac.una.proyectospider.util.AppContext;
 import cr.ac.una.proyectospider.util.FlowController;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
@@ -97,6 +99,12 @@ public class MenuController extends Controller implements Initializable {
 
     public void RunMenuView() {
         ResetMenuView();
+        JugadorDto jugador = (JugadorDto) AppContext.getInstance().get("jugadorActivo");
+        if (jugador != null) {
+            lblJugadorRegistradoDinamico.setText(jugador.nombreUsuarioProperty().get() != null ? jugador.nombreUsuarioProperty().get() : "-");
+            lblPuntajeAcomuladoDinamico.setText(String.valueOf(jugador.puntosAcumuladosProperty().get()));
+            lblTotalPartidasGanadasDinamico.setText(String.valueOf(jugador.partidasGanadasProperty().get()));
+        }
         populateTableView();
         System.out.println("Run Menu View");
 
