@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane fx:id="root" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="800.0" prefWidth="1300.0" styleClass="Background" stylesheets="@StyleSpider.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cr.ac.una.proyectospider.controller.HelpController">
+<BorderPane fx:id="root" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="800.0" prefWidth="1300.0" stylesheets="@StyleSpider.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cr.ac.una.proyectospider.controller.HelpController">
    <center>
       <AnchorPane>
          <children>
@@ -44,92 +44,287 @@
                         </VBox>
                      </top>
                      <center>
-                        <VBox alignment="TOP_CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="622.0" prefWidth="930.0" BorderPane.alignment="CENTER">
+                        <AnchorPane>
                            <children>
-                              <TabPane fx:id="tabpaneCentroDeInfo" prefHeight="716.0" prefWidth="919.0" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
+                              <StackPane fx:id="spBackgroundTabPane" prefHeight="150.0" prefWidth="200.0" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="0.0">
+                                 <children>
+                                    <ImageView fx:id="imgBackgroundTabPane" pickOnBounds="true" />
+                                 </children>
+                              </StackPane>
+                              <TabPane fx:id="tabpaneCentroDeInfo" prefHeight="716.0" prefWidth="919.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="26.0" AnchorPane.rightAnchor="26.0" AnchorPane.topAnchor="0.0">
                                 <tabs>
                                     <Tab fx:id="tabGeneral" text="GENERAL">
                                        <content>
-                                          <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                                          <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                             <children>
+                                                <BorderPane layoutX="198.0" layoutY="109.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                   <top>
+                                                      <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="20.0" BorderPane.alignment="CENTER">
+                                                         <children>
+                                                            <Label fx:id="lblInformacionGeneral" styleClass="label-title-info" text="INFORMACIÓN GENERAL" />
+                                                            <ImageView fx:id="imgInfoGeneral" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true" />
+                                                         </children>
+                                                         <padding>
+                                                            <Insets top="20.0" />
+                                                         </padding>
+                                                      </HBox>
+                                                   </top>
+                                                   <center>
+                                                      <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0" BorderPane.alignment="CENTER">
+                                                         <children>
+                                                            <Label fx:id="lbl1" styleClass="help-label-subtitles" text="Bienvenido al módulo de ayuda del Solitario Spider" />
+                                                            <Label fx:id="lbl2" layoutX="445.0" layoutY="10.0" styleClass="help-label-subtitles" text="Esta sección te ayudará a:">
+                                                               <VBox.margin>
+                                                                  <Insets top="30.0" />
+                                                               </VBox.margin>
+                                                            </Label>
+                                                            <Label fx:id="lbl3" layoutX="390.0" layoutY="27.0" styleClass="help-label-subtitles" text="- Comprender el objetivo principal del juego." />
+                                                            <Label fx:id="lbl4" layoutX="341.0" layoutY="44.0" styleClass="help-label-subtitles" text="- Entender los niveles de dificultad y cómo afectan la jugabilidad." />
+                                                            <Label fx:id="lbl5" layoutX="341.0" layoutY="44.0" styleClass="help-label-subtitles" text="- Conocer los controles básicos para interactuar con las cartas." />
+                                                            <Label fx:id="lbl6" layoutX="291.0" layoutY="78.0" styleClass="help-label-subtitles" text="- Saber las condiciones en las cuales se gana o se pierde una partida." />
+                                                            <Label fx:id="lbl7" layoutX="274.0" layoutY="95.0" styleClass="help-label-subtitles" text="- Descubrir cómo se calcula tu puntaje con una explicación clara." />
+                                                            <Label fx:id="lbl8" layoutX="242.0" layoutY="332.0" styleClass="help-label-subtitles" text="Las categorías están organizadas en pestañas:">
+                                                               <VBox.margin>
+                                                                  <Insets top="30.0" />
+                                                               </VBox.margin>
+                                                            </Label>
+                                                            <Label fx:id="lbl9" layoutX="299.0" layoutY="394.0" prefHeight="62.0" prefWidth="557.0" styleClass="help-label-subtitles" text="Selecciona cualquiera de las opciones del menú izquierdo para explorar más información específica sobre cada aspecto del juego." wrapText="true" />
+                                                            <Label fx:id="lbl10" layoutX="22.0" layoutY="426.0" styleClass="help-label-subtitles" text="¡Prepárate para convertirte en un maestro del Solitario Spider!">
+                                                               <VBox.margin>
+                                                                  <Insets top="20.0" />
+                                                               </VBox.margin>
+                                                            </Label>
+                                                         </children>
+                                                         <padding>
+                                                            <Insets top="40.0" />
+                                                         </padding></VBox>
+                                                   </center>
+                                                </BorderPane>
+                                             </children>
+                                          </AnchorPane>
                                        </content>
                                     </Tab>
                                   <Tab fx:id="tabOjetivoJuego" text="OBJETIVO DEL JUEGO">
                                     <content>
-                                      <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-                                    </content>
-                                  </Tab>
-                                  <Tab fx:id="tabControles" text="CONTROLES">
-                                    <content>
-                                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                                      <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                             <children>
+                                                <BorderPane prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                   <top>
+                                                      <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="20.0" BorderPane.alignment="CENTER">
+                                                         <children>
+                                                            <Label styleClass="label-title-info" text="OBJETIVO" />
+                                                            <ImageView fx:id="imgObjetivo" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true" />
+                                                         </children>
+                                                         <padding>
+                                                            <Insets top="20.0" />
+                                                         </padding>
+                                                      </HBox>
+                                                   </top>
+                                                   <center>
+                                                      <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0" BorderPane.alignment="CENTER">
+                                                         <children>
+                                                            <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="67.0" prefWidth="625.0" styleClass="help-label-subtitles" text="EL SOLITARIO SPIDER ES UN JUEGO DE LÓGICA Y ESTRATEGIA CUYO OBJETIVO ES FORMAR ESCALERAS COMPLETAS EN ORDEN DESCENDENTE, DEL REY (K) AL AS (A), TODAS DEL MISMO PALO." wrapText="true" />
+                                                            <Label alignment="CENTER" contentDisplay="CENTER" layoutX="153.0" layoutY="10.0" prefHeight="67.0" prefWidth="625.0" styleClass="help-label-subtitles" text=" UNA VEZ QUE COMPLETAS UNA ESCALERA VÁLIDA, ESTA SE ELIMINA AUTOMÁTICAMENTE DEL TABLERO, LIBERANDO ESPACIO PARA SEGUIR JUGANDO." wrapText="true" />
+                                                            <Label alignment="CENTER" contentDisplay="CENTER" layoutX="153.0" layoutY="77.0" prefHeight="67.0" prefWidth="625.0" styleClass="help-label-subtitles" text=" DEBES REORGANIZAR LAS CARTAS MOVIÉNDOLAS ENTRE COLUMNAS, APROVECHANDO LOS ESPACIOS VACÍOS Y PENSANDO CON ANTELACIÓN." wrapText="true" />
+                                                            <Label alignment="CENTER" contentDisplay="CENTER" layoutX="153.0" layoutY="144.0" prefHeight="67.0" prefWidth="625.0" styleClass="help-label-subtitles" text=" EL JUEGO FINALIZA CON ÉXITO CUANDO HAS LOGRADO COMPLETAR Y ELIMINAR LAS 8 ESCALERAS POSIBLES." wrapText="true" />
+                                                            <Label alignment="CENTER" contentDisplay="CENTER" layoutX="153.0" layoutY="211.0" prefHeight="37.0" prefWidth="625.0" styleClass="help-label-subtitles" text="PARA LOGRARLO, NECESITARÁS:" wrapText="true" />
+                                                            <Label alignment="CENTER" contentDisplay="CENTER" layoutX="153.0" layoutY="278.0" prefHeight="33.0" prefWidth="625.0" styleClass="help-label-subtitles" text="- PLANIFICAR MOVIMIENTOS CON ANTICIPACIÓN." wrapText="true" />
+                                                            <Label alignment="CENTER" contentDisplay="CENTER" layoutX="153.0" layoutY="345.0" prefHeight="33.0" prefWidth="625.0" styleClass="help-label-subtitles" text="- GESTIONAR BIEN LAS CARTAS DISPONIBLES EN LA MANO." wrapText="true" />
+                                                            <Label alignment="CENTER" contentDisplay="CENTER" layoutX="153.0" layoutY="412.0" prefHeight="32.0" prefWidth="625.0" styleClass="help-label-subtitles" text="- EVITAR LLENAR ESPACIOS INNECESARIOS." wrapText="true" />
+                                                         </children>
+                                                         <padding>
+                                                            <Insets top="40.0" />
+                                                         </padding></VBox>
+                                                   </center>
+                                                </BorderPane>
+                                             </children>
+                                          </AnchorPane>
                                     </content>
                                   </Tab>
                                     <Tab fx:id="tabDificultades" text="DIFICULTADES">
                                        <content>
-                                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                             <children>
+                                                <BorderPane prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                   <top>
+                                                      <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="20.0" BorderPane.alignment="CENTER">
+                                                         <children>
+                                                            <Label styleClass="label-title-info" text="DIFICULTADES" />
+                                                            <ImageView fx:id="imgDificultades" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true" />
+                                                         </children>
+                                                         <padding>
+                                                            <Insets top="20.0" />
+                                                         </padding>
+                                                      </HBox>
+                                                   </top>
+                                                   <center>
+                                                      <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0" BorderPane.alignment="CENTER">
+                                                         <children>
+                                                            <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="52.0" prefWidth="531.0" styleClass="help-label-subtitles" text="EL SOLITARIO SPIDER OFRECE TRES NIVELES DE DIFICULTAD, CADA UNO DISEÑADO PARA ADAPTARSE AL NIVEL DE EXPERIENCIA DEL JUGADOR:" wrapText="true" />
+                                                            <Label alignment="CENTER" contentDisplay="CENTER" layoutX="200.0" layoutY="50.0" prefHeight="21.0" prefWidth="531.0" styleClass="help-label-subtitles" text="FÁCIL (1 PALO):" wrapText="true">
+                                                               <VBox.margin>
+                                                                  <Insets top="10.0" />
+                                                               </VBox.margin>
+                                                            </Label>
+                                                            <Label alignment="CENTER" contentDisplay="CENTER" layoutX="200.0" layoutY="101.0" prefHeight="11.0" prefWidth="531.0" styleClass="help-label-subtitles" text="- TODAS LAS CARTAS PERTENECEN AL MISMO PALO." wrapText="true" />
+                                                            <Label alignment="CENTER" contentDisplay="CENTER" layoutX="200.0" layoutY="137.0" prefHeight="7.0" prefWidth="531.0" styleClass="help-label-subtitles" text="- IDEAL PARA JUGADORES PRINCIPIANTES." wrapText="true" />
+                                                            <Label alignment="CENTER" contentDisplay="CENTER" layoutX="200.0" layoutY="173.0" prefHeight="11.0" prefWidth="531.0" styleClass="help-label-subtitles" text="- PERMITE ENFOCARSE EN LA LÓGICA SIN PREOCUPARSE POR LOS PALOS." wrapText="true" />
+                                                            <Label alignment="CENTER" contentDisplay="CENTER" layoutX="200.0" layoutY="209.0" prefHeight="12.0" prefWidth="531.0" styleClass="help-label-subtitles" text="MEDIO (2 PALOS):" wrapText="true">
+                                                               <VBox.margin>
+                                                                  <Insets top="10.0" />
+                                                               </VBox.margin>
+                                                            </Label>
+                                                            <Label alignment="CENTER" contentDisplay="CENTER" layoutX="200.0" layoutY="245.0" prefHeight="12.0" prefWidth="531.0" styleClass="help-label-subtitles" text=" -LAS CARTAS ESTÁN DISTRIBUIDAS ENTRE DOS PALOS." wrapText="true" />
+                                                            <Label alignment="CENTER" contentDisplay="CENTER" layoutX="200.0" layoutY="281.0" prefHeight="50.0" prefWidth="533.0" styleClass="help-label-subtitles" text="- AUMENTA LA COMPLEJIDAD, YA QUE SOLO PUEDES COMPLETAR ESCALERAS CON CARTAS DEL MISMO PALO." wrapText="true" />
+                                                            <Label alignment="CENTER" contentDisplay="CENTER" layoutX="203.0" layoutY="317.0" prefHeight="12.0" prefWidth="553.0" styleClass="help-label-subtitles" text="- SE REQUIERE MÁS PLANIFICACIÓN PARA MOVER COLUMNAS Y LIBERAR ESPACIO." wrapText="true" />
+                                                            <Label alignment="CENTER" contentDisplay="CENTER" layoutX="203.0" layoutY="362.0" prefHeight="22.0" prefWidth="170.0" styleClass="help-label-subtitles" text="DIFÍCIL (4 PALOS):" wrapText="true">
+                                                               <VBox.margin>
+                                                                  <Insets top="10.0" />
+                                                               </VBox.margin>
+                                                            </Label>
+                                                            <Label alignment="CENTER" contentDisplay="CENTER" layoutX="203.0" layoutY="407.0" prefHeight="22.0" prefWidth="440.0" styleClass="help-label-subtitles" text=" -TODAS LAS CARTAS SE DISTRIBUYEN ENTRE LOS CUATRO PALOS." wrapText="true" />
+                                                            <Label alignment="CENTER" contentDisplay="CENTER" layoutX="203.0" layoutY="452.0" prefHeight="22.0" prefWidth="240.0" styleClass="help-label-subtitles" text=" -ES EL MODO MÁS DESAFIANTE." wrapText="true" />
+                                                            <Label alignment="CENTER" contentDisplay="CENTER" layoutX="203.0" layoutY="457.0" prefHeight="49.0" prefWidth="524.0" styleClass="help-label-subtitles" text="- OBLIGA AL JUGADOR A PENSAR CUIDADOSAMENTE CADA MOVIMIENTO, YA QUE MUCHAS COMBINACIONES POSIBLES NO SERÁN VÁLIDAS." wrapText="true" />
+                                                         </children></VBox>
+                                                   </center>
+                                                </BorderPane>
+                                             </children>
+                                          </AnchorPane>
                                        </content>
                                     </Tab>
+                                  <Tab fx:id="tabControles" text="CONTROLES">
+                                    <content>
+                                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                             <children>
+                                                <BorderPane prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                   <top>
+                                                      <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="20.0" BorderPane.alignment="CENTER">
+                                                         <children>
+                                                            <Label styleClass="label-title-info" text="CONTROLES" />
+                                                            <ImageView fx:id="imgControles" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true" />
+                                                         </children>
+                                                         <padding>
+                                                            <Insets top="20.0" />
+                                                         </padding>
+                                                      </HBox>
+                                                   </top>
+                                                   <center>
+                                                      <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0" BorderPane.alignment="CENTER">
+                                                         <padding>
+                                                            <Insets top="40.0" />
+                                                         </padding></VBox>
+                                                   </center>
+                                                </BorderPane>
+                                             </children>
+                                          </AnchorPane>
+                                    </content>
+                                  </Tab>
                                     <Tab fx:id="tabCondiciones" text="CONDICIONES DE RESULTADO">
                                        <content>
-                                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                             <children>
+                                                <BorderPane prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                   <top>
+                                                      <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="20.0" BorderPane.alignment="CENTER">
+                                                         <children>
+                                                            <Label styleClass="label-title-info" text="CONDICIONES" />
+                                                            <ImageView fx:id="imgCondiciones" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true" />
+                                                         </children>
+                                                         <padding>
+                                                            <Insets top="20.0" />
+                                                         </padding>
+                                                      </HBox>
+                                                   </top>
+                                                   <center>
+                                                      <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0" BorderPane.alignment="CENTER">
+                                                         <padding>
+                                                            <Insets top="40.0" />
+                                                         </padding></VBox>
+                                                   </center>
+                                                </BorderPane>
+                                             </children>
+                                          </AnchorPane>
                                        </content>
                                     </Tab>
                                     <Tab fx:id="tabExplicacion" text="EXPLICACION DE PUNTAJES">
                                        <content>
-                                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                             <children>
+                                                <BorderPane prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                   <top>
+                                                      <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="20.0" BorderPane.alignment="CENTER">
+                                                         <children>
+                                                            <Label styleClass="label-title-info" text="EXPLICACIÓN DE PUNTAJES " />
+                                                            <ImageView fx:id="imgExplicacion" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true" />
+                                                         </children>
+                                                         <padding>
+                                                            <Insets top="20.0" />
+                                                         </padding>
+                                                      </HBox>
+                                                   </top>
+                                                   <center>
+                                                      <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0" BorderPane.alignment="CENTER">
+                                                         <padding>
+                                                            <Insets top="40.0" />
+                                                         </padding></VBox>
+                                                   </center>
+                                                </BorderPane>
+                                             </children>
+                                          </AnchorPane>
                                        </content>
                                     </Tab>
                                 </tabs>
                               </TabPane>
                            </children>
-                        </VBox>
+                        </AnchorPane>
                      </center>
                      <left>
-                        <VBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="622.0" prefWidth="381.0" spacing="25.0" BorderPane.alignment="CENTER">
+                        <VBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="710.0" prefWidth="338.0" spacing="25.0" BorderPane.alignment="CENTER">
                            <children>
-                              <StackPane fx:id="spObjetivo">
+                              <StackPane fx:id="spObjetivo" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="65.0" prefWidth="250.0">
                                  <children>
-                                    <ImageView fx:id="btnObjetivo" fitHeight="100.0" fitWidth="250.0" onMouseClicked="#OnMouseClickedBtnObjetivo" pickOnBounds="true" preserveRatio="true" />
-                                    <Label fx:id="lblIObjetivo" styleClass="label-titlee-ayudaa" text="OBJETIVO">
+                                    <ImageView fx:id="btnObjetivo" fitHeight="100.0" fitWidth="250.0" onMouseClicked="#OnMouseClickedBtnObjetivo" pickOnBounds="true" preserveRatio="true" styleClass="neon-image-button" />
+                                    <Label fx:id="lblIObjetivo" mouseTransparent="true" styleClass="label-titlee-ayudaa" text="OBJETIVO">
                                        <StackPane.margin>
                                           <Insets left="70.0" />
                                        </StackPane.margin>
                                     </Label>
                                  </children>
                               </StackPane>
-                              <StackPane fx:id="spDificultades">
+                              <StackPane fx:id="spDificultades" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="65.0" prefWidth="250.0">
                                  <children>
-                                    <ImageView fx:id="btnDificultades" fitHeight="100.0" fitWidth="250.0" onMouseClicked="#OnMouseClickedBtnControles" pickOnBounds="true" preserveRatio="true" />
-                                    <Label fx:id="lblDificultades" styleClass="label-titlee-ayudaa" text="DIFICULTADES">
+                                    <ImageView fx:id="btnDificultades" fitHeight="100.0" fitWidth="250.0" onMouseClicked="#OnMouseClickedBtnDificultades" pickOnBounds="true" preserveRatio="true" styleClass="neon-image-button" />
+                                    <Label fx:id="lblDificultades" mouseTransparent="true" styleClass="label-titlee-ayudaa" text="DIFICULTADES">
                                        <StackPane.margin>
                                           <Insets left="72.0" />
                                        </StackPane.margin>
                                     </Label>
                                  </children>
                               </StackPane>
-                              <StackPane fx:id="spControles">
+                              <StackPane fx:id="spControles" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="65.0" prefWidth="250.0">
                                  <children>
-                                    <ImageView fx:id="btnControles" fitHeight="100.0" fitWidth="250.0" onMouseClicked="#OnMouseClickedBtnDificultades" pickOnBounds="true" preserveRatio="true" />
-                                    <Label fx:id="lblControles" styleClass="label-titlee-ayudaa" text="CONTROLES">
-                                       <padding>
+                                    <ImageView fx:id="btnControles" fitHeight="100.0" fitWidth="250.0" onMouseClicked="#OnMouseClickedBtnControles" pickOnBounds="true" preserveRatio="true" styleClass="neon-image-button" />
+                                    <Label fx:id="lblControles" mouseTransparent="true" styleClass="label-titlee-ayudaa" text="CONTROLES">
+                                       <StackPane.margin>
                                           <Insets left="75.0" />
-                                       </padding>
+                                       </StackPane.margin>
                                     </Label>
                                  </children>
                               </StackPane>
-                              <StackPane fx:id="spCondiciones">
+                              <StackPane fx:id="spCondiciones" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="65.0" prefWidth="250.0">
                                  <children>
-                                    <ImageView fx:id="btnCondiciones" fitHeight="100.0" fitWidth="250.0" onMouseClicked="#OnMouseClickedBtnCondiciones" pickOnBounds="true" preserveRatio="true" />
-                                    <Label fx:id="lblCondiciones" styleClass="label-titlee-ayudaa" text="CONDICIONES">
+                                    <ImageView fx:id="btnCondiciones" fitHeight="100.0" fitWidth="250.0" onMouseClicked="#OnMouseClickedBtnCondiciones" pickOnBounds="true" preserveRatio="true" styleClass="neon-image-button" />
+                                    <Label fx:id="lblCondiciones" mouseTransparent="true" styleClass="label-titlee-ayudaa" text="CONDICIONES">
                                        <StackPane.margin>
                                           <Insets left="73.0" />
                                        </StackPane.margin>
                                     </Label>
                                  </children>
                               </StackPane>
-                              <StackPane fx:id="spExplicacion">
+                              <StackPane fx:id="spExplicacion" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="65.0" prefWidth="250.0">
                                  <children>
-                                    <ImageView fx:id="btnExplicacion" fitHeight="100.0" fitWidth="250.0" onMouseClicked="#OnMouseClickedBtnExplicacion" pickOnBounds="true" preserveRatio="true" />
-                                    <Label fx:id="lblExplicacion" styleClass="label-titlee-ayudaa" text="EXPLICACIÓN">
+                                    <ImageView fx:id="btnExplicacion" fitHeight="100.0" fitWidth="250.0" onMouseClicked="#OnMouseClickedBtnExplicacion" pickOnBounds="true" preserveRatio="true" styleClass="neon-image-button" />
+                                    <Label fx:id="lblExplicacion" mouseTransparent="true" styleClass="label-titlee-ayudaa" text="EXPLICACIÓN">
                                        <StackPane.margin>
                                           <Insets left="75.0" />
                                        </StackPane.margin>

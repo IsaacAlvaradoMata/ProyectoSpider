@@ -14,6 +14,7 @@ import javafx.scene.effect.Blend;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.effect.PerspectiveTransform;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
 import javafx.scene.layout.BorderPane;
@@ -40,6 +41,7 @@ public class AnimationDepartment {
         }
         activeAnimations.clear();
         activeTimers.clear();
+        System.out.println("Animations stopped");
     }
 
 
@@ -174,15 +176,44 @@ public class AnimationDepartment {
 
     public static void animateNeonGlow(ImageView imageView) {
         Timeline glowCycle = new Timeline(
-                new KeyFrame(Duration.seconds(0), e -> imageView.setEffect(new DropShadow(20, Color.web("#ff00ff")))),
-                new KeyFrame(Duration.seconds(1.5), e -> imageView.setEffect(new DropShadow(20, Color.web("#00ffff")))),
-                new KeyFrame(Duration.seconds(3), e -> imageView.setEffect(new DropShadow(20, Color.web("#ffc107")))),
-                new KeyFrame(Duration.seconds(4.5), e -> imageView.setEffect(new DropShadow(20, Color.web("#ff00ff"))))
+                new KeyFrame(Duration.seconds(0), e -> imageView.setEffect(new DropShadow(30, Color.web("#ff00ff")))),
+                new KeyFrame(Duration.seconds(1.5), e -> imageView.setEffect(new DropShadow(30, Color.web("#00ffff")))),
+                new KeyFrame(Duration.seconds(3), e -> imageView.setEffect(new DropShadow(30, Color.web("#ffc107")))),
+                new KeyFrame(Duration.seconds(4.5), e -> imageView.setEffect(new DropShadow(30, Color.web("#ff00ff"))))
         );
         glowCycle.setCycleCount(Animation.INDEFINITE);
         glowCycle.play();
         activeAnimations.add(glowCycle);
     }
+
+    public static void animateNeonGlowStrong(Node node) {
+        Timeline glowCycle = new Timeline(
+                new KeyFrame(Duration.seconds(0), e -> {
+                    DropShadow glow = new DropShadow(20, Color.web("#ff00ff"));
+                    glow.setSpread(0.7);
+                    node.setEffect(glow);
+                }),
+                new KeyFrame(Duration.seconds(1.5), e -> {
+                    DropShadow glow = new DropShadow(20, Color.web("#00ffff"));
+                    glow.setSpread(0.7);
+                    node.setEffect(glow);
+                }),
+                new KeyFrame(Duration.seconds(3), e -> {
+                    DropShadow glow = new DropShadow(20, Color.web("#ffc107"));
+                    glow.setSpread(0.7);
+                    node.setEffect(glow);
+                }),
+                new KeyFrame(Duration.seconds(4.5), e -> {
+                    DropShadow glow = new DropShadow(20, Color.web("#ff00ff"));
+                    glow.setSpread(0.6);
+                    node.setEffect(glow);
+                })
+        );
+        glowCycle.setCycleCount(Animation.INDEFINITE);
+        glowCycle.play();
+        activeAnimations.add(glowCycle);
+    }
+
 
     // Pulsar Glow Animation (loop)
     public static void pulse(Node node, double durationSeconds) {
@@ -659,6 +690,56 @@ public class AnimationDepartment {
         combo.play();
         activeAnimations.add(combo);
     }
+
+    public static void glitchFadeInBackground(ImageView target, Duration duration) {
+        target.setOpacity(0);
+
+        // ⚠️ Definimos glitch lateral + cambio de opacidad rápido
+        Timeline glitch = new Timeline(
+                new KeyFrame(Duration.seconds(0.0), e -> {
+                    target.setTranslateX(0);
+                    target.setOpacity(0.2);
+                    target.setEffect(new DropShadow(20, Color.web("#ff00ff")));
+                }),
+                new KeyFrame(Duration.seconds(0.2), e -> {
+                    target.setTranslateX(8);
+                    target.setOpacity(0.4);
+                    target.setEffect(new DropShadow(30, Color.web("#00ffff")));
+                }),
+                new KeyFrame(Duration.seconds(0.4), e -> {
+                    target.setTranslateX(-6);
+                    target.setOpacity(0.3);
+                    target.setEffect(new DropShadow(30, Color.web("#39ff14")));
+                }),
+                new KeyFrame(Duration.seconds(0.6), e -> {
+                    target.setTranslateX(4);
+                    target.setOpacity(0.5);
+                }),
+                new KeyFrame(Duration.seconds(0.8), e -> {
+                    target.setTranslateX(-2);
+                    target.setOpacity(0.6);
+                }),
+                new KeyFrame(Duration.seconds(1), e -> {
+                    target.setTranslateX(0);
+                    target.setOpacity(0.8);
+                })
+        );
+
+        // 🔆 Fade final limpio y estable
+        FadeTransition fade = new FadeTransition(duration, target);
+        fade.setFromValue(0.8);
+        fade.setToValue(1.0);
+        fade.setDelay(Duration.seconds(1));
+
+        // Limpieza
+        fade.setOnFinished(e -> {
+            target.setTranslateX(0);
+            target.setEffect(null);
+        });
+
+        new SequentialTransition(glitch, fade).play();
+    }
+
 
 
 

@@ -50,10 +50,12 @@
 }
 
 .neon-image-button:pressed {
-    -fx-effect: dropshadow(gaussian, #ff00ff, 5, 0.8, 0, 0);
+    /*-fx-effect: dropshadow(gaussian, #ff00ff, 5, 0.8, 0, 0);*/
     -fx-scale-x: 0.95;
     -fx-scale-y: 0.95;
 }
+
+
 
 .glitch {
     -fx-effect: dropshadow(gaussian, #ff00ff, 10, 0.8, 4, 0),
@@ -329,7 +331,7 @@
 /*VISTA AYUDA*/
 .label-titleee-ayudaa {
     -fx-font-family: "Cynatar";
-    -fx-font-size: 40px;
+    -fx-font-size: 45px;
     -fx-text-fill: #00ffff; /* Dorado más cálido y legible */
     -fx-font-weight: bold;
     -fx-effect: dropshadow(gaussian, #ff00ff, 15, 0.6, 0, 0); /* Glow reducido */
@@ -345,11 +347,16 @@
     -fx-alignment: center;
 }
 
-.label-titlee-ayudaa:hover {
+.label-titlee-ayudaa-hover {
     -fx-text-fill: #ffc107; /* Dorado más cálido y legible */
     -fx-effect: dropshadow(gaussian, #ff8f00, 15, 0.6, 0, 0); /* Glow reducido */
 }
 
+
+.label-titlee-ayudaa-no-hover {
+    -fx-text-fill: #00ffff; /* Dorado más cálido y legible */
+    -fx-effect: dropshadow(gaussian, #ff00ff, 15, 0.6, 0, 0); /* Glow reducido */
+}
 
 .label-title-ayuda {
     -fx-font-family: "Cynatar";
@@ -387,3 +394,41 @@
     -fx-image: url('../resources/HelpIcon.png');
 }
 
+#imgInfoGeneral {
+    -fx-image: url('../resources/imgInfoGeneral.png');
+}
+
+#imgObjetivo {
+    -fx-image: url('../resources/imgObjetivo.png');
+}
+
+#imgDificultades {
+    -fx-image: url('../resources/imgDificultades.png');
+}
+
+#imgControles {
+    -fx-image: url('../resources/imgControles.png');
+}
+
+#imgCondiciones {
+    -fx-image: url('../resources/imgCondiciones.png');
+}
+
+#imgExplicacion {
+    -fx-image: url('../resources/imgExplicacion.png');
+}
+
+#spBackgroundTabPane {
+    /*-fx-border-width: 5px;*/
+    -fx-background-radius: 5;
+    /*-fx-border-radius: 3px;*/
+
+}
+
+.help-label-subtitles {
+    -fx-font-family: "Raster";
+    -fx-font-weight: bold;
+    -fx-font-size: 16px;
+    -fx-text-fill: #ffc107; /* Dorado más cálido y legible */
+    -fx-effect: dropshadow(gaussian, #ff8f00, 15, 0.6, 0, 0); /* Glow reducido */
+}

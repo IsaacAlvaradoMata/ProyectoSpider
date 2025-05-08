@@ -16,11 +16,13 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 
 
@@ -89,6 +91,48 @@ public class HelpController extends Controller implements Initializable {
     @FXML
     private Label lblExplicacion;
 
+    private StackPane opcionSeleccionadaActual = null;
+    private ImageView imagenSeleccionadaActual = null;
+    private Label labelSeleccionadoActual = null;
+    
+    @FXML
+    private ImageView imgInfoGeneral;
+    @FXML
+    private ImageView imgObjetivo;
+    @FXML
+    private ImageView imgDificultades;
+    @FXML
+    private ImageView imgControles;
+    @FXML
+    private ImageView imgCondiciones;
+    @FXML
+    private ImageView imgExplicacion;
+    @FXML
+    private StackPane spBackgroundTabPane;
+    @FXML
+    private ImageView imgBackgroundTabPane;
+    @FXML
+    private Label lblInformacionGeneral;
+    @FXML
+    private Label lbl1;
+    @FXML
+    private Label lbl2;
+    @FXML
+    private Label lbl3;
+    @FXML
+    private Label lbl4;
+    @FXML
+    private Label lbl5;
+    @FXML
+    private Label lbl6;
+    @FXML
+    private Label lbl7;
+    @FXML
+    private Label lbl8;
+    @FXML
+    private Label lbl9;
+    @FXML
+    private Label lbl10;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -111,17 +155,29 @@ public class HelpController extends Controller implements Initializable {
             spBackgroundHelp.getChildren().add(0, imgBackgroundHelp);
         }
 
+
+
         // 🔁 Re-bind y recarga de imagen
         if (root.getScene() != null) {
             imgBackgroundHelp.fitWidthProperty().bind(root.getScene().widthProperty());
             imgBackgroundHelp.fitHeightProperty().bind(root.getScene().heightProperty());
+            imgBackgroundTabPane.fitWidthProperty().bind(spBackgroundTabPane.widthProperty());
+            imgBackgroundTabPane.fitHeightProperty().bind(spBackgroundTabPane.heightProperty());
         }
 
-        imgBackgroundHelp.setImage(new Image(getClass().getResourceAsStream("/cr/ac/una/proyectospider/resources/option18.gif")));
+        imgBackgroundHelp.setImage(new Image(getClass().getResourceAsStream("/cr/ac/una/proyectospider/resources/HelpBackground.gif")));
         imgBackgroundHelp.setPreserveRatio(false);
         imgBackgroundHelp.setSmooth(true);
         imgBackgroundHelp.setOpacity(0.5);
         imgBackgroundHelp.setVisible(true);
+
+        imgBackgroundTabPane.setImage(new Image(getClass().getResourceAsStream("/cr/ac/una/proyectospider/resources/help1.gif")));
+        imgBackgroundTabPane.setPreserveRatio(false);
+        imgBackgroundTabPane.setSmooth(true);
+        imgBackgroundTabPane.setOpacity(0);
+        applyRoundedClip(imgBackgroundTabPane, 20);
+
+
 
         Platform.runLater(() -> {
             root.setOpacity(1);
@@ -134,8 +190,13 @@ public class HelpController extends Controller implements Initializable {
             AnimationDepartment.glitchFadeIn(root, Duration.seconds(0.6));
             System.out.println("se hizo el glitchFadeIn");
 
+
+
+
+
             PauseTransition t1 = new PauseTransition(Duration.seconds(1));
             t1.setOnFinished(e -> {
+
                 AnimationDepartment.slideFromTop(lblAyuda, Duration.ZERO);
                 AnimationDepartment.glitchTextWithFlicker(lblAyuda);
                 AnimationDepartment.fadeIn(imgHelpIcon1, Duration.ZERO);
@@ -155,29 +216,82 @@ public class HelpController extends Controller implements Initializable {
                 AnimationDepartment.fadeIn(btnVolver, Duration.seconds(2.7));
                 AnimationDepartment.animateNeonGlow(btnVolver);
 
-                setupHoverEffect(lblIObjetivo, btnObjetivo);
-                setupHoverEffect(lblControles, btnControles );
-                setupHoverEffect(lblDificultades, btnDificultades);
-                setupHoverEffect(lblCondiciones, btnCondiciones);
-                setupHoverEffect(lblExplicacion, btnExplicacion);
+                setupHoverEffect(lblIObjetivo, btnObjetivo, spObjetivo);
+                setupHoverEffect(lblControles, btnControles, spControles);
+                setupHoverEffect(lblDificultades, btnDificultades, spDificultades);
+                setupHoverEffect(lblCondiciones, btnCondiciones, spCondiciones);
+                setupHoverEffect(lblExplicacion, btnExplicacion, spExplicacion);
+
+                AnimationDepartment.animateNeonGlow(btnObjetivo);
+                AnimationDepartment.animateNeonGlow(btnControles);
+                AnimationDepartment.animateNeonGlow(btnDificultades);
+                AnimationDepartment.animateNeonGlow(btnCondiciones);
+                AnimationDepartment.animateNeonGlow(btnExplicacion);
+
 
             });
             t2.play();
 
             PauseTransition t3 = new PauseTransition(Duration.seconds(2.5));
             t3.setOnFinished(e -> {
+                AnimationDepartment.animateNeonGlow(btnVolver);
+                AnimationDepartment.slideLoopLeft(imgHelpIcon1, 400, 2);
+                AnimationDepartment.slideLoopRight(imgHelpIcon2, 400, 2);
                 AnimationDepartment.animateNeonGlow(imgHelpIcon1);
-                AnimationDepartment.slideLoopWithScale(imgHelpIcon1, -400, 1.8);
-
                 AnimationDepartment.animateNeonGlow(imgHelpIcon2);
-                AnimationDepartment.slideLoopWithScale(imgHelpIcon2, 400, 1.8);
+                AnimationDepartment.glitchFadeInBackground(imgBackgroundTabPane,  Duration.ZERO);
+                AnimationDepartment.animateNeonGlowStrong(spBackgroundTabPane);
+                AnimationDepartment.fadeIn(lblInformacionGeneral, Duration.seconds(1.2));
+                AnimationDepartment.fadeIn(imgInfoGeneral, Duration.seconds(1.2));
+                AnimationDepartment.animateNeonGlow(imgInfoGeneral);
+                AnimationDepartment.animateNeonGlow(imgObjetivo);
+                AnimationDepartment.animateNeonGlow(imgDificultades);
+                AnimationDepartment.animateNeonGlow(imgControles);
+                AnimationDepartment.animateNeonGlow(imgCondiciones);
+                AnimationDepartment.animateNeonGlow(imgExplicacion);
+                Platform.runLater(() -> {
+                    Duration baseDelay = Duration.seconds(1.5);
+                    double speed = 0.03;s
+                    double margin = 0.4;
+
+                    Duration current = baseDelay;
+                    AnimationDepartment.typewriterEffect(lbl1, "BIENVENIDO AL MÓDULO DE AYUDA DEL SOLITARIO SPIDER", current, speed);
+                    current = computeTypewriterDelay("BIENVENIDO AL MÓDULO DE AYUDA DEL SOLITARIO SPIDER", speed, current, margin);
+
+
+                    AnimationDepartment.typewriterEffect(lbl2, "ESTA SECCIÓN TE AYUDARÁ A:", current, speed);
+                    current = computeTypewriterDelay("ESTA SECCIÓN TE AYUDARÁ A:", speed, current, margin);
+
+                    AnimationDepartment.typewriterEffect(lbl3, "- COMPRENDER EL OBJETIVO PRINCIPAL DEL JUEGO.", current, speed);
+                    current = computeTypewriterDelay("- COMPRENDER EL OBJETIVO PRINCIPAL DEL JUEGO.", speed, current, margin);
+
+                    AnimationDepartment.typewriterEffect(lbl4, "- ENTENDER LOS NIVELES DE DIFICULTAD Y CÓMO AFECTAN LA JUGABILIDAD.", current, speed);
+                    current = computeTypewriterDelay("- ENTENDER LOS NIVELES DE DIFICULTAD Y CÓMO AFECTAN LA JUGABILIDAD.", speed, current, margin);
+
+                    AnimationDepartment.typewriterEffect(lbl5, "- CONOCER LOS CONTROLES BÁSICOS PARA INTERACTUAR CON LAS CARTAS.", current, 0.02);
+                    current = computeTypewriterDelay("- CONOCER LOS CONTROLES BÁSICOS PARA INTERACTUAR CON LAS CARTAS.", 0.02, current, margin);
+
+                    AnimationDepartment.typewriterEffect(lbl6, "- SABER LAS CONDICIONES EN LAS CUALES SE GANA O SE PIERDE UNA PARTIDA.", current, speed);
+                    current = computeTypewriterDelay("- SABER LAS CONDICIONES EN LAS CUALES SE GANA O SE PIERDE UNA PARTIDA.", speed, current, margin);
+
+                    AnimationDepartment.typewriterEffect(lbl7, "- DESCUBRIR CÓMO SE CALCULA TU PUNTAJE CON UNA EXPLICACIÓN CLARA.", current, speed);
+                    current = computeTypewriterDelay("- DESCUBRIR CÓMO SE CALCULA TU PUNTAJE CON UNA EXPLICACIÓN CLARA.", speed, current, margin);
+
+                    AnimationDepartment.typewriterEffect(lbl8, "LAS CATEGORÍAS ESTÁN ORGANIZADAS EN PESTAÑAS:", current, speed);
+                    current = computeTypewriterDelay("LAS CATEGORÍAS ESTÁN ORGANIZADAS EN PESTAÑAS:", speed, current, margin);
+
+                    AnimationDepartment.typewriterEffect(lbl9, "SELECCIONA CUALQUIERA DE LAS OPCIONES DEL MENÚ IZQUIERDO PARA EXPLORAR MÁS INFORMACIÓN ESPECÍFICA SOBRE CADA ASPECTO DEL JUEGO.", current, 0.02);
+                    current = computeTypewriterDelay("SELECCIONA CUALQUIERA DE LAS OPCIONES DEL MENÚ IZQUIERDO PARA EXPLORAR MÁS INFORMACIÓN ESPECÍFICA SOBRE CADA ASPECTO DEL JUEGO.", 0.02, current, margin);
+
+                    AnimationDepartment.typewriterEffect(lbl10, "¡PREPÁRATE PARA CONVERTIRTE EN UN MAESTRO DEL SOLITARIO SPIDER!", current, 0.05);
+                });
+
 
             });
             t3.play();
 
             PauseTransition t4 = new PauseTransition(Duration.seconds(5.5));
             t4.setOnFinished(e -> {
-
             });
             t4.play();
 
@@ -193,12 +307,18 @@ public class HelpController extends Controller implements Initializable {
         AnimationDepartment.stopAllAnimations();
 
         root.setOpacity(0);
-        root.setVisible(true); // Para asegurar que esté presente en el DOM
+        root.setVisible(true);
 
         imgBackgroundHelp.setOpacity(0.7);
         imgBackgroundHelp.setTranslateX(0);
         imgBackgroundHelp.setTranslateY(0);
         imgBackgroundHelp.setEffect(null);
+
+        imgBackgroundTabPane.setOpacity(0);
+        imgBackgroundTabPane.setTranslateX(0);
+        imgBackgroundTabPane.setTranslateY(0);
+        imgBackgroundTabPane.setEffect(null);
+        imgBackgroundTabPane.setVisible(true);
 
         btnObjetivo.setOpacity(0);
         btnDificultades.setOpacity(0);
@@ -222,33 +342,70 @@ public class HelpController extends Controller implements Initializable {
         lblAyuda.setOpacity(0);
 
         imgHelpIcon1.setOpacity(0);
+        imgHelpIcon1.setTranslateX(0);
+        imgHelpIcon1.setTranslateY(0);
         imgHelpIcon2.setOpacity(0);
+        imgHelpIcon2.setTranslateX(0);
+        imgHelpIcon2.setTranslateY(0);
 
-//        spHelpIcon1.setOpacity(0);
-//        spHelpIcon2.setOpacity(0);
+        lblInformacionGeneral.setOpacity(0);
+        imgInfoGeneral.setOpacity(0);
+
+        lbl1.setOpacity(0);
+        lbl2.setOpacity(0);
+        lbl3.setOpacity(0);
+        lbl4.setOpacity(0);
+        lbl5.setOpacity(0);
+        lbl6.setOpacity(0);
+        lbl7.setOpacity(0);
+        lbl8.setOpacity(0);
+        lbl9.setOpacity(0);
+        lbl10.setOpacity(0);
+
+        lbl1.setText("");
+        lbl2.setText("");
+        lbl3.setText("");
+        lbl4.setText("");
+        lbl5.setText("");
+        lbl6.setText("");
+        lbl7.setText("");
+        lbl8.setText("");
+        lbl9.setText("");
+        lbl10.setText("");
 
 
-    }
-
-    @FXML
-    private void OnMouseClickedBtnObjetivo(MouseEvent event) {
     }
 
     @FXML
     private void OnMouseClickedBtnControles(MouseEvent event) {
+        tabpaneCentroDeInfo.getSelectionModel().select(tabControles);
+        seleccionarOpcionCompleta(spControles, btnControles, lblControles);
+    }
+
+    @FXML
+    private void OnMouseClickedBtnObjetivo(MouseEvent event) {
+        tabpaneCentroDeInfo.getSelectionModel().select(tabOjetivoJuego);
+        seleccionarOpcionCompleta(spObjetivo, btnObjetivo, lblIObjetivo);
     }
 
     @FXML
     private void OnMouseClickedBtnDificultades(MouseEvent event) {
+        tabpaneCentroDeInfo.getSelectionModel().select(tabDificultades);
+        seleccionarOpcionCompleta(spDificultades, btnDificultades, lblDificultades);
     }
 
     @FXML
     private void OnMouseClickedBtnCondiciones(MouseEvent event) {
+        tabpaneCentroDeInfo.getSelectionModel().select(tabCondiciones);
+        seleccionarOpcionCompleta(spCondiciones, btnCondiciones, lblCondiciones);
     }
 
     @FXML
     private void OnMouseClickedBtnExplicacion(MouseEvent event) {
+        tabpaneCentroDeInfo.getSelectionModel().select(tabExplicacion);
+        seleccionarOpcionCompleta(spExplicacion, btnExplicacion, lblExplicacion);
     }
+
 
     @FXML
     private void OnMouseClickedBtnBolver(MouseEvent event) {
@@ -264,16 +421,93 @@ public class HelpController extends Controller implements Initializable {
         });
     }
 
-    private void setupHoverEffect(Label label, ImageView imageFrame) {
-        imageFrame.setVisible(false); // Oculto por defecto
+
+    private void seleccionarOpcionCompleta(StackPane nuevoSeleccionado, ImageView nuevaImagen, Label nuevoLabel) {
+        // Quitar estado anterior
+        if (opcionSeleccionadaActual != null && imagenSeleccionadaActual != null && labelSeleccionadoActual != null) {
+            DropShadow neonGlow2 = new DropShadow(15, javafx.scene.paint.Color.web("#ff00ff"));
+            neonGlow2.setRadius(15);
+            neonGlow2.setSpread(0.6);
+            imagenSeleccionadaActual.setVisible(false);
+            labelSeleccionadoActual.setTextFill(javafx.scene.paint.Color.web("#00ffff"));
+            labelSeleccionadoActual.setEffect(null);
+            labelSeleccionadoActual.setEffect(neonGlow2);
+        }
+
+        // Activar nuevo estado
+        nuevaImagen.setVisible(true);
+        nuevoLabel.setTextFill(javafx.scene.paint.Color.web("#ffc107"));
+
+        DropShadow glow = new DropShadow(15, javafx.scene.paint.Color.web("#ff8f00"));
+        glow.setRadius(15);
+        glow.setSpread(0.6);
+        nuevoLabel.setEffect(glow);
+
+        // Guardar nuevo estado
+        opcionSeleccionadaActual = nuevoSeleccionado;
+        imagenSeleccionadaActual = nuevaImagen;
+        labelSeleccionadoActual = nuevoLabel;
+    }
+
+
+    private void setupHoverEffect(Label label, ImageView imageFrame, StackPane containerStack) {
+        imageFrame.setVisible(false);
         imageFrame.setOpacity(1);
-        label.setOnMouseEntered(e -> {
-            imageFrame.setVisible(true); // Solo muestra la imagen
+
+        DropShadow neonGlow = new DropShadow();
+        neonGlow.setColor(javafx.scene.paint.Color.web("#ff8f00"));
+        neonGlow.setRadius(15);
+        neonGlow.setSpread(0.6);
+
+        DropShadow neonGlow2 = new DropShadow();
+        neonGlow2.setColor(javafx.scene.paint.Color.web("#ff00ff"));
+        neonGlow2.setRadius(15);
+        neonGlow2.setSpread(0.6);
+
+
+        containerStack.setOnMouseEntered(e -> {
+            imageFrame.setVisible(true);
+            label.setTextFill(javafx.scene.paint.Color.web("#ffc107"));
+            label.setEffect(neonGlow);
+            label.setScaleX(0.95);
+            label.setScaleY(0.95);
         });
 
-        label.setOnMouseExited(e -> {
-            imageFrame.setVisible(false); // Oculta la imagen
+        containerStack.setOnMouseExited(e -> {
+            // Solo si NO es la opción actualmente seleccionada
+            if (opcionSeleccionadaActual != containerStack) {
+                imageFrame.setVisible(false);
+                label.setTextFill(javafx.scene.paint.Color.web("#00ffff"));
+                label.setEffect(neonGlow2);
+                label.setScaleX(1);
+                label.setScaleY(1);
+            }
+        });
+
+        containerStack.setOnMousePressed(e -> {
+            label.setScaleX(0.90);
+            label.setScaleY(0.90);
+        });
+
+        containerStack.setOnMouseReleased(e -> {
+            label.setScaleX(1.0);
+            label.setScaleY(1.0);
         });
     }
+
+    private static Duration computeTypewriterDelay(String text, double speedPerChar, Duration base, double marginSeconds) {
+        double writingTime = text.length() * speedPerChar;
+        return base.add(Duration.seconds(writingTime + marginSeconds));
+    }
+
+    public static void applyRoundedClip(ImageView imageView, double arcSize) {
+        Rectangle clip = new Rectangle();
+        clip.widthProperty().bind(imageView.fitWidthProperty());
+        clip.heightProperty().bind(imageView.fitHeightProperty());
+        clip.setArcWidth(arcSize);
+        clip.setArcHeight(arcSize);
+        imageView.setClip(clip);
+    }
+
 
 }
