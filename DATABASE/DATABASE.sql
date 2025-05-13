@@ -4,7 +4,6 @@ CREATE SEQUENCE SEQ_JUGADOR START WITH 1 INCREMENT BY 1 NOMAXVALUE NOMINVALUE NO
 CREATE SEQUENCE SEQ_PARTIDA START WITH 1 INCREMENT BY 1 NOMAXVALUE NOMINVALUE NOCYCLE CACHE 20;
 CREATE SEQUENCE SEQ_CARTASPARTIDA START WITH 1 INCREMENT BY 1 NOMAXVALUE NOMINVALUE NOCYCLE CACHE 20;
 
-
 -- TABLE JUGADOR ---------------------------------------------------------
 
 CREATE TABLE Jugador (
@@ -27,7 +26,6 @@ COMMENT ON COLUMN Jugador.Estilo_Cartas IS 'Estilo de cartas elegido por el juga
 COMMENT ON COLUMN Jugador.Imagen_Fondo IS 'Imagen de fondo elegida por el jugador';
 COMMENT ON COLUMN Jugador.Version IS 'Número de versión para control de concurrencia optimista';
 
-
 -- TABLE PARTIDA ---------------------------------------------------------
 
 CREATE TABLE Partida (
@@ -35,6 +33,7 @@ CREATE TABLE Partida (
                          Id_Jugador NUMBER NOT NULL,
                          Fecha_Inicio TIMESTAMP(6) DEFAULT CURRENT_TIMESTAMP,
                          Fecha_Fin TIMESTAMP(6),
+                         Version NUMBER DEFAULT 0,
                          Puntos NUMBER CONSTRAINT CK_PARTIDA_PUNTOS CHECK (Puntos >= 0),
                          Tiempo_Jugado NUMBER CONSTRAINT CK_PARTIDA_TIEMPO_JUGADO CHECK (Tiempo_Jugado >= 0),
                          Estado VARCHAR2(20) NOT NULL CONSTRAINT CK_PARTIDA_ESTADO CHECK (Estado IN ('EN_JUEGO', 'PAUSADA', 'TERMINADA', 'PERDIDA')),
@@ -49,6 +48,7 @@ COMMENT ON COLUMN Partida.Puntos IS 'Puntos de la partida';
 COMMENT ON COLUMN Partida.Tiempo_Jugado IS 'Tiempo jugado de la partida';
 COMMENT ON COLUMN Partida.Estado IS 'Estado de la partida';
 COMMENT ON COLUMN Partida.Dificultad IS 'Dificultad de la partida';
+COMMENT ON COLUMN Partida.Version IS 'Número de versión para control de concurrencia optimista';
 
 CREATE INDEX IX_Relationship2 ON Partida (Id_Jugador);
 
@@ -62,6 +62,7 @@ CREATE TABLE CartasPartida (
                                Valor VARCHAR2(25) NOT NULL,
                                Columna NUMBER NOT NULL,
                                Orden NUMBER NOT NULL,
+                               Version NUMBER DEFAULT 0,
                                Boca_Arriba NUMBER NOT NULL CONSTRAINT CK_CARTASPARTIDA_BOCA_ARRIBA CHECK (Boca_Arriba IN (0, 1)),
                                En_Mazo NUMBER NOT NULL CONSTRAINT CK_CARTASPARTIDA_EN_MAZO CHECK (En_Mazo IN (0, 1)),
                                En_Pila NUMBER NOT NULL CONSTRAINT CK_CARTASPARTIDA_EN_PILA CHECK (En_Pila IN (0, 1)),
@@ -78,6 +79,7 @@ COMMENT ON COLUMN CartasPartida.Boca_Arriba IS 'Estado de la carta (1=Si, 0=No)'
 COMMENT ON COLUMN CartasPartida.En_Mazo IS 'Estado de la carta (1=Si, 0=No)';
 COMMENT ON COLUMN CartasPartida.En_Pila IS 'Estado de la carta (1=Si, 0=No)';
 COMMENT ON COLUMN CartasPartida.Retirada IS 'Estado de la carta (1=Si, 0=No)';
+COMMENT ON COLUMN CartasPartida.Version IS 'Número de versión para control de concurrencia optimista';
 
 CREATE INDEX IX_Relationship4 ON CartasPartida (Id_Partida);
 
