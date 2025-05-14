@@ -251,7 +251,7 @@ public class HelpController extends Controller implements Initializable {
                 AnimationDepartment.animateNeonGlow(imgExplicacion);
                 Platform.runLater(() -> {
                     Duration baseDelay = Duration.seconds(1.5);
-                    double speed = 0.03;s
+                    double speed = 0.03;
                     double margin = 0.4;
 
                     Duration current = baseDelay;
