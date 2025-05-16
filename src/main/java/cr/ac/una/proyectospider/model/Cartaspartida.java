@@ -1,6 +1,6 @@
 package cr.ac.una.proyectospider.model;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
