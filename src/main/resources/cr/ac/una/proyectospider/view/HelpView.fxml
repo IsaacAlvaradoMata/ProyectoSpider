@@ -94,10 +94,7 @@
                                                                   <Insets top="20.0" />
                                                                </VBox.margin>
                                                             </Label>
-                                                         </children>
-                                                         <padding>
-                                                            <Insets top="40.0" />
-                                                         </padding></VBox>
+                                                         </children></VBox>
                                                    </center>
                                                 </BorderPane>
                                              </children>
@@ -131,10 +128,7 @@
                                                             <Label alignment="CENTER" contentDisplay="CENTER" layoutX="153.0" layoutY="278.0" prefHeight="33.0" prefWidth="625.0" styleClass="help-label-subtitles" text="- PLANIFICAR MOVIMIENTOS CON ANTICIPACIÓN." wrapText="true" />
                                                             <Label alignment="CENTER" contentDisplay="CENTER" layoutX="153.0" layoutY="345.0" prefHeight="33.0" prefWidth="625.0" styleClass="help-label-subtitles" text="- GESTIONAR BIEN LAS CARTAS DISPONIBLES EN LA MANO." wrapText="true" />
                                                             <Label alignment="CENTER" contentDisplay="CENTER" layoutX="153.0" layoutY="412.0" prefHeight="32.0" prefWidth="625.0" styleClass="help-label-subtitles" text="- EVITAR LLENAR ESPACIOS INNECESARIOS." wrapText="true" />
-                                                         </children>
-                                                         <padding>
-                                                            <Insets top="40.0" />
-                                                         </padding></VBox>
+                                                         </children></VBox>
                                                    </center>
                                                 </BorderPane>
                                              </children>
@@ -160,7 +154,7 @@
                                                    <center>
                                                       <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0" BorderPane.alignment="CENTER">
                                                          <children>
-                                                            <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="52.0" prefWidth="531.0" styleClass="help-label-subtitles" text="EL SOLITARIO SPIDER OFRECE TRES NIVELES DE DIFICULTAD, CADA UNO DISEÑADO PARA ADAPTARSE AL NIVEL DE EXPERIENCIA DEL JUGADOR:" wrapText="true" />
+                                                            <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="52.0" prefWidth="625.0" styleClass="help-label-subtitles" text="EL SOLITARIO SPIDER OFRECE TRES NIVELES DE DIFICULTAD, CADA UNO DISEÑADO PARA ADAPTARSE AL NIVEL DE EXPERIENCIA DEL JUGADOR:" wrapText="true" />
                                                             <Label alignment="CENTER" contentDisplay="CENTER" layoutX="200.0" layoutY="50.0" prefHeight="21.0" prefWidth="531.0" styleClass="help-label-subtitles" text="FÁCIL (1 PALO):" wrapText="true">
                                                                <VBox.margin>
                                                                   <Insets top="10.0" />
@@ -175,7 +169,7 @@
                                                                </VBox.margin>
                                                             </Label>
                                                             <Label alignment="CENTER" contentDisplay="CENTER" layoutX="200.0" layoutY="245.0" prefHeight="12.0" prefWidth="531.0" styleClass="help-label-subtitles" text=" -LAS CARTAS ESTÁN DISTRIBUIDAS ENTRE DOS PALOS." wrapText="true" />
-                                                            <Label alignment="CENTER" contentDisplay="CENTER" layoutX="200.0" layoutY="281.0" prefHeight="50.0" prefWidth="533.0" styleClass="help-label-subtitles" text="- AUMENTA LA COMPLEJIDAD, YA QUE SOLO PUEDES COMPLETAR ESCALERAS CON CARTAS DEL MISMO PALO." wrapText="true" />
+                                                            <Label alignment="CENTER" contentDisplay="CENTER" layoutX="200.0" layoutY="281.0" prefHeight="50.0" prefWidth="625.0" styleClass="help-label-subtitles" text="- AUMENTA LA COMPLEJIDAD, YA QUE SOLO PUEDES COMPLETAR ESCALERAS CON CARTAS DEL MISMO PALO." wrapText="true" />
                                                             <Label alignment="CENTER" contentDisplay="CENTER" layoutX="203.0" layoutY="317.0" prefHeight="12.0" prefWidth="553.0" styleClass="help-label-subtitles" text="- SE REQUIERE MÁS PLANIFICACIÓN PARA MOVER COLUMNAS Y LIBERAR ESPACIO." wrapText="true" />
                                                             <Label alignment="CENTER" contentDisplay="CENTER" layoutX="203.0" layoutY="362.0" prefHeight="22.0" prefWidth="170.0" styleClass="help-label-subtitles" text="DIFÍCIL (4 PALOS):" wrapText="true">
                                                                <VBox.margin>
@@ -184,7 +178,7 @@
                                                             </Label>
                                                             <Label alignment="CENTER" contentDisplay="CENTER" layoutX="203.0" layoutY="407.0" prefHeight="22.0" prefWidth="440.0" styleClass="help-label-subtitles" text=" -TODAS LAS CARTAS SE DISTRIBUYEN ENTRE LOS CUATRO PALOS." wrapText="true" />
                                                             <Label alignment="CENTER" contentDisplay="CENTER" layoutX="203.0" layoutY="452.0" prefHeight="22.0" prefWidth="240.0" styleClass="help-label-subtitles" text=" -ES EL MODO MÁS DESAFIANTE." wrapText="true" />
-                                                            <Label alignment="CENTER" contentDisplay="CENTER" layoutX="203.0" layoutY="457.0" prefHeight="49.0" prefWidth="524.0" styleClass="help-label-subtitles" text="- OBLIGA AL JUGADOR A PENSAR CUIDADOSAMENTE CADA MOVIMIENTO, YA QUE MUCHAS COMBINACIONES POSIBLES NO SERÁN VÁLIDAS." wrapText="true" />
+                                                            <Label alignment="CENTER" contentDisplay="CENTER" layoutX="203.0" layoutY="457.0" prefHeight="49.0" prefWidth="625.0" styleClass="help-label-subtitles" text="- OBLIGA AL JUGADOR A PENSAR CUIDADOSAMENTE CADA MOVIMIENTO, YA QUE MUCHAS COMBINACIONES POSIBLES NO SERÁN VÁLIDAS." wrapText="true" />
                                                          </children></VBox>
                                                    </center>
                                                 </BorderPane>
@@ -210,9 +204,34 @@
                                                    </top>
                                                    <center>
                                                       <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0" BorderPane.alignment="CENTER">
-                                                         <padding>
-                                                            <Insets top="40.0" />
-                                                         </padding></VBox>
+                                                         <children>
+                                                            <Label prefHeight="44.0" prefWidth="625.0" styleClass="help-label-subtitles" text="DOMINAR LOS CONTROLES ES ESENCIAL PARA UNA EXPERIENCIA FLUIDA Y ESTRATÉGICA. A CONTINUACIÓN, SE DESCRIBEN LAS ACCIONES BÁSICAS QUE PUEDES REALIZAR:" wrapText="true" />
+                                                            <Label styleClass="help-label-subtitles" text="ARRASTRAR CARTAS">
+                                                               <VBox.margin>
+                                                                  <Insets top="15.0" />
+                                                               </VBox.margin>
+                                                            </Label>
+                                                            <Label styleClass="help-label-subtitles" text="- HAZ CLIC Y ARRASTRA UNA CARTA O UNA PILA VÁLIDA PARA MOVERLA A OTRA COLUMNA." />
+                                                            <Label prefWidth="625.0" styleClass="help-label-subtitles" text="- SOLO PUEDES ARRASTRAR SECUENCIAS DE CARTAS ORDENADAS Y DEL MISMO PALO (EN NIVELES MEDIO Y DIFÍCIL)." wrapText="true" />
+                                                            <Label styleClass="help-label-subtitles" text="REPARTIR CARTAS NUEVAS">
+                                                               <VBox.margin>
+                                                                  <Insets top="15.0" />
+                                                               </VBox.margin>
+                                                            </Label>
+                                                            <Label styleClass="help-label-subtitles" text="- USA EL MAZO UBICADO EN LA PARTE INFERIOR PARA REPARTIR UNA NUEVA FILA DE CARTAS." />
+                                                            <Label layoutX="259.0" layoutY="185.0" styleClass="help-label-subtitles" text="- SOLO SE PUEDE USAR CUANDO NO HAYA COLUMNAS VACÍAS." />
+                                                            <Label layoutX="322.0" layoutY="212.0" styleClass="help-label-subtitles" text="MOVER ESCALERAS COMPLETAS">
+                                                               <VBox.margin>
+                                                                  <Insets top="15.0" />
+                                                               </VBox.margin>
+                                                            </Label>
+                                                            <Label layoutX="625.0" layoutY="239.0" prefWidth="625.0" styleClass="help-label-subtitles" text="- CUANDO UNA SECUENCIA COMPLETA DEL REY AL AS ESTÁ ORDENADA Y EN EL MISMO PALO, PUEDES MOVERLA COMO UNA UNIDAD O SERÁ AUTOMÁTICAMENTE ENVIADA A LA ZONA DE ESCALERAS COMPLETADAS." wrapText="true" />
+                                                            <Label layoutX="10.0" layoutY="266.0" styleClass="help-label-subtitles" text="¡USA ESTOS MOVIMIENTOS SABIAMENTE PARA GANAR VENTAJA EN CADA PARTIDA!">
+                                                               <VBox.margin>
+                                                                  <Insets top="20.0" />
+                                                               </VBox.margin>
+                                                            </Label>
+                                                         </children></VBox>
                                                    </center>
                                                 </BorderPane>
                                              </children>
@@ -237,9 +256,29 @@
                                                    </top>
                                                    <center>
                                                       <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0" BorderPane.alignment="CENTER">
-                                                         <padding>
-                                                            <Insets top="40.0" />
-                                                         </padding></VBox>
+                                                         <children>
+                                                            <Label prefHeight="53.0" prefWidth="625.0" styleClass="help-label-subtitles" text="EN SOLITARIO SPIDER, LA PARTIDA PUEDE CONCLUIR DE DOS FORMAS: VICTORIA O DERROTA, DEPENDIENDO DE TUS MOVIMIENTOS Y ESTRATEGIAS." wrapText="true" />
+                                                            <Label styleClass="help-label-subtitles" text="VICTORIA">
+                                                               <VBox.margin>
+                                                                  <Insets top="15.0" />
+                                                               </VBox.margin>
+                                                            </Label>
+                                                            <Label prefWidth="625.0" styleClass="help-label-subtitles" text="- GANAS EL JUEGO AL COMPLETAR LAS 8 ESCALERAS COMPLETAS (DEL REY AL AS) CON CARTAS DEL MISMO PALO, SEGÚN LA DIFICULTAD ELEGIDA." wrapText="true" />
+                                                            <Label prefWidth="625.0" styleClass="help-label-subtitles" text="- CADA ESCALERA COMPLETADA SE RETIRA DEL TABLERO AUTOMÁTICAMENTE, ACERCÁNDOTE AL OBJETIVO." wrapText="true" />
+                                                            <Label styleClass="help-label-subtitles" text="DERROTA">
+                                                               <VBox.margin>
+                                                                  <Insets top="15.0" />
+                                                               </VBox.margin>
+                                                            </Label>
+                                                            <Label prefWidth="625.0" styleClass="help-label-subtitles" text="- PIERDES LA PARTIDA SI NO PUEDES REALIZAR MÁS MOVIMIENTOS VÁLIDOS Y EL MAZO SE HA AGOTADO." wrapText="true" />
+                                                            <Label prefWidth="625.0" styleClass="help-label-subtitles" text="- TAMBIÉN SE CONSIDERA DERROTA SI EL JUGADOR BLOQUEA EL JUEGO AL LLENAR COLUMNAS SIN POSIBILIDAD DE REORGANIZAR CARTAS NI REPARTIR NUEVAS." wrapText="true" />
+                                                            <Label styleClass="help-label-subtitles" text="CONSEJO">
+                                                               <VBox.margin>
+                                                                  <Insets top="15.0" />
+                                                               </VBox.margin>
+                                                            </Label>
+                                                            <Label prefWidth="625.0" styleClass="help-label-subtitles" text="- MANTÉN SIEMPRE COLUMNAS VACÍAS PARA TENER ESPACIO DE MANIOBRA. GESTIONAR BIEN CADA MOVIMIENTO ES CLAVE PARA EVITAR UN PUNTO SIN RETORNO." wrapText="true" />
+                                                         </children></VBox>
                                                    </center>
                                                 </BorderPane>
                                              </children>
@@ -264,9 +303,37 @@
                                                    </top>
                                                    <center>
                                                       <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0" BorderPane.alignment="CENTER">
-                                                         <padding>
-                                                            <Insets top="40.0" />
-                                                         </padding></VBox>
+                                                         <children>
+                                                            <Label prefWidth="625.0" styleClass="help-label-subtitles" text="EL SISTEMA DE PUNTAJES EN SOLITARIO SPIDER ESTÁ DISEÑADO PARA EVALUAR TANTO TU EFICIENCIA COMO TU HABILIDAD ESTRATÉGICA." wrapText="true" />
+                                                            <Label styleClass="help-label-subtitles" text="PUNTAJE INICIAL:">
+                                                               <VBox.margin>
+                                                                  <Insets top="15.0" />
+                                                               </VBox.margin>
+                                                            </Label>
+                                                            <Label styleClass="help-label-subtitles" text="- COMIENZAS CADA PARTIDA CON 500 PUNTOS." />
+                                                            <Label styleClass="help-label-subtitles" text="PENALIZACIÓN POR MOVIMIENTO:">
+                                                               <VBox.margin>
+                                                                  <Insets top="15.0" />
+                                                               </VBox.margin>
+                                                            </Label>
+                                                            <Label styleClass="help-label-subtitles" text="- CADA VEZ QUE REALIZAS UN MOVIMIENTO, PIERDES 1 PUNTO." />
+                                                            <Label styleClass="help-label-subtitles" text="- ESTO INCENTIVA A PENSAR ANTES DE ACTUAR Y A JUGAR DE FORMA EFICIENTE." />
+                                                            <Label styleClass="help-label-subtitles" text="BONIFICACIÓN POR ESCALERA COMPLETADA:">
+                                                               <VBox.margin>
+                                                                  <Insets top="15.0" />
+                                                               </VBox.margin>
+                                                            </Label>
+                                                            <Label layoutX="331.0" layoutY="212.0" styleClass="help-label-subtitles" text="- CADA ESCALERA COMPLETA CORRECTAMENTE DEL REY AL AS OTORGA +100 PUNTOS." />
+                                                            <Label layoutX="331.0" layoutY="239.0" styleClass="help-label-subtitles" text="- ENTRE MÁS ESCALERAS LOGRES FORMAR, MAYOR SERÁ TU PUNTAJE TOTAL." />
+                                                            <Label layoutX="331.0" layoutY="266.0" styleClass="help-label-subtitles" text="CONSEJOS PARA MAXIMIZAR TU PUNTAJE:">
+                                                               <VBox.margin>
+                                                                  <Insets top="15.0" />
+                                                               </VBox.margin>
+                                                            </Label>
+                                                            <Label layoutX="331.0" layoutY="293.0" styleClass="help-label-subtitles" text="- REALIZA LA MENOR CANTIDAD DE MOVIMIENTOS POSIBLE." />
+                                                            <Label layoutX="331.0" layoutY="320.0" styleClass="help-label-subtitles" text="- ENFÓCATE EN COMPLETAR ESCALERAS RÁPIDAMENTE." />
+                                                            <Label layoutX="331.0" layoutY="347.0" styleClass="help-label-subtitles" text="- EVITA MOVIMIENTOS INNECESARIOS O QUE NO GENEREN AVANCE CLARO." />
+                                                         </children></VBox>
                                                    </center>
                                                 </BorderPane>
                                              </children>
