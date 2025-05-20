@@ -6,10 +6,10 @@
     <class>cr.ac.una.proyectospider.model.Partida</class>
     <class>cr.ac.una.proyectospider.model.Cartaspartida</class>
     <properties>
-      <property name="javax.persistence.jdbc.url" value="jdbc:oracle:thin:@//localhost:1521/XEPDB1"/>
-      <property name="javax.persistence.jdbc.user" value="spider"/>
-      <property name="javax.persistence.jdbc.driver" value="oracle.jdbc.OracleDriver"/>
-      <property name="javax.persistence.jdbc.password" value="spider"/>
+      <property name="jakarta.persistence.jdbc.url" value="jdbc:oracle:thin:@//localhost:1521/XEPDB1"/>
+      <property name="jakarta.persistence.jdbc.user" value="spider"/>
+      <property name="jakarta.persistence.jdbc.driver" value="oracle.jdbc.OracleDriver"/>
+      <property name="jakarta.persistence.jdbc.password" value="spider"/>
     </properties>
   </persistence-unit>
 </persistence>
