@@ -74,13 +74,13 @@ public class GameController extends Controller implements Initializable {
         btnGuardarySalir.setDisable(true);
         AnimationDepartment.stopAllAnimations();
 
-        AnimationDepartment.glitchFadeOut(spGamebackground, Duration.seconds(1.1), () -> {
+//        AnimationDepartment.glitchFadeOut(spGamebackground, Duration.seconds(1.1), () -> {
             FlowController.getInstance().goView("MenuView");
             MenuController controller = (MenuController) FlowController.getInstance().getController("MenuView");
             controller.RunMenuView();
             Platform.runLater(() -> btnGuardarySalir.setDisable(false));
 
-        });
+//        });
 
     }
 
