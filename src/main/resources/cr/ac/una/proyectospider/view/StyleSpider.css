@@ -432,3 +432,15 @@
     -fx-text-fill: #ffc107; /* Dorado más cálido y legible */
     -fx-effect: dropshadow(gaussian, #ff8f00, 15, 0.6, 0, 0); /* Glow reducido */
 }
+
+
+/*VISTA GAME*/
+
+#btnGuardarySalir {
+    -fx-image: url('../resources/btnGuardarySalir.png');
+}
+
+#btnPista {
+    -fx-image: url('../resources/btnPista.png');
+}
+

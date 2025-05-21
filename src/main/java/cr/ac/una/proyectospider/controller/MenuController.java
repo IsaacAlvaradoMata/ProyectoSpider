@@ -281,6 +281,16 @@ public class MenuController extends Controller implements Initializable {
 
     @FXML
     private void onMouseClickedbtnNuevaPartida(MouseEvent event) {
+        btnNuevaPartida.setDisable(true);
+        AnimationDepartment.stopAllAnimations();
+
+        AnimationDepartment.glitchFadeOut(spBackgroundMenu, Duration.seconds(1.1), () -> {
+            FlowController.getInstance().goView("GameView");
+            GameController controller = (GameController) FlowController.getInstance().getController("GameView");
+            controller.RunGameView();
+            Platform.runLater(() -> btnNuevaPartida.setDisable(false));
+
+        });
     }
 
     @FXML
