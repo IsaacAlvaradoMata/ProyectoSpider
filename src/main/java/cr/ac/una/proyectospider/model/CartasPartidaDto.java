@@ -15,6 +15,7 @@ public class CartasPartidaDto {
     private final IntegerProperty retirada;
     private final ObjectProperty<PartidaDto> partida;
     private Long version;
+    private String imagenNombre;
 
     public CartasPartidaDto() {
         this.idCartaPartida = new SimpleLongProperty();
@@ -112,6 +113,14 @@ public class CartasPartidaDto {
 
     public Long getVersion() { return version; }
     public void setVersion(Long version) { this.version = version; }
+
+    public String getImagenNombre() {
+        return imagenNombre;
+    }
+
+    public void setImagenNombre(String imagenNombre) {
+        this.imagenNombre = imagenNombre;
+    }
 
     @Override
     public String toString() {
