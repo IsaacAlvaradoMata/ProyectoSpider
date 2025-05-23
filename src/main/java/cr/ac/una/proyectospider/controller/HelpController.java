@@ -146,6 +146,8 @@ public class HelpController extends Controller implements Initializable {
 
     public void RunHelpView() {
         ResetHelpView();
+        tabpaneCentroDeInfo.getSelectionModel().select(tabGeneral);
+
         System.out.println("Run Help View");
         // 🟡 Reposicionar y asegurar fondo en el índice 0
         if (!spBackgroundHelp.getChildren().contains(imgBackgroundHelp)) {
@@ -190,7 +192,11 @@ public class HelpController extends Controller implements Initializable {
             AnimationDepartment.glitchFadeIn(root, Duration.seconds(0.6));
             System.out.println("se hizo el glitchFadeIn");
 
-
+            spObjetivo.setDisable(true);
+            spControles.setDisable(true);
+            spDificultades.setDisable(true);
+            spCondiciones.setDisable(true);
+            spExplicacion.setDisable(true);
 
 
 
@@ -251,8 +257,8 @@ public class HelpController extends Controller implements Initializable {
                 AnimationDepartment.animateNeonGlow(imgExplicacion);
                 Platform.runLater(() -> {
                     Duration baseDelay = Duration.seconds(1.5);
-                    double speed = 0.03;
-                    double margin = 0.4;
+                    double speed = 0.02;
+                    double margin = 0.2;
 
                     Duration current = baseDelay;
                     AnimationDepartment.typewriterEffect(lbl1, "BIENVENIDO AL MÓDULO DE AYUDA DEL SOLITARIO SPIDER", current, speed);
@@ -290,8 +296,13 @@ public class HelpController extends Controller implements Initializable {
             });
             t3.play();
 
-            PauseTransition t4 = new PauseTransition(Duration.seconds(5.5));
+            PauseTransition t4 = new PauseTransition(Duration.seconds(21));
             t4.setOnFinished(e -> {
+                spObjetivo.setDisable(false);
+                spControles.setDisable(false);
+                spDificultades.setDisable(false);
+                spCondiciones.setDisable(false);
+                spExplicacion.setDisable(false);
             });
             t4.play();
 
@@ -330,9 +341,9 @@ public class HelpController extends Controller implements Initializable {
         root.setEffect(null);
         root.setOpacity(1);
         root.setVisible(true);
-        imgBackgroundHelp.setEffect(null);
-        imgBackgroundHelp.setOpacity(1);
-        imgBackgroundHelp.setVisible(true);
+        spBackgroundHelp.setEffect(null);
+        spBackgroundHelp.setOpacity(1);
+        spBackgroundHelp.setVisible(true);
 
         lblIObjetivo.setOpacity(0);
         lblDificultades.setOpacity(0);
@@ -373,6 +384,10 @@ public class HelpController extends Controller implements Initializable {
         lbl9.setText("");
         lbl10.setText("");
 
+        opcionSeleccionadaActual = null;
+        imagenSeleccionadaActual = null;
+        labelSeleccionadoActual = null;
+
 
     }
 
@@ -412,7 +427,7 @@ public class HelpController extends Controller implements Initializable {
         AnimationDepartment.stopAllAnimations();
         btnVolver.setDisable(true);
 
-        AnimationDepartment.glitchFadeOut(imgBackgroundHelp, Duration.seconds(1.1), () -> {
+        AnimationDepartment.glitchFadeOut(spBackgroundHelp, Duration.seconds(1.1), () -> {
             FlowController.getInstance().goView("MenuView");
             MenuController controller = (MenuController) FlowController.getInstance().getController("MenuView");
             controller.RunMenuView();

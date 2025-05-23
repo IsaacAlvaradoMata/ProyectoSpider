@@ -433,6 +433,25 @@
     -fx-effect: dropshadow(gaussian, #ff8f00, 15, 0.6, 0, 0); /* Glow reducido */
 }
 
+.help-label-subtitles2 {
+    -fx-font-family: "Raster";
+    -fx-font-weight: bold;
+    -fx-font-size: 16px;
+    -fx-text-fill: #ffc107; /* Dorado más cálido y legible */
+    -fx-effect: dropshadow(gaussian, #ff00ff, 15, 0.6, 0, 0); /* Glow reducido */
+}
+
+
+.tab-pane .tab-header-area {
+    -fx-padding: 0;
+    -fx-background-color: transparent;
+    -fx-border-width: 0;
+    -fx-tab-min-height: 0;
+    -fx-tab-max-height: 0;
+    -fx-tab-min-width: 0;
+    -fx-tab-max-width: 0;
+    visibility: hidden;
+}
 
 /*VISTA GAME*/
 
