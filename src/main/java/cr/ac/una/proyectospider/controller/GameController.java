@@ -107,7 +107,7 @@ public class GameController extends Controller implements Initializable {
     public void RunGameView() {
         ResetGameView();
         if (cartasEnJuego == null) {
-            cartasEnJuego = MazoGenerator.generarMazoPorDificultad("MEDIA");
+            cartasEnJuego = MazoGenerator.generarMazoPorDificultad("FACIL");
         }
 
         hboxTablero.getChildren().clear();
@@ -194,19 +194,72 @@ public class GameController extends Controller implements Initializable {
         }
 
         hboxTableroSuperior.setSpacing(10);
-        imgMazo = new ImageView(new Image(getClass().getResourceAsStream("/cr/ac/una/proyectospider/resources/rear.png")));
-        imgMazo.setFitWidth(70);
-        imgMazo.setPreserveRatio(true);
-        imgMazo.setSmooth(true);
-        hboxTableroSuperior.getChildren().add(imgMazo);
+
+        // Verificar si hay cartas en el mazo
+        boolean hayCartasEnMazo = cartasEnJuego.stream()
+                .anyMatch(c -> c.getEnMazo() == 1);
+
+        // Solo mostrar el mazo si hay cartas disponibles
+        if (hayCartasEnMazo) {
+            imgMazo = new ImageView(new Image(getClass().getResourceAsStream("/cr/ac/una/proyectospider/resources/rear.png")));
+            imgMazo.setFitWidth(70);
+            imgMazo.setPreserveRatio(true);
+            imgMazo.setSmooth(true);
+            imgMazo.setOnMouseClicked(e -> repartirCartasDelMazo());
+            hboxTableroSuperior.getChildren().add(imgMazo);
+        } else {
+            // Añadir un espacio vacío donde estaría el mazo
+            Region espacioMazo = new Region();
+            espacioMazo.setPrefWidth(70);
+            hboxTableroSuperior.getChildren().add(espacioMazo);
+        }
 
         Region espacio = new Region();
         espacio.setPrefWidth(70);
         hboxTableroSuperior.getChildren().add(espacio);
 
+        // Contar cuántas secuencias completas se han movido a las pilas
+        long secuenciasCompletadas = cartasEnJuego.stream()
+                .filter(c -> c.getEnPila() == 1)
+                .count() / 13; // Cada secuencia tiene 13 cartas
+
+        System.out.println("Secuencias completadas: " + secuenciasCompletadas);
+
+        // Mostrar las pilas completadas y las vacías
         for (int i = 0; i < 8; i++) {
-            ImageView pila = new ImageView(new Image(getClass().getResourceAsStream(
-                    "/cr/ac/una/proyectospider/resources/white.png")));
+            ImageView pila;
+
+            if (i < secuenciasCompletadas) {
+                // Mostrar una carta A (as) para representar una secuencia completa
+                // Obtenemos el palo de la primera secuencia completada para mostrar su as
+                int pilaActual = i;
+                String paloSecuencia = cartasEnJuego.stream()
+                        .filter(c -> c.getEnPila() == 1)
+                        .skip(pilaActual * 13) // Saltamos a la secuencia correspondiente
+                        .findFirst()
+                        .map(CartasPartidaDto::getPalo)
+                        .orElse("C"); // Por defecto corazones si no se encuentra
+
+                // Buscamos la carta A (as) de esa secuencia
+                CartasPartidaDto cartaAs = cartasEnJuego.stream()
+                        .filter(c -> c.getEnPila() == 1 && c.getPalo().equals(paloSecuencia) && c.getValor().equals("1"))
+                        .findFirst()
+                        .orElse(null);
+
+                if (cartaAs != null && cartaAs.getImagenNombre() != null) {
+                    pila = new ImageView(new Image(getClass().getResourceAsStream(
+                            "/cr/ac/una/proyectospider/resources/" + cartaAs.getImagenNombre())));
+                } else {
+                    // Si no encontramos la carta A, mostramos una carta genérica
+                    pila = new ImageView(new Image(getClass().getResourceAsStream(
+                            "/cr/ac/una/proyectospider/resources/1C.png")));
+                }
+            } else {
+                // Mostrar un espacio vacío para las pilas no completadas
+                pila = new ImageView(new Image(getClass().getResourceAsStream(
+                        "/cr/ac/una/proyectospider/resources/white.png")));
+            }
+
             pila.setFitWidth(70);
             pila.setPreserveRatio(true);
             pila.setSmooth(true);
@@ -262,6 +315,9 @@ public class GameController extends Controller implements Initializable {
         }
 
         System.out.println("Movimiento terminado.\n");
+
+        // Verificar si se ha completado una secuencia después del movimiento
+        verificarSecuenciaCompleta();
     }
 
 
@@ -284,6 +340,152 @@ public class GameController extends Controller implements Initializable {
         }
 
         return true;
+    }
+
+    /**
+     * Reparte una carta del mazo a cada columna del tablero.
+     * Siguiendo las reglas del Solitario Spider:
+     * - Solo se pueden repartir cartas si todas las columnas tienen al menos una carta
+     * - Se reparte una carta a cada columna
+     * - Las cartas repartidas se colocan boca arriba
+     * - Si no quedan cartas en el mazo, este desaparece
+     */
+    private void repartirCartasDelMazo() {
+        // Verificar si todas las columnas tienen al menos una carta
+        boolean todasColumnasConCartas = true;
+        for (int colIndex = 0; colIndex < 10; colIndex++) {
+            final int col = colIndex; // Crear una variable final para usar en lambda
+            boolean columnaConCartas = cartasEnJuego.stream()
+                    .anyMatch(c -> c.getColumna() == col);
+            if (!columnaConCartas) {
+                todasColumnasConCartas = false;
+                break;
+            }
+        }
+
+        if (!todasColumnasConCartas) {
+            System.out.println("No se pueden repartir cartas: algunas columnas están vacías");
+            return;
+        }
+
+        // Obtener cartas del mazo
+        List<CartasPartidaDto> cartasEnMazo = cartasEnJuego.stream()
+                .filter(c -> c.getEnMazo() == 1)
+                .toList();
+
+        if (cartasEnMazo.size() < 10) {
+            System.out.println("No hay suficientes cartas en el mazo para repartir");
+            // No es necesario ocultar el mazo aquí, ya que RunGameView() lo manejará
+            return;
+        }
+
+        // Repartir una carta a cada columna
+        for (int colIndex = 0; colIndex < 10; colIndex++) {
+            final int col = colIndex; // Crear una variable final para usar en lambda
+
+            // Encontrar la última carta en la columna actual
+            int nuevoOrden = cartasEnJuego.stream()
+                    .filter(c -> c.getColumna() == col)
+                    .mapToInt(CartasPartidaDto::getOrden)
+                    .max()
+                    .orElse(-1) + 1;
+
+            // Tomar una carta del mazo
+            CartasPartidaDto carta = cartasEnMazo.get(colIndex);
+
+            // Actualizar la carta
+            carta.setEnMazo(0);
+            carta.setColumna(col);
+            carta.setOrden(nuevoOrden);
+            carta.setBocaArriba(1); // Las cartas repartidas del mazo siempre están boca arriba
+        }
+
+        // Verificar si se ha completado una secuencia después de repartir
+        verificarSecuenciaCompleta();
+
+        // Actualizar la vista (RunGameView ya verifica si hay cartas en el mazo)
+        RunGameView();
+    }
+
+    /**
+     * Verifica si hay secuencias completas de A a K del mismo palo en alguna columna
+     * y las mueve a las pilas superiores.
+     * Una secuencia completa consiste en 13 cartas del mismo palo ordenadas de K a A.
+     */
+    private void verificarSecuenciaCompleta() {
+        // Recorrer cada columna
+        for (int columna = 0; columna < 10; columna++) {
+            final int col = columna;
+
+            // Obtener todas las cartas de la columna ordenadas por orden (de menor a mayor)
+            List<CartasPartidaDto> cartasColumna = cartasEnJuego.stream()
+                    .filter(c -> c.getColumna() == col && c.getBocaArriba() == 1)
+                    .sorted(Comparator.comparingInt(CartasPartidaDto::getOrden))
+                    .toList();
+
+            if (cartasColumna.size() < 13) {
+                continue; // No hay suficientes cartas para formar una secuencia completa
+            }
+
+            // Buscar secuencias completas empezando desde cada posición posible
+            for (int inicio = 0; inicio <= cartasColumna.size() - 13; inicio++) {
+                boolean esSecuenciaCompleta = true;
+                String paloSecuencia = cartasColumna.get(inicio).getPalo();
+
+                // Verificar si hay 13 cartas consecutivas del mismo palo y en orden descendente (K a A)
+                for (int i = 0; i < 12; i++) {
+                    CartasPartidaDto cartaActual = cartasColumna.get(inicio + i);
+                    CartasPartidaDto cartaSiguiente = cartasColumna.get(inicio + i + 1);
+
+                    int valorActual = Integer.parseInt(cartaActual.getValor());
+                    int valorSiguiente = Integer.parseInt(cartaSiguiente.getValor());
+
+                    // Verificar que sean del mismo palo y que el valor disminuya en 1
+                    if (!cartaSiguiente.getPalo().equals(paloSecuencia) || valorSiguiente != valorActual - 1) {
+                        esSecuenciaCompleta = false;
+                        break;
+                    }
+                }
+
+                // Si encontramos una secuencia completa, moverla a una pila superior
+                if (esSecuenciaCompleta) {
+                    // Verificar que la secuencia comience con K (13) y termine con A (1)
+                    CartasPartidaDto primeraCartaSecuencia = cartasColumna.get(inicio);
+                    CartasPartidaDto ultimaCartaSecuencia = cartasColumna.get(inicio + 12);
+
+                    if (Integer.parseInt(primeraCartaSecuencia.getValor()) == 13 && 
+                        Integer.parseInt(ultimaCartaSecuencia.getValor()) == 1) {
+
+                        System.out.println("¡Secuencia completa encontrada en columna " + col + "!");
+
+                        // Mover las 13 cartas a una pila superior
+                        for (int i = 0; i < 13; i++) {
+                            CartasPartidaDto carta = cartasColumna.get(inicio + i);
+
+                            // Marcar la carta como en pila y no en columna
+                            carta.setEnPila(1);
+                            carta.setColumna(-1);
+                            carta.setOrden(-1);
+
+                            System.out.println("Moviendo " + carta.getValor() + " de " + carta.getPalo() + " a pila superior");
+                        }
+
+                        // Si hay una carta antes de la secuencia en la columna, voltearla
+                        if (inicio > 0) {
+                            CartasPartidaDto cartaAnterior = cartasColumna.get(inicio - 1);
+                            cartaAnterior.setBocaArriba(1);
+                        }
+
+                        // Actualizar la vista después de mover la secuencia
+                        Platform.runLater(this::RunGameView);
+
+                        // Continuar verificando el resto de la columna
+                        verificarSecuenciaCompleta();
+                        return;
+                    }
+                }
+            }
+        }
     }
 
 }
