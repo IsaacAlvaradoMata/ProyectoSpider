@@ -10,7 +10,10 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.Dragboard;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.input.TransferMode;
 import javafx.scene.layout.*;
 import javafx.util.Duration;
 
@@ -104,168 +107,230 @@ public class GameController extends Controller implements Initializable {
 
     }
 
-    public void RunGameView() {
-        ResetGameView();
-        if (cartasEnJuego == null) {
-            cartasEnJuego = MazoGenerator.generarMazoPorDificultad("FACIL");
-        }
+public void RunGameView() {
+    ResetGameView();
+    if (cartasEnJuego == null) {
+        cartasEnJuego = MazoGenerator.generarMazoPorDificultad("FACIL");
+    }
 
-        hboxTablero.getChildren().clear();
-        hboxTableroSuperior.getChildren().clear();
-        imgMazo.setImage(null);
+    hboxTablero.getChildren().clear();
+    hboxTableroSuperior.getChildren().clear();
+    imgMazo.setImage(null);
 
-        for (int col = 0; col < 10; col++) {
-            Pane columna = new Pane();
-            columna.setPrefWidth(80);
-            columna.setPrefHeight(600);
-            hboxTablero.getChildren().add(columna);
-        }
+    // Creamos las 10 columnas y les añadimos handlers de drag & drop
+    for (int col = 0; col < 10; col++) {
+        final int colIndex = col;
+        Pane columna = new Pane();
+        columna.setPrefWidth(80);
+        columna.setPrefHeight(600);
 
-        // Agrupar y ordenar cartas por columna
-        Map<Integer, List<CartasPartidaDto>> columnasMap = new HashMap<>();
-        for (CartasPartidaDto carta : cartasEnJuego) {
-            if (carta.getColumna() != -1) {
-                columnasMap
-                        .computeIfAbsent(carta.getColumna(), k -> new ArrayList<>())
-                        .add(carta);
+        // Permitir soltar sobre la columna
+        columna.setOnDragOver(event -> {
+            if (event.getDragboard().hasString()) {
+                event.acceptTransferModes(TransferMode.MOVE);
             }
-        }
+            event.consume();
+        });
 
-        double desplazamiento = 22;
-        for (int col = 0; col < 10; col++) {
-            Pane columna = (Pane) hboxTablero.getChildren().get(col);
-            columna.getChildren().clear();
+        // Manejar el drop
+        columna.setOnDragDropped(event -> {
+            Dragboard db = event.getDragboard();
+            boolean success = false;
+            if (db.hasString() && !cartasSeleccionadas.isEmpty()) {
+                // Nos guardamos origen antes de mover
+                CartasPartidaDto cartaOrigen = cartasSeleccionadas.get(0);
+                int colAnterior = cartaOrigen.getColumna();
+                int ordenAnterior = cartaOrigen.getOrden();
 
-            List<CartasPartidaDto> cartasColumna = columnasMap.getOrDefault(col, new ArrayList<>());
-            cartasColumna.sort(Comparator.comparingInt(CartasPartidaDto::getOrden));
-
-            for (CartasPartidaDto carta : cartasColumna) {
-                String imgArchivo = carta.getBocaArriba() == 1 ? carta.getImagenNombre() : "rear.png";
-
-                ImageView img = new ImageView(new Image(getClass().getResourceAsStream(
-                        "/cr/ac/una/proyectospider/resources/" + imgArchivo)));
-                img.setFitWidth(70);
-                img.setPreserveRatio(true);
-                img.setSmooth(true);
-                img.setLayoutY(carta.getOrden() * desplazamiento);
-
-                if (carta.getBocaArriba() == 1) {
-                    img.setOnMouseClicked(e -> {
-                        e.consume();
-
-                        if (esperandoDestino && !cartasSeleccionadas.isEmpty()) {
-                            CartasPartidaDto cartaDestino = carta;
-                            CartasPartidaDto cartaOrigen = cartasSeleccionadas.get(0);
-
-                            boolean puedeMover = esGrupoValido(cartasSeleccionadas) &&
-                                    cartaDestino.getPalo().equals(cartaOrigen.getPalo()) &&
-                                    Integer.parseInt(cartaDestino.getValor()) == Integer.parseInt(cartaOrigen.getValor()) + 1;
-
-                            if (puedeMover) {
-                                int colAnterior = cartaOrigen.getColumna();
-                                int ordenAnterior = cartaOrigen.getOrden();
-                                int nuevaCol = cartaDestino.getColumna();
-                                moverCartasSeleccionadas(nuevaCol);
-
-                                cartasEnJuego.stream()
-                                        .filter(c -> c.getColumna() == colAnterior && c.getOrden() == ordenAnterior - 1)
-                                        .findFirst()
-                                        .ifPresent(c -> c.setBocaArriba(1));
-
-                                esperandoDestino = false;
-                                cartasSeleccionadas.clear();
-                                RunGameView();
-                            } else {
-                                System.out.println("Movimiento inválido entre cartas.");
-                                esperandoDestino = false;
-                                cartasSeleccionadas.clear();
-                            }
-                        } else {
-                            cartasSeleccionadas.clear();
-                            cartasSeleccionadas.addAll(obtenerGrupoDesde(carta));
-                            esperandoDestino = true;
-                            System.out.println("Seleccionadas: " + cartasSeleccionadas.size());
-                        }
-                    });
-                }
-
-                columna.getChildren().add(img);
-            }
-        }
-
-        hboxTableroSuperior.setSpacing(10);
-
-        // Verificar si hay cartas en el mazo
-        boolean hayCartasEnMazo = cartasEnJuego.stream()
-                .anyMatch(c -> c.getEnMazo() == 1);
-
-        // Solo mostrar el mazo si hay cartas disponibles
-        if (hayCartasEnMazo) {
-            imgMazo = new ImageView(new Image(getClass().getResourceAsStream("/cr/ac/una/proyectospider/resources/rear.png")));
-            imgMazo.setFitWidth(70);
-            imgMazo.setPreserveRatio(true);
-            imgMazo.setSmooth(true);
-            imgMazo.setOnMouseClicked(e -> repartirCartasDelMazo());
-            hboxTableroSuperior.getChildren().add(imgMazo);
-        } else {
-            // Añadir un espacio vacío donde estaría el mazo
-            Region espacioMazo = new Region();
-            espacioMazo.setPrefWidth(70);
-            hboxTableroSuperior.getChildren().add(espacioMazo);
-        }
-
-        Region espacio = new Region();
-        espacio.setPrefWidth(70);
-        hboxTableroSuperior.getChildren().add(espacio);
-
-        // Contar cuántas secuencias completas se han movido a las pilas
-        long secuenciasCompletadas = cartasEnJuego.stream()
-                .filter(c -> c.getEnPila() == 1)
-                .count() / 13; // Cada secuencia tiene 13 cartas
-
-        System.out.println("Secuencias completadas: " + secuenciasCompletadas);
-
-        // Mostrar las pilas completadas y las vacías
-        for (int i = 0; i < 8; i++) {
-            ImageView pila;
-
-            if (i < secuenciasCompletadas) {
-                // Mostrar una carta A (as) para representar una secuencia completa
-                // Obtenemos el palo de la primera secuencia completada para mostrar su as
-                int pilaActual = i;
-                String paloSecuencia = cartasEnJuego.stream()
-                        .filter(c -> c.getEnPila() == 1)
-                        .skip(pilaActual * 13) // Saltamos a la secuencia correspondiente
-                        .findFirst()
-                        .map(CartasPartidaDto::getPalo)
-                        .orElse("C"); // Por defecto corazones si no se encuentra
-
-                // Buscamos la carta A (as) de esa secuencia
-                CartasPartidaDto cartaAs = cartasEnJuego.stream()
-                        .filter(c -> c.getEnPila() == 1 && c.getPalo().equals(paloSecuencia) && c.getValor().equals("1"))
-                        .findFirst()
-                        .orElse(null);
-
-                if (cartaAs != null && cartaAs.getImagenNombre() != null) {
-                    pila = new ImageView(new Image(getClass().getResourceAsStream(
-                            "/cr/ac/una/proyectospider/resources/" + cartaAs.getImagenNombre())));
+                // Encontramos la carta destino (última visible en la columna destino)
+                CartasPartidaDto cartaDestino = obtenerUltimaCartaVisible(colIndex);
+                boolean puedeMover;
+                if (cartaDestino == null) {
+                    // Columna vacía: aceptar cualquier grupo válido
+                    puedeMover = esGrupoValido(cartasSeleccionadas);
                 } else {
-                    // Si no encontramos la carta A, mostramos una carta genérica
-                    pila = new ImageView(new Image(getClass().getResourceAsStream(
-                            "/cr/ac/una/proyectospider/resources/1C.png")));
+                    puedeMover = esGrupoValido(cartasSeleccionadas)
+                            && cartaDestino.getPalo().equals(cartaOrigen.getPalo())
+                            && Integer.parseInt(cartaDestino.getValor()) ==
+                            Integer.parseInt(cartaOrigen.getValor()) + 1;
                 }
-            } else {
-                // Mostrar un espacio vacío para las pilas no completadas
-                pila = new ImageView(new Image(getClass().getResourceAsStream(
-                        "/cr/ac/una/proyectospider/resources/white.png")));
-            }
 
-            pila.setFitWidth(70);
-            pila.setPreserveRatio(true);
-            pila.setSmooth(true);
-            hboxTableroSuperior.getChildren().add(pila);
+                if (puedeMover) {
+                    // 1) Movemos los datos
+                    moverCartasSeleccionadas(colIndex);
+                    // 2) Volteamos la carta que quedó justo debajo en la columna origen
+                    cartasEnJuego.stream()
+                            .filter(c -> c.getColumna() == colAnterior
+                                    && c.getOrden() == ordenAnterior - 1)
+                            .findFirst()
+                            .ifPresent(c -> c.setBocaArriba(1));
+                    // 3) Refrescamos TODO el tablero
+                    RunGameView();
+                    success = true;
+                } else {
+                    System.out.println("Drop inválido en columna " + colIndex);
+                }
+                cartasSeleccionadas.clear();
+            }
+            event.setDropCompleted(success);
+            event.consume();
+        });
+
+        hboxTablero.getChildren().add(columna);
+    }
+
+    // Agrupar y ordenar cartas por columna
+    Map<Integer, List<CartasPartidaDto>> columnasMap = new HashMap<>();
+    for (CartasPartidaDto carta : cartasEnJuego) {
+        if (carta.getColumna() != -1) {
+            columnasMap
+                    .computeIfAbsent(carta.getColumna(), k -> new ArrayList<>())
+                    .add(carta);
         }
     }
+
+    double desplazamiento = 22;
+    for (int col = 0; col < 10; col++) {
+        Pane columna = (Pane) hboxTablero.getChildren().get(col);
+        columna.getChildren().clear();
+
+        List<CartasPartidaDto> cartasColumna = columnasMap.getOrDefault(col, new ArrayList<>());
+        cartasColumna.sort(Comparator.comparingInt(CartasPartidaDto::getOrden));
+
+        for (CartasPartidaDto carta : cartasColumna) {
+            String imgArchivo = carta.getBocaArriba() == 1 ? carta.getImagenNombre() : "rear.png";
+
+            ImageView img = new ImageView(new Image(getClass().getResourceAsStream(
+                    "/cr/ac/una/proyectospider/resources/" + imgArchivo)));
+            img.setFitWidth(70);
+            img.setPreserveRatio(true);
+            img.setSmooth(true);
+            img.setLayoutY(carta.getOrden() * desplazamiento);
+
+            if (carta.getBocaArriba() == 1) {
+                // Selección por clic (ya existía)
+                img.setOnMouseClicked(e -> {
+                    e.consume();
+                    if (esperandoDestino && !cartasSeleccionadas.isEmpty()) {
+                        CartasPartidaDto cartaDestino = carta;
+                        CartasPartidaDto cartaOrigen = cartasSeleccionadas.get(0);
+                        boolean puedeMover = esGrupoValido(cartasSeleccionadas)
+                                && cartaDestino.getPalo().equals(cartaOrigen.getPalo())
+                                && Integer.parseInt(cartaDestino.getValor()) == Integer.parseInt(cartaOrigen.getValor()) + 1;
+                        if (puedeMover) {
+                            int colAnterior = cartaOrigen.getColumna();
+                            int ordenAnterior = cartaOrigen.getOrden();
+                            int nuevaCol = cartaDestino.getColumna();
+                            moverCartasSeleccionadas(nuevaCol);
+                            cartasEnJuego.stream()
+                                    .filter(c -> c.getColumna() == colAnterior && c.getOrden() == ordenAnterior - 1)
+                                    .findFirst()
+                                    .ifPresent(c -> c.setBocaArriba(1));
+                            esperandoDestino = false;
+                            cartasSeleccionadas.clear();
+                            RunGameView();
+                        } else {
+                            System.out.println("Movimiento inválido entre cartas.");
+                            esperandoDestino = false;
+                            cartasSeleccionadas.clear();
+                        }
+                    } else {
+                        cartasSeleccionadas.clear();
+                        cartasSeleccionadas.addAll(obtenerGrupoDesde(carta));
+                        esperandoDestino = true;
+                        System.out.println("Seleccionadas: " + cartasSeleccionadas.size());
+                    }
+                });
+
+                // Inicio de drag: cargamos el mismo grupo que con click
+                img.setOnDragDetected(e -> {
+                    e.consume();
+                    cartasSeleccionadas.clear();
+                    cartasSeleccionadas.addAll(obtenerGrupoDesde(carta));
+                    System.out.println("DragDetected, seleccionadas: " + cartasSeleccionadas.size());
+                    Dragboard db = img.startDragAndDrop(TransferMode.MOVE);
+                    ClipboardContent content = new ClipboardContent();
+                    content.putString(carta.getIdCartaPartida().toString());
+                    db.setContent(content);
+                });
+
+                // Final del drag
+                img.setOnDragDone(e -> {
+                    e.consume();
+                });
+            }
+
+            columna.getChildren().add(img);
+        }
+    }
+
+    hboxTableroSuperior.setSpacing(10);
+
+    // Verificar si hay cartas en el mazo
+    boolean hayCartasEnMazo = cartasEnJuego.stream()
+            .anyMatch(c -> c.getEnMazo() == 1);
+
+    // Solo mostrar el mazo si hay cartas disponibles
+    if (hayCartasEnMazo) {
+        imgMazo = new ImageView(new Image(getClass().getResourceAsStream("/cr/ac/una/proyectospider/resources/rear.png")));
+        imgMazo.setFitWidth(70);
+        imgMazo.setPreserveRatio(true);
+        imgMazo.setSmooth(true);
+        imgMazo.setOnMouseClicked(e -> repartirCartasDelMazo());
+        hboxTableroSuperior.getChildren().add(imgMazo);
+    } else {
+        Region espacioMazo = new Region();
+        espacioMazo.setPrefWidth(70);
+        hboxTableroSuperior.getChildren().add(espacioMazo);
+    }
+
+    Region espacio = new Region();
+    espacio.setPrefWidth(70);
+    hboxTableroSuperior.getChildren().add(espacio);
+
+    // Contar cuántas secuencias completas se han movido a las pilas
+    long secuenciasCompletadas = cartasEnJuego.stream()
+            .filter(c -> c.getEnPila() == 1)
+            .count() / 13; // Cada secuencia tiene 13 cartas
+
+    System.out.println("Secuencias completadas: " + secuenciasCompletadas);
+
+    // Mostrar las pilas completadas y las vacías
+    for (int i = 0; i < 8; i++) {
+        ImageView pila;
+
+        if (i < secuenciasCompletadas) {
+            int pilaActual = i;
+            String paloSecuencia = cartasEnJuego.stream()
+                    .filter(c -> c.getEnPila() == 1)
+                    .skip(pilaActual * 13)
+                    .findFirst()
+                    .map(CartasPartidaDto::getPalo)
+                    .orElse("C");
+
+            CartasPartidaDto cartaAs = cartasEnJuego.stream()
+                    .filter(c -> c.getEnPila() == 1 && c.getPalo().equals(paloSecuencia) && c.getValor().equals("1"))
+                    .findFirst()
+                    .orElse(null);
+
+            if (cartaAs != null && cartaAs.getImagenNombre() != null) {
+                pila = new ImageView(new Image(getClass().getResourceAsStream(
+                        "/cr/ac/una/proyectospider/resources/" + cartaAs.getImagenNombre())));
+            } else {
+                pila = new ImageView(new Image(getClass().getResourceAsStream(
+                        "/cr/ac/una/proyectospider/resources/1C.png")));
+            }
+        } else {
+            pila = new ImageView(new Image(getClass().getResourceAsStream(
+                    "/cr/ac/una/proyectospider/resources/white.png")));
+        }
+
+        pila.setFitWidth(70);
+        pila.setPreserveRatio(true);
+        pila.setSmooth(true);
+        hboxTableroSuperior.getChildren().add(pila);
+    }
+}
 
 
 
@@ -413,76 +478,58 @@ public class GameController extends Controller implements Initializable {
      * Una secuencia completa consiste en 13 cartas del mismo palo ordenadas de K a A.
      */
     private void verificarSecuenciaCompleta() {
-        // Recorrer cada columna
-        for (int columna = 0; columna < 10; columna++) {
-            final int col = columna;
+        for (int col = 0; col < 10; col++) {
+            final int columna = col;
 
-            // Obtener todas las cartas de la columna ordenadas por orden (de menor a mayor)
             List<CartasPartidaDto> cartasColumna = cartasEnJuego.stream()
-                    .filter(c -> c.getColumna() == col && c.getBocaArriba() == 1)
+                    .filter(c -> c.getColumna() == columna && c.getBocaArriba() == 1)
                     .sorted(Comparator.comparingInt(CartasPartidaDto::getOrden))
                     .toList();
 
             if (cartasColumna.size() < 13) {
-                continue; // No hay suficientes cartas para formar una secuencia completa
+                continue;
             }
 
-            // Buscar secuencias completas empezando desde cada posición posible
             for (int inicio = 0; inicio <= cartasColumna.size() - 13; inicio++) {
-                boolean esSecuenciaCompleta = true;
-                String paloSecuencia = cartasColumna.get(inicio).getPalo();
+                boolean esSecuencia = true;
+                String paloSeq = cartasColumna.get(inicio).getPalo();
 
-                // Verificar si hay 13 cartas consecutivas del mismo palo y en orden descendente (K a A)
                 for (int i = 0; i < 12; i++) {
-                    CartasPartidaDto cartaActual = cartasColumna.get(inicio + i);
-                    CartasPartidaDto cartaSiguiente = cartasColumna.get(inicio + i + 1);
-
-                    int valorActual = Integer.parseInt(cartaActual.getValor());
-                    int valorSiguiente = Integer.parseInt(cartaSiguiente.getValor());
-
-                    // Verificar que sean del mismo palo y que el valor disminuya en 1
-                    if (!cartaSiguiente.getPalo().equals(paloSecuencia) || valorSiguiente != valorActual - 1) {
-                        esSecuenciaCompleta = false;
+                    int valorActual = Integer.parseInt(cartasColumna.get(inicio + i).getValor());
+                    int valorSiguiente = Integer.parseInt(cartasColumna.get(inicio + i + 1).getValor());
+                    if (!cartasColumna.get(inicio + i + 1).getPalo().equals(paloSeq)
+                            || valorSiguiente != valorActual - 1) {
+                        esSecuencia = false;
                         break;
                     }
                 }
 
-                // Si encontramos una secuencia completa, moverla a una pila superior
-                if (esSecuenciaCompleta) {
-                    // Verificar que la secuencia comience con K (13) y termine con A (1)
-                    CartasPartidaDto primeraCartaSecuencia = cartasColumna.get(inicio);
-                    CartasPartidaDto ultimaCartaSecuencia = cartasColumna.get(inicio + 12);
+                CartasPartidaDto primera = cartasColumna.get(inicio);
+                CartasPartidaDto ultima = cartasColumna.get(inicio + 12);
+                if (esSecuencia
+                        && Integer.parseInt(primera.getValor()) == 13
+                        && Integer.parseInt(ultima.getValor()) == 1) {
 
-                    if (Integer.parseInt(primeraCartaSecuencia.getValor()) == 13 && 
-                        Integer.parseInt(ultimaCartaSecuencia.getValor()) == 1) {
-
-                        System.out.println("¡Secuencia completa encontrada en columna " + col + "!");
-
-                        // Mover las 13 cartas a una pila superior
-                        for (int i = 0; i < 13; i++) {
-                            CartasPartidaDto carta = cartasColumna.get(inicio + i);
-
-                            // Marcar la carta como en pila y no en columna
-                            carta.setEnPila(1);
-                            carta.setColumna(-1);
-                            carta.setOrden(-1);
-
-                            System.out.println("Moviendo " + carta.getValor() + " de " + carta.getPalo() + " a pila superior");
-                        }
-
-                        // Si hay una carta antes de la secuencia en la columna, voltearla
-                        if (inicio > 0) {
-                            CartasPartidaDto cartaAnterior = cartasColumna.get(inicio - 1);
-                            cartaAnterior.setBocaArriba(1);
-                        }
-
-                        // Actualizar la vista después de mover la secuencia
-                        Platform.runLater(this::RunGameView);
-
-                        // Continuar verificando el resto de la columna
-                        verificarSecuenciaCompleta();
-                        return;
+                    for (int i = 0; i < 13; i++) {
+                        CartasPartidaDto carta = cartasColumna.get(inicio + i);
+                        carta.setEnPila(1);
+                        carta.setColumna(-1);
+                        carta.setOrden(-1);
                     }
+
+                    if (inicio > 0) {
+                        CartasPartidaDto debajo = cartasColumna.get(inicio - 1);
+                        debajo.setBocaArriba(1);
+                    } else {
+                        // Si no hay cartas visibles restantes, voltear la última carta oculta
+                        cartasEnJuego.stream()
+                                .filter(c -> c.getColumna() == columna && c.getBocaArriba() == 0)
+                                .max(Comparator.comparingInt(CartasPartidaDto::getOrden))
+                                .ifPresent(c -> c.setBocaArriba(1));
+                    }
+
+                    RunGameView();
+                    return;
                 }
             }
         }
