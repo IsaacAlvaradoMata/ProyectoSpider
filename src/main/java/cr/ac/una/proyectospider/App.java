@@ -18,14 +18,17 @@ public class App extends Application {
 
         stage.setTitle("Solitario Spider");
         stage.getIcons().add(new Image(getClass().getResourceAsStream("/cr/ac/una/proyectospider/resources/LogoSpiderIcon.png")));
-        stage.setScene(scene);
+
+        FlowController.getInstance().InitializeFlow(stage, null);
+        FlowController.getInstance().goMain("IntroView");
+
+        stage.setMaximized(true);
+        stage.setResizable(false);
         stage.setMinWidth(1450);
         stage.setMinHeight(800);
         FontDepartment.loadFonts();
 
-        FlowController.getInstance().InitializeFlow(stage, null);
-//        FlowController.getInstance().preloadViewsAsync();
-        FlowController.getInstance().goMain("IntroView");
+        stage.show();
     }
 
     public static void main(String[] args) {

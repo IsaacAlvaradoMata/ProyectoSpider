@@ -8,6 +8,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import cr.ac.una.proyectospider.model.JugadorDto;
+import cr.ac.una.proyectospider.model.JugadorRankingMock;
 import cr.ac.una.proyectospider.model.PartidaMock;
 import cr.ac.una.proyectospider.util.AnimationDepartment;
 import cr.ac.una.proyectospider.util.AppContext;
@@ -20,14 +21,15 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
 import javafx.util.Duration;
 
 
@@ -208,7 +210,7 @@ public class MenuController extends Controller implements Initializable {
             for (int i = 1; i <= 15; i++) {
                 partidas.add(new PartidaMock(
                         "2025-05-" + (i < 10 ? "0" + i : i),
-                        (Math.random() * 1000 + 500) + " pts",
+                        ((int) (Math.random() * 9000 + 1000)) + "", // Genera un número entero entre 1000 y 10000
                         (10 + i) + " min"
                 ));
             }
@@ -303,6 +305,17 @@ public class MenuController extends Controller implements Initializable {
 
     @FXML
     private void onMouseClickedbtnVerPuntajes(MouseEvent event) {
+
+        btnVerPuntajes.setDisable(true);
+        AnimationDepartment.stopAllAnimations();
+
+        AnimationDepartment.glitchFadeOut(spBackgroundMenu, Duration.seconds(1.1), () -> {
+            FlowController.getInstance().goView("PointsView");
+            PointsController controller = (PointsController) FlowController.getInstance().getController("PointsView");
+            controller.RunPointsView();
+            Platform.runLater(() -> btnVerPuntajes.setDisable(false));
+
+        });
     }
 
     @FXML
@@ -336,16 +349,69 @@ public class MenuController extends Controller implements Initializable {
     private void populateTableView(){
         TableColumn<PartidaMock, String> colFecha = new TableColumn<>("Fecha");
         colFecha.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getFecha()));
+        applyCustomCellStyleMenu(colFecha);
 
         TableColumn<PartidaMock, String> colPuntaje = new TableColumn<>("Puntaje");
         colPuntaje.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getPuntaje()));
+        applyCustomCellStyleMenu(colPuntaje);
+
 
         TableColumn<PartidaMock, String> colTiempo = new TableColumn<>("Tiempo Jugado");
         colTiempo.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getTiempo()));
+        applyCustomCellStyleMenu(colTiempo);
 
 // Aplica estilos opcionales si tienes CSS
         tblviewPartidasPausadas.getColumns().setAll(colFecha, colPuntaje, colTiempo);
-
-
     }
+
+    private void applyCustomCellStyleMenu(TableColumn<PartidaMock, String> column) {
+        column.setCellFactory(col -> new TableCell<>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setGraphic(null);
+                    setStyle("");
+                } else {
+                    Text text = new Text(item);
+                    text.setStyle("-fx-font-size: 16px;");
+
+                    DropShadow glow = new DropShadow();
+                    glow.setColor(Color.web("#ff65ff"));
+                    glow.setRadius(15);
+                    glow.setSpread(0.6);
+                    glow.setOffsetX(0);
+                    glow.setOffsetY(0);
+                    text.setEffect(glow);
+
+                    setGraphic(text);
+
+                    TableRow<?> row = getTableRow();
+                    if (row != null) {
+                        row.selectedProperty().addListener((obs, wasSelected, isSelected) -> {
+                            if (isSelected) {
+                                text.setFill(Color.web("#000000")); // Texto negro cuando la fila está seleccionada
+                                setStyle("-fx-background-color: #ffc107; -fx-alignment: CENTER;"); // Fondo dorado
+                            } else {
+                                text.setFill(Color.web("#ff00ff")); // Texto morado cuando no está seleccionada
+                                setStyle("-fx-background-color: #2d0062; -fx-alignment: CENTER;"); // Fondo oscuro
+                            }
+                        });
+
+                        // Aplicar estilos al cargar la celda
+                        if (row.isSelected()) {
+                            text.setFill(Color.web("#000000"));
+                            setStyle("-fx-background-color: #ffc107; -fx-alignment: CENTER;");
+                        } else {
+                            text.setFill(Color.web("#ff00ff"));
+                            setStyle("-fx-background-color: #2d0062; -fx-alignment: CENTER;");
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+
+
 }
