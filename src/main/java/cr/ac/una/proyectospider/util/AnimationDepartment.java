@@ -740,6 +740,80 @@ public class AnimationDepartment {
         new SequentialTransition(glitch, fade).play();
     }
 
+    public static void animateSpiderWithWeb(ImageView tela, ImageView arana, Duration pauseBetweenCycles) {
+        tela.setOpacity(0);
+        tela.setScaleX(1.0);
+        tela.setScaleY(1.0);
+        tela.setTranslateY(0);
+        arana.setOpacity(0);
+        arana.setTranslateY(-600);
+
+        Rectangle revealClip = new Rectangle(0, 0, tela.getFitWidth(), 0);
+        tela.setClip(revealClip);
+        tela.setOpacity(1);
+
+        Timeline revealWeb = new Timeline(
+                new KeyFrame(Duration.seconds(0),
+                        new KeyValue(revealClip.heightProperty(), 0)),
+                new KeyFrame(Duration.seconds(0.7),
+                        new KeyValue(revealClip.heightProperty(), tela.getFitHeight(), Interpolator.EASE_OUT))
+        );
+
+        revealWeb.setOnFinished(ev -> tela.setClip(null)); // ✅ remove clip once full shown
+
+        PauseTransition delayBeforeDrop = new PauseTransition(Duration.seconds(0.2));
+        delayBeforeDrop.setOnFinished(ev -> {
+            arana.setOpacity(1);
+            TranslateTransition bajar = new TranslateTransition(Duration.seconds(2), arana);
+            bajar.setToY(95);
+            bajar.play();
+            activeAnimations.add(bajar);
+        });
+
+        PauseTransition delayBeforeRise = new PauseTransition(Duration.seconds(3.5));
+        delayBeforeRise.setOnFinished(ev -> {
+            TranslateTransition subir = new TranslateTransition(Duration.seconds(3), arana);
+            subir.setToY(-600);
+            subir.setInterpolator(Interpolator.EASE_BOTH);
+            subir.setOnFinished(e -> {
+                arana.setOpacity(0);
+                // 🧵 Efecto inverso de replegar telaraña
+                Rectangle closeClip = new Rectangle(0, 0, tela.getFitWidth(), tela.getFitHeight());
+                tela.setClip(closeClip);
+
+                Timeline hideWeb = new Timeline(
+                        new KeyFrame(Duration.ZERO,
+                                new KeyValue(closeClip.heightProperty(), tela.getFitHeight())),
+                        new KeyFrame(Duration.seconds(0.6),
+                                new KeyValue(closeClip.heightProperty(), 0, Interpolator.EASE_IN))
+                );
+
+                hideWeb.setOnFinished(end -> {
+                    tela.setClip(null);
+                    tela.setOpacity(0);
+                });
+
+                hideWeb.play();
+                activeAnimations.add(hideWeb);
+            });
+            subir.play();
+            activeAnimations.add(subir);
+        });
+
+        SequentialTransition ciclo = new SequentialTransition(revealWeb, delayBeforeDrop, delayBeforeRise);
+        ciclo.setOnFinished(e -> {
+            PauseTransition pausa = new PauseTransition(pauseBetweenCycles);
+            pausa.setOnFinished(ev -> animateSpiderWithWeb(tela, arana, pauseBetweenCycles));
+            pausa.play();
+            activeAnimations.add(pausa);
+        });
+
+        ciclo.play();
+        activeAnimations.add(ciclo);
+    }
+
+
+
 
 
 
