@@ -16,6 +16,10 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.*;
 import javafx.util.Duration;
+import javafx.scene.SnapshotParameters;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
 
 import java.net.URL;
 import java.util.*;
@@ -72,9 +76,9 @@ public class GameController extends Controller implements Initializable {
 
     private List<CartasPartidaDto> cartasEnJuego;
     private List<CartasPartidaDto> cartasSeleccionadas = new ArrayList<>();
-   private boolean esperandoDestino = false;
-
-
+    private List<CartasPartidaDto> cartasArrastradas = new ArrayList<>();
+    private boolean esperandoDestino = false;
+    private Map<CartasPartidaDto, ImageView> cartaToImageView = new HashMap<>();
 
     @FXML
     void oMouseClickedbtnGuardarySalir(MouseEvent event) {
@@ -207,6 +211,8 @@ public void RunGameView() {
             img.setSmooth(true);
             img.setLayoutY(carta.getOrden() * desplazamiento);
 
+            cartaToImageView.put(carta, img);
+
             if (carta.getBocaArriba() == 1) {
                 // Selección por clic (ya existía)
                 img.setOnMouseClicked(e -> {
@@ -247,16 +253,51 @@ public void RunGameView() {
                     e.consume();
                     cartasSeleccionadas.clear();
                     cartasSeleccionadas.addAll(obtenerGrupoDesde(carta));
+                    // Guarda una copia de las cartas arrastradas
+                    cartasArrastradas.clear();
+                    cartasArrastradas.addAll(cartasSeleccionadas);
                     System.out.println("DragDetected, seleccionadas: " + cartasSeleccionadas.size());
                     Dragboard db = img.startDragAndDrop(TransferMode.MOVE);
                     ClipboardContent content = new ClipboardContent();
                     content.putString(carta.getIdCartaPartida().toString());
                     db.setContent(content);
+                    // Oculta todas las cartas seleccionadas mientras se arrastran
+                    for (CartasPartidaDto c : cartasSeleccionadas) {
+                        ImageView iv = cartaToImageView.get(c);
+                        if (iv != null) iv.setVisible(false);
+                    }
+                    // Previsualización de las cartas arrastradas
+                    if (cartasSeleccionadas.size() == 1) {
+                        ImageView iv = cartaToImageView.get(cartasSeleccionadas.get(0));
+                        if (iv != null) db.setDragView(iv.getImage());
+                    } else if (cartasSeleccionadas.size() > 1) {
+                        // Crear imagen apilada
+                        double width = 70;
+                        double height = 22 * (cartasSeleccionadas.size() - 1) + 100; // 100 es el alto de la carta
+                        Canvas canvas = new Canvas(width, height);
+                        GraphicsContext gc = canvas.getGraphicsContext2D();
+                        for (int i = 0; i < cartasSeleccionadas.size(); i++) {
+                            ImageView iv = cartaToImageView.get(cartasSeleccionadas.get(i));
+                            if (iv != null) {
+                                gc.drawImage(iv.getImage(), 0, i * 22, width, 100);
+                            }
+                        }
+                        SnapshotParameters params = new SnapshotParameters();
+                        params.setFill(Color.TRANSPARENT);
+                        javafx.scene.image.Image dragImg = canvas.snapshot(params, null);
+                        db.setDragView(dragImg);
+                    }
                 });
 
                 // Final del drag
                 img.setOnDragDone(e -> {
                     e.consume();
+                    // Vuelve a mostrar todas las cartas arrastradas al finalizar el drag
+                    for (CartasPartidaDto c : cartasArrastradas) {
+                        ImageView iv = cartaToImageView.get(c);
+                        if (iv != null) iv.setVisible(true);
+                    }
+                    cartasArrastradas.clear();
                 });
             }
 
