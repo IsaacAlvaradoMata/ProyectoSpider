@@ -114,7 +114,7 @@ public class GameController extends Controller implements Initializable {
 public void RunGameView() {
     ResetGameView();
     if (cartasEnJuego == null) {
-        cartasEnJuego = MazoGenerator.generarMazoPorDificultad("FACIL");
+        cartasEnJuego = MazoGenerator.generarMazoPorDificultad("MEDIA");
     }
 
     hboxTablero.getChildren().clear();
@@ -153,10 +153,14 @@ public void RunGameView() {
                     // Columna vacía: aceptar cualquier grupo válido
                     puedeMover = esGrupoValido(cartasSeleccionadas);
                 } else {
-                    puedeMover = esGrupoValido(cartasSeleccionadas)
-                            && cartaDestino.getPalo().equals(cartaOrigen.getPalo())
-                            && Integer.parseInt(cartaDestino.getValor()) ==
-                            Integer.parseInt(cartaOrigen.getValor()) + 1;
+                    if (cartasSeleccionadas.size() == 1) {
+                        // Permitir mover una carta sobre otra si es un valor menor, sin importar el palo
+                        puedeMover = Integer.parseInt(cartaDestino.getValor()) == Integer.parseInt(cartaOrigen.getValor()) + 1;
+                    } else {
+                        // Para grupos, exigir secuencia válida (orden descendente y boca arriba, sin importar el palo)
+                        puedeMover = esGrupoValido(cartasSeleccionadas)
+                                && Integer.parseInt(cartaDestino.getValor()) == Integer.parseInt(cartaOrigen.getValor()) + 1;
+                    }
                 }
 
                 if (puedeMover) {
@@ -221,7 +225,6 @@ public void RunGameView() {
                         CartasPartidaDto cartaDestino = carta;
                         CartasPartidaDto cartaOrigen = cartasSeleccionadas.get(0);
                         boolean puedeMover = esGrupoValido(cartasSeleccionadas)
-                                && cartaDestino.getPalo().equals(cartaOrigen.getPalo())
                                 && Integer.parseInt(cartaDestino.getValor()) == Integer.parseInt(cartaOrigen.getValor()) + 1;
                         if (puedeMover) {
                             int colAnterior = cartaOrigen.getColumna();
@@ -426,25 +429,22 @@ public void RunGameView() {
         verificarSecuenciaCompleta();
     }
 
-
-
     private boolean esGrupoValido(List<CartasPartidaDto> grupo) {
         if (grupo.isEmpty()) return false;
 
         String palo = grupo.get(0).getPalo();
         int valor = Integer.parseInt(grupo.get(0).getValor());
+        if (grupo.get(0).getBocaArriba() != 1) return false;
 
         for (int i = 1; i < grupo.size(); i++) {
             CartasPartidaDto actual = grupo.get(i);
             int valorActual = Integer.parseInt(actual.getValor());
-
-            if (!actual.getPalo().equals(palo) || valorActual != valor - 1) {
+            // Debe ser descendente y del mismo palo
+            if (valorActual != valor - 1 || actual.getBocaArriba() != 1 || !actual.getPalo().equals(palo)) {
                 return false;
             }
-
             valor = valorActual;
         }
-
         return true;
     }
 
