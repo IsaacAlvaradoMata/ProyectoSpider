@@ -4,6 +4,8 @@ import cr.ac.una.proyectospider.model.CartasPartidaDto;
 import cr.ac.una.proyectospider.util.AnimationDepartment;
 import cr.ac.una.proyectospider.util.FlowController;
 import cr.ac.una.proyectospider.util.MazoGenerator;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -60,10 +62,10 @@ public class GameController extends Controller implements Initializable {
     private Label lblPuntaje;
 
     @FXML
-    private Label lblTiempo;
+    private Label lblTitullo;
 
     @FXML
-    private Label lblTitullo;
+    private Label lblTiempo;
 
     @FXML
     private BorderPane root;
@@ -79,20 +81,23 @@ public class GameController extends Controller implements Initializable {
     private List<CartasPartidaDto> cartasArrastradas = new ArrayList<>();
     private boolean esperandoDestino = false;
     private Map<CartasPartidaDto, ImageView> cartaToImageView = new HashMap<>();
+    private int puntaje = 500;
+    private int movimientos = 0;
+    private Timeline timeline;
+    private int segundosTranscurridos = 0;
+    private boolean tiempoIniciado = false;
 
     @FXML
     void oMouseClickedbtnGuardarySalir(MouseEvent event) {
 
         btnGuardarySalir.setDisable(true);
         AnimationDepartment.stopAllAnimations();
-
-//        AnimationDepartment.glitchFadeOut(spGamebackground, Duration.seconds(1.1), () -> {
-            FlowController.getInstance().goView("MenuView");
-            MenuController controller = (MenuController) FlowController.getInstance().getController("MenuView");
-            controller.RunMenuView();
-            Platform.runLater(() -> btnGuardarySalir.setDisable(false));
-
-//        });
+        detenerTemporizador();
+        tiempoIniciado = false;
+        FlowController.getInstance().goView("MenuView");
+        MenuController controller = (MenuController) FlowController.getInstance().getController("MenuView");
+        controller.RunMenuView();
+        Platform.runLater(() -> btnGuardarySalir.setDisable(false));
 
     }
 
@@ -111,296 +116,309 @@ public class GameController extends Controller implements Initializable {
 
     }
 
-public void RunGameView() {
-    ResetGameView();
-    if (cartasEnJuego == null) {
-        cartasEnJuego = MazoGenerator.generarMazoPorDificultad("MEDIA");
-    }
-
-    hboxTablero.getChildren().clear();
-    hboxTableroSuperior.getChildren().clear();
-    imgMazo.setImage(null);
-
-    // Creamos las 10 columnas y les añadimos handlers de drag & drop
-    for (int col = 0; col < 10; col++) {
-        final int colIndex = col;
-        Pane columna = new Pane();
-        columna.setPrefWidth(80);
-        columna.setPrefHeight(600);
-
-        // Permitir soltar sobre la columna
-        columna.setOnDragOver(event -> {
-            if (event.getDragboard().hasString()) {
-                event.acceptTransferModes(TransferMode.MOVE);
-            }
-            event.consume();
-        });
-
-        // Manejar el drop
-        columna.setOnDragDropped(event -> {
-            Dragboard db = event.getDragboard();
-            boolean success = false;
-            if (db.hasString() && !cartasSeleccionadas.isEmpty()) {
-                // Nos guardamos origen antes de mover
-                CartasPartidaDto cartaOrigen = cartasSeleccionadas.get(0);
-                int colAnterior = cartaOrigen.getColumna();
-                int ordenAnterior = cartaOrigen.getOrden();
-
-                // Encontramos la carta destino (última visible en la columna destino)
-                CartasPartidaDto cartaDestino = obtenerUltimaCartaVisible(colIndex);
-                boolean puedeMover;
-                if (cartaDestino == null) {
-                    // Columna vacía: aceptar cualquier grupo válido
-                    puedeMover = esGrupoValido(cartasSeleccionadas);
-                } else {
-                    if (cartasSeleccionadas.size() == 1) {
-                        // Permitir mover una carta sobre otra si es un valor menor, sin importar el palo
-                        puedeMover = Integer.parseInt(cartaDestino.getValor()) == Integer.parseInt(cartaOrigen.getValor()) + 1;
-                    } else {
-                        // Para grupos, exigir secuencia válida (orden descendente y boca arriba, sin importar el palo)
-                        puedeMover = esGrupoValido(cartasSeleccionadas)
-                                && Integer.parseInt(cartaDestino.getValor()) == Integer.parseInt(cartaOrigen.getValor()) + 1;
-                    }
-                }
-
-                if (puedeMover) {
-                    // 1) Movemos los datos
-                    moverCartasSeleccionadas(colIndex);
-                    // 2) Volteamos la carta que quedó justo debajo en la columna origen
-                    cartasEnJuego.stream()
-                            .filter(c -> c.getColumna() == colAnterior
-                                    && c.getOrden() == ordenAnterior - 1)
-                            .findFirst()
-                            .ifPresent(c -> c.setBocaArriba(1));
-                    // 3) Refrescamos TODO el tablero
-                    RunGameView();
-                    success = true;
-                } else {
-                    System.out.println("Drop inválido en columna " + colIndex);
-                }
-                cartasSeleccionadas.clear();
-            }
-            event.setDropCompleted(success);
-            event.consume();
-        });
-
-        hboxTablero.getChildren().add(columna);
-    }
-
-    // Agrupar y ordenar cartas por columna
-    Map<Integer, List<CartasPartidaDto>> columnasMap = new HashMap<>();
-    for (CartasPartidaDto carta : cartasEnJuego) {
-        if (carta.getColumna() != -1) {
-            columnasMap
-                    .computeIfAbsent(carta.getColumna(), k -> new ArrayList<>())
-                    .add(carta);
+    public void RunGameView() {
+        ResetGameView();
+        if (cartasEnJuego == null) {
+            cartasEnJuego = MazoGenerator.generarMazoPorDificultad("MEDIA");
         }
-    }
 
-    double desplazamiento = 22;
-    for (int col = 0; col < 10; col++) {
-        Pane columna = (Pane) hboxTablero.getChildren().get(col);
-        columna.getChildren().clear();
+        // Detener temporizador y resetear tiempo solo si es un nuevo juego
+        if (!tiempoIniciado) {
+            segundosTranscurridos = 0;
+            actualizarLabelTiempo();
+            detenerTemporizador();
+        }
 
-        List<CartasPartidaDto> cartasColumna = columnasMap.getOrDefault(col, new ArrayList<>());
-        cartasColumna.sort(Comparator.comparingInt(CartasPartidaDto::getOrden));
+        hboxTablero.getChildren().clear();
+        hboxTableroSuperior.getChildren().clear();
+        imgMazo.setImage(null);
 
-        for (CartasPartidaDto carta : cartasColumna) {
-            String imgArchivo = carta.getBocaArriba() == 1 ? carta.getImagenNombre() : "rear.png";
+        // Actualizar labels de puntaje y movimientos
+        lblPuntaje.setText("Puntaje: " + puntaje);
+        lblMovimientos.setText("Movimientos: " + movimientos);
+        actualizarLabelTiempo();
 
-            ImageView img = new ImageView(new Image(getClass().getResourceAsStream(
-                    "/cr/ac/una/proyectospider/resources/" + imgArchivo)));
-            img.setFitWidth(70);
-            img.setPreserveRatio(true);
-            img.setSmooth(true);
-            img.setLayoutY(carta.getOrden() * desplazamiento);
+        // Creamos las 10 columnas y les añadimos handlers de drag & drop
+        for (int col = 0; col < 10; col++) {
+            final int colIndex = col;
+            Pane columna = new Pane();
+            columna.setPrefWidth(80);
+            columna.setPrefHeight(600);
 
-            cartaToImageView.put(carta, img);
+            // Permitir soltar sobre la columna
+            columna.setOnDragOver(event -> {
+                if (event.getDragboard().hasString()) {
+                    event.acceptTransferModes(TransferMode.MOVE);
+                }
+                event.consume();
+            });
 
-            if (carta.getBocaArriba() == 1) {
-                // Selección por clic (ya existía)
-                img.setOnMouseClicked(e -> {
-                    e.consume();
-                    if (esperandoDestino && !cartasSeleccionadas.isEmpty()) {
-                        CartasPartidaDto cartaDestino = carta;
-                        CartasPartidaDto cartaOrigen = cartasSeleccionadas.get(0);
-                        boolean puedeMover = esGrupoValido(cartasSeleccionadas)
-                                && Integer.parseInt(cartaDestino.getValor()) == Integer.parseInt(cartaOrigen.getValor()) + 1;
-                        if (puedeMover) {
-                            int colAnterior = cartaOrigen.getColumna();
-                            int ordenAnterior = cartaOrigen.getOrden();
-                            int nuevaCol = cartaDestino.getColumna();
-                            moverCartasSeleccionadas(nuevaCol);
-                            cartasEnJuego.stream()
-                                    .filter(c -> c.getColumna() == colAnterior && c.getOrden() == ordenAnterior - 1)
-                                    .findFirst()
-                                    .ifPresent(c -> c.setBocaArriba(1));
-                            esperandoDestino = false;
-                            cartasSeleccionadas.clear();
-                            RunGameView();
-                        } else {
-                            System.out.println("Movimiento inválido entre cartas.");
-                            esperandoDestino = false;
-                            cartasSeleccionadas.clear();
-                        }
+            // Manejar el drop
+            columna.setOnDragDropped(event -> {
+                Dragboard db = event.getDragboard();
+                boolean success = false;
+                if (db.hasString() && !cartasSeleccionadas.isEmpty()) {
+                    // Nos guardamos origen antes de mover
+                    CartasPartidaDto cartaOrigen = cartasSeleccionadas.get(0);
+                    int colAnterior = cartaOrigen.getColumna();
+                    int ordenAnterior = cartaOrigen.getOrden();
+
+                    // Encontramos la carta destino (última visible en la columna destino)
+                    CartasPartidaDto cartaDestino = obtenerUltimaCartaVisible(colIndex);
+                    boolean puedeMover;
+                    if (cartaDestino == null) {
+                        // Columna vacía: aceptar cualquier grupo válido
+                        puedeMover = esGrupoValido(cartasSeleccionadas);
                     } else {
-                        cartasSeleccionadas.clear();
-                        List<CartasPartidaDto> grupo = obtenerGrupoDesde(carta);
-                        cartasSeleccionadas.addAll(grupo);
-                        esperandoDestino = true;
-                        // --- AUTO-MOVE: Si solo se hace un clic, buscar destino y mover automáticamente ---
-                        int destino = buscarMejorDestinoAutoMove(grupo);
-                        if (destino != -1) {
-                            int colAnterior = carta.getColumna();
-                            int ordenAnterior = carta.getOrden();
-                            moverCartasSeleccionadas(destino);
-                            cartasEnJuego.stream()
-                                    .filter(c2 -> c2.getColumna() == colAnterior && c2.getOrden() == ordenAnterior - 1)
-                                    .findFirst()
-                                    .ifPresent(c2 -> c2.setBocaArriba(1));
-                            esperandoDestino = false;
-                            cartasSeleccionadas.clear();
-                            RunGameView();
+                        if (cartasSeleccionadas.size() == 1) {
+                            // Permitir mover una carta sobre otra si es un valor menor, sin importar el palo
+                            puedeMover = Integer.parseInt(cartaDestino.getValor()) == Integer.parseInt(cartaOrigen.getValor()) + 1;
                         } else {
-                            // Si no hay destino válido, mantener selección manual
-                            System.out.println("No hay destino válido para auto-move");
+                            // Para grupos, exigir secuencia válida (orden descendente y boca arriba, sin importar el palo)
+                            puedeMover = esGrupoValido(cartasSeleccionadas)
+                                    && Integer.parseInt(cartaDestino.getValor()) == Integer.parseInt(cartaOrigen.getValor()) + 1;
                         }
-                        // --- FIN AUTO-MOVE ---
                     }
-                });
 
-                // Inicio de drag: cargamos el mismo grupo que con click
-                img.setOnDragDetected(e -> {
-                    e.consume();
+                    if (puedeMover) {
+                        // 1) Movemos los datos
+                        moverCartasSeleccionadas(colIndex);
+                        // 2) Volteamos la carta que quedó justo debajo en la columna origen
+                        cartasEnJuego.stream()
+                                .filter(c -> c.getColumna() == colAnterior
+                                        && c.getOrden() == ordenAnterior - 1)
+                                .findFirst()
+                                .ifPresent(c -> c.setBocaArriba(1));
+                        // 3) Refrescamos TODO el tablero
+                        RunGameView();
+                        success = true;
+                    } else {
+                        System.out.println("Drop inválido en columna " + colIndex);
+                    }
                     cartasSeleccionadas.clear();
-                    cartasSeleccionadas.addAll(obtenerGrupoDesde(carta));
-                    // Guarda una copia de las cartas arrastradas
-                    cartasArrastradas.clear();
-                    cartasArrastradas.addAll(cartasSeleccionadas);
-                    System.out.println("DragDetected, seleccionadas: " + cartasSeleccionadas.size());
-                    Dragboard db = img.startDragAndDrop(TransferMode.MOVE);
-                    ClipboardContent content = new ClipboardContent();
-                    content.putString(carta.getIdCartaPartida().toString());
-                    db.setContent(content);
-                    // Oculta todas las cartas seleccionadas mientras se arrastran
-                    for (CartasPartidaDto c : cartasSeleccionadas) {
-                        ImageView iv = cartaToImageView.get(c);
-                        if (iv != null) iv.setVisible(false);
-                    }
-                    // Previsualización de las cartas arrastradas
-                    if (cartasSeleccionadas.size() == 1) {
-                        ImageView iv = cartaToImageView.get(cartasSeleccionadas.get(0));
-                        if (iv != null) db.setDragView(iv.getImage());
-                    } else if (cartasSeleccionadas.size() > 1) {
-                        // Crear imagen apilada
-                        double width = 70;
-                        double height = 22 * (cartasSeleccionadas.size() - 1) + 100; // 100 es el alto de la carta
-                        Canvas canvas = new Canvas(width, height);
-                        GraphicsContext gc = canvas.getGraphicsContext2D();
-                        for (int i = 0; i < cartasSeleccionadas.size(); i++) {
-                            ImageView iv = cartaToImageView.get(cartasSeleccionadas.get(i));
-                            if (iv != null) {
-                                gc.drawImage(iv.getImage(), 0, i * 22, width, 100);
-                            }
-                        }
-                        SnapshotParameters params = new SnapshotParameters();
-                        params.setFill(Color.TRANSPARENT);
-                        javafx.scene.image.Image dragImg = canvas.snapshot(params, null);
-                        db.setDragView(dragImg);
-                    }
-                });
+                }
+                event.setDropCompleted(success);
+                event.consume();
+            });
 
-                // Final del drag
-                img.setOnDragDone(e -> {
-                    e.consume();
-                    // Vuelve a mostrar todas las cartas arrastradas al finalizar el drag
-                    for (CartasPartidaDto c : cartasArrastradas) {
-                        ImageView iv = cartaToImageView.get(c);
-                        if (iv != null) iv.setVisible(true);
-                    }
-                    cartasArrastradas.clear();
-                });
-            }
-
-            columna.getChildren().add(img);
+            hboxTablero.getChildren().add(columna);
         }
-    }
 
-    hboxTableroSuperior.setSpacing(10);
+        // Agrupar y ordenar cartas por columna
+        Map<Integer, List<CartasPartidaDto>> columnasMap = new HashMap<>();
+        for (CartasPartidaDto carta : cartasEnJuego) {
+            if (carta.getColumna() != -1) {
+                columnasMap
+                        .computeIfAbsent(carta.getColumna(), k -> new ArrayList<>())
+                        .add(carta);
+            }
+        }
 
-    // Verificar si hay cartas en el mazo
-    boolean hayCartasEnMazo = cartasEnJuego.stream()
-            .anyMatch(c -> c.getEnMazo() == 1);
+        double desplazamiento = 22;
+        for (int col = 0; col < 10; col++) {
+            Pane columna = (Pane) hboxTablero.getChildren().get(col);
+            columna.getChildren().clear();
 
-    // Solo mostrar el mazo si hay cartas disponibles
-    if (hayCartasEnMazo) {
-        imgMazo = new ImageView(new Image(getClass().getResourceAsStream("/cr/ac/una/proyectospider/resources/rear.png")));
-        imgMazo.setFitWidth(70);
-        imgMazo.setPreserveRatio(true);
-        imgMazo.setSmooth(true);
-        imgMazo.setOnMouseClicked(e -> repartirCartasDelMazo());
-        hboxTableroSuperior.getChildren().add(imgMazo);
-    } else {
-        Region espacioMazo = new Region();
-        espacioMazo.setPrefWidth(70);
-        hboxTableroSuperior.getChildren().add(espacioMazo);
-    }
+            List<CartasPartidaDto> cartasColumna = columnasMap.getOrDefault(col, new ArrayList<>());
+            cartasColumna.sort(Comparator.comparingInt(CartasPartidaDto::getOrden));
 
-    Region espacio = new Region();
-    espacio.setPrefWidth(70);
-    hboxTableroSuperior.getChildren().add(espacio);
+            for (CartasPartidaDto carta : cartasColumna) {
+                String imgArchivo = carta.getBocaArriba() == 1 ? carta.getImagenNombre() : "rear.png";
 
-    // Contar cuántas secuencias completas se han movido a las pilas
-    long secuenciasCompletadas = cartasEnJuego.stream()
-            .filter(c -> c.getEnPila() == 1)
-            .count() / 13; // Cada secuencia tiene 13 cartas
+                ImageView img = new ImageView(new Image(getClass().getResourceAsStream(
+                        "/cr/ac/una/proyectospider/resources/" + imgArchivo)));
+                img.setFitWidth(70);
+                img.setPreserveRatio(true);
+                img.setSmooth(true);
+                img.setLayoutY(carta.getOrden() * desplazamiento);
 
-    System.out.println("Secuencias completadas: " + secuenciasCompletadas);
+                cartaToImageView.put(carta, img);
 
-    // Mostrar las pilas completadas y las vacías
-    for (int i = 0; i < 8; i++) {
-        ImageView pila;
+                if (carta.getBocaArriba() == 1) {
+                    // Selección por clic (ya existía)
+                    img.setOnMouseClicked(e -> {
+                        e.consume();
+                        if (esperandoDestino && !cartasSeleccionadas.isEmpty()) {
+                            CartasPartidaDto cartaDestino = carta;
+                            CartasPartidaDto cartaOrigen = cartasSeleccionadas.get(0);
+                            boolean puedeMover = esGrupoValido(cartasSeleccionadas)
+                                    && Integer.parseInt(cartaDestino.getValor()) == Integer.parseInt(cartaOrigen.getValor()) + 1;
+                            if (puedeMover) {
+                                int colAnterior = cartaOrigen.getColumna();
+                                int ordenAnterior = cartaOrigen.getOrden();
+                                int nuevaCol = cartaDestino.getColumna();
+                                moverCartasSeleccionadas(nuevaCol);
+                                cartasEnJuego.stream()
+                                        .filter(c -> c.getColumna() == colAnterior && c.getOrden() == ordenAnterior - 1)
+                                        .findFirst()
+                                        .ifPresent(c -> c.setBocaArriba(1));
+                                esperandoDestino = false;
+                                cartasSeleccionadas.clear();
+                                RunGameView();
+                            } else {
+                                System.out.println("Movimiento inválido entre cartas.");
+                                esperandoDestino = false;
+                                cartasSeleccionadas.clear();
+                            }
+                        } else {
+                            cartasSeleccionadas.clear();
+                            List<CartasPartidaDto> grupo = obtenerGrupoDesde(carta);
+                            cartasSeleccionadas.addAll(grupo);
+                            esperandoDestino = true;
+                            // --- AUTO-MOVE: Si solo se hace un clic, buscar destino y mover automáticamente ---
+                            int destino = buscarMejorDestinoAutoMove(grupo);
+                            if (destino != -1) {
+                                int colAnterior = carta.getColumna();
+                                int ordenAnterior = carta.getOrden();
+                                moverCartasSeleccionadas(destino);
+                                cartasEnJuego.stream()
+                                        .filter(c2 -> c2.getColumna() == colAnterior && c2.getOrden() == ordenAnterior - 1)
+                                        .findFirst()
+                                        .ifPresent(c2 -> c2.setBocaArriba(1));
+                                esperandoDestino = false;
+                                cartasSeleccionadas.clear();
+                                RunGameView();
+                            } else {
+                                // Si no hay destino válido, mantener selección manual
+                                System.out.println("No hay destino válido para auto-move");
+                            }
+                            // --- FIN AUTO-MOVE ---
+                        }
+                    });
 
-        if (i < secuenciasCompletadas) {
-            int pilaActual = i;
-            String paloSecuencia = cartasEnJuego.stream()
-                    .filter(c -> c.getEnPila() == 1)
-                    .skip(pilaActual * 13)
-                    .findFirst()
-                    .map(CartasPartidaDto::getPalo)
-                    .orElse("C");
+                    // Inicio de drag: cargamos el mismo grupo que con click
+                    img.setOnDragDetected(e -> {
+                        e.consume();
+                        cartasSeleccionadas.clear();
+                        cartasSeleccionadas.addAll(obtenerGrupoDesde(carta));
+                        // Guarda una copia de las cartas arrastradas
+                        cartasArrastradas.clear();
+                        cartasArrastradas.addAll(cartasSeleccionadas);
+                        System.out.println("DragDetected, seleccionadas: " + cartasSeleccionadas.size());
+                        Dragboard db = img.startDragAndDrop(TransferMode.MOVE);
+                        ClipboardContent content = new ClipboardContent();
+                        content.putString(carta.getIdCartaPartida().toString());
+                        db.setContent(content);
+                        // Oculta todas las cartas seleccionadas mientras se arrastran
+                        for (CartasPartidaDto c : cartasSeleccionadas) {
+                            ImageView iv = cartaToImageView.get(c);
+                            if (iv != null) iv.setVisible(false);
+                        }
+                        // Previsualización de las cartas arrastradas
+                        if (cartasSeleccionadas.size() == 1) {
+                            ImageView iv = cartaToImageView.get(cartasSeleccionadas.get(0));
+                            if (iv != null) db.setDragView(iv.getImage());
+                        } else if (cartasSeleccionadas.size() > 1) {
+                            // Crear imagen apilada
+                            double width = 70;
+                            double height = 22 * (cartasSeleccionadas.size() - 1) + 100; // 100 es el alto de la carta
+                            Canvas canvas = new Canvas(width, height);
+                            GraphicsContext gc = canvas.getGraphicsContext2D();
+                            for (int i = 0; i < cartasSeleccionadas.size(); i++) {
+                                ImageView iv = cartaToImageView.get(cartasSeleccionadas.get(i));
+                                if (iv != null) {
+                                    gc.drawImage(iv.getImage(), 0, i * 22, width, 100);
+                                }
+                            }
+                            SnapshotParameters params = new SnapshotParameters();
+                            params.setFill(Color.TRANSPARENT);
+                            javafx.scene.image.Image dragImg = canvas.snapshot(params, null);
+                            db.setDragView(dragImg);
+                        }
+                    });
 
-            CartasPartidaDto cartaAs = cartasEnJuego.stream()
-                    .filter(c -> c.getEnPila() == 1 && c.getPalo().equals(paloSecuencia) && c.getValor().equals("1"))
-                    .findFirst()
-                    .orElse(null);
+                    // Final del drag
+                    img.setOnDragDone(e -> {
+                        e.consume();
+                        // Vuelve a mostrar todas las cartas arrastradas al finalizar el drag
+                        for (CartasPartidaDto c : cartasArrastradas) {
+                            ImageView iv = cartaToImageView.get(c);
+                            if (iv != null) iv.setVisible(true);
+                        }
+                        cartasArrastradas.clear();
+                    });
+                }
 
-            if (cartaAs != null && cartaAs.getImagenNombre() != null) {
-                pila = new ImageView(new Image(getClass().getResourceAsStream(
-                        "/cr/ac/una/proyectospider/resources/" + cartaAs.getImagenNombre())));
+                columna.getChildren().add(img);
+            }
+        }
+
+        hboxTableroSuperior.setSpacing(10);
+
+        // Verificar si hay cartas en el mazo
+        boolean hayCartasEnMazo = cartasEnJuego.stream()
+                .anyMatch(c -> c.getEnMazo() == 1);
+
+        // Solo mostrar el mazo si hay cartas disponibles
+        if (hayCartasEnMazo) {
+            imgMazo = new ImageView(new Image(getClass().getResourceAsStream("/cr/ac/una/proyectospider/resources/rear.png")));
+            imgMazo.setFitWidth(70);
+            imgMazo.setPreserveRatio(true);
+            imgMazo.setSmooth(true);
+            imgMazo.setOnMouseClicked(e -> repartirCartasDelMazo());
+            hboxTableroSuperior.getChildren().add(imgMazo);
+        } else {
+            Region espacioMazo = new Region();
+            espacioMazo.setPrefWidth(70);
+            hboxTableroSuperior.getChildren().add(espacioMazo);
+        }
+
+        Region espacio = new Region();
+        espacio.setPrefWidth(70);
+        hboxTableroSuperior.getChildren().add(espacio);
+
+        // Contar cuántas secuencias completas se han movido a las pilas
+        long secuenciasCompletadas = cartasEnJuego.stream()
+                .filter(c -> c.getEnPila() == 1)
+                .count() / 13; // Cada secuencia tiene 13 cartas
+
+        System.out.println("Secuencias completadas: " + secuenciasCompletadas);
+
+        // Mostrar las pilas completadas y las vacías
+        for (int i = 0; i < 8; i++) {
+            ImageView pila;
+
+            if (i < secuenciasCompletadas) {
+                int pilaActual = i;
+                String paloSecuencia = cartasEnJuego.stream()
+                        .filter(c -> c.getEnPila() == 1)
+                        .skip(pilaActual * 13)
+                        .findFirst()
+                        .map(CartasPartidaDto::getPalo)
+                        .orElse("C");
+
+                CartasPartidaDto cartaAs = cartasEnJuego.stream()
+                        .filter(c -> c.getEnPila() == 1 && c.getPalo().equals(paloSecuencia) && c.getValor().equals("1"))
+                        .findFirst()
+                        .orElse(null);
+
+                if (cartaAs != null && cartaAs.getImagenNombre() != null) {
+                    pila = new ImageView(new Image(getClass().getResourceAsStream(
+                            "/cr/ac/una/proyectospider/resources/" + cartaAs.getImagenNombre())));
+                } else {
+                    pila = new ImageView(new Image(getClass().getResourceAsStream(
+                            "/cr/ac/una/proyectospider/resources/1C.png")));
+                }
             } else {
                 pila = new ImageView(new Image(getClass().getResourceAsStream(
-                        "/cr/ac/una/proyectospider/resources/1C.png")));
+                        "/cr/ac/una/proyectospider/resources/white.png")));
             }
-        } else {
-            pila = new ImageView(new Image(getClass().getResourceAsStream(
-                    "/cr/ac/una/proyectospider/resources/white.png")));
+
+            pila.setFitWidth(70);
+            pila.setPreserveRatio(true);
+            pila.setSmooth(true);
+            hboxTableroSuperior.getChildren().add(pila);
         }
-
-        pila.setFitWidth(70);
-        pila.setPreserveRatio(true);
-        pila.setSmooth(true);
-        hboxTableroSuperior.getChildren().add(pila);
     }
-}
-
-
 
     public void ResetGameView() {
         hboxTablero.getChildren().clear();
         hboxPilas.getChildren().clear();
-//        imgMazo.setImage(null);
-//        cartasEnJuego = null;
+        if (!tiempoIniciado) {
+            segundosTranscurridos = 0;
+            actualizarLabelTiempo();
+            detenerTemporizador();
+        }
     }
 
     private CartasPartidaDto obtenerUltimaCartaVisible(int columna) {
@@ -419,6 +437,10 @@ public void RunGameView() {
     }
 
     private void moverCartasSeleccionadas(int nuevaColumna) {
+        iniciarTemporizadorSiEsNecesario();
+        movimientos++;
+        puntaje = Math.max(0, puntaje - 1);
+
         int nuevoOrden = cartasEnJuego.stream()
                 .filter(c -> c.getColumna() == nuevaColumna)
                 .mapToInt(CartasPartidaDto::getOrden)
@@ -475,6 +497,10 @@ public void RunGameView() {
      * - Si no quedan cartas en el mazo, este desaparece
      */
     private void repartirCartasDelMazo() {
+        iniciarTemporizadorSiEsNecesario();
+        movimientos++;
+        puntaje = Math.max(0, puntaje - 1);
+
         // Verificar si todas las columnas tienen al menos una carta
         boolean todasColumnasConCartas = true;
         for (int colIndex = 0; colIndex < 10; colIndex++) {
@@ -499,7 +525,6 @@ public void RunGameView() {
 
         if (cartasEnMazo.size() < 10) {
             System.out.println("No hay suficientes cartas en el mazo para repartir");
-            // No es necesario ocultar el mazo aquí, ya que RunGameView() lo manejará
             return;
         }
 
@@ -576,6 +601,8 @@ public void RunGameView() {
                         carta.setOrden(-1);
                     }
 
+                    puntaje += 100;
+
                     if (inicio > 0) {
                         CartasPartidaDto debajo = cartasColumna.get(inicio - 1);
                         debajo.setBocaArriba(1);
@@ -613,7 +640,7 @@ public void RunGameView() {
             } else {
                 // Permitir mover cualquier grupo válido si el valor es descendente en uno, sin importar el palo
                 if (esGrupoValido(grupo)
-                    && Integer.parseInt(cartaDestino.getValor()) == valorOrigen + 1) {
+                        && Integer.parseInt(cartaDestino.getValor()) == valorOrigen + 1) {
                     return col;
                 }
             }
@@ -621,4 +648,28 @@ public void RunGameView() {
         return -1;
     }
 
+    private void iniciarTemporizadorSiEsNecesario() {
+        if (!tiempoIniciado) {
+            tiempoIniciado = true;
+            segundosTranscurridos = 0;
+            timeline = new Timeline(new KeyFrame(Duration.seconds(1), e -> {
+                segundosTranscurridos++;
+                actualizarLabelTiempo();
+            }));
+            timeline.setCycleCount(Timeline.INDEFINITE);
+            timeline.play();
+        }
+    }
+
+    private void detenerTemporizador() {
+        if (timeline != null) timeline.stop();
+    }
+
+    private void actualizarLabelTiempo() {
+        if (lblTiempo != null) {
+            int minutos = segundosTranscurridos / 60;
+            int segundos = segundosTranscurridos % 60;
+            lblTiempo.setText(String.format("Tiempo: %02d:%02d", minutos, segundos));
+        }
+    }
 }

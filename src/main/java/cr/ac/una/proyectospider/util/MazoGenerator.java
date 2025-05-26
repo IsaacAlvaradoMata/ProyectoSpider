@@ -17,7 +17,8 @@ public class MazoGenerator {
         switch (dificultad.toUpperCase()) {
             case "FACIL" -> palos = new String[]{"ESPADAS"};
             case "MEDIA" -> palos = new String[]{"ESPADAS", "CORAZONES"};
-            default -> palos = new String[]{"ESPADAS", "CORAZONES", "DIAMANTES", "TREBOLES"};
+            case "DIFICIL" -> palos = new String[]{"ESPADAS", "CORAZONES", "DIAMANTES", "TREBOLES"};
+            default -> palos = new String[]{"ESPADAS"};
         }
 
         int repeticiones = 104 / (palos.length * 13);
