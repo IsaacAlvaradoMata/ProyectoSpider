@@ -61,7 +61,7 @@ public class PartidaService {
         EntityManager em = emf.createEntityManager();
         try {
             Partida partida = em.createQuery(
-                    "SELECT p FROM Partida p LEFT JOIN FETCH p.cartaspartidaList WHERE p.idPartida = :id",
+                    "SELECT p FROM Partida p LEFT JOIN FETCH p.cartasPartidaList WHERE p.idPartida = :id",
                     Partida.class
             ).setParameter("id", idPartida).getSingleResult();
 
