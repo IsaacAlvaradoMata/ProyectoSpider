@@ -172,12 +172,12 @@ public class    GameController extends Controller implements Initializable {
                         puedeMover = esGrupoValido(cartasSeleccionadas);
                     } else {
                         if (cartasSeleccionadas.size() == 1) {
-                            // Permitir mover una carta sobre otra si es un valor menor, sin importar el palo
-                            puedeMover = Integer.parseInt(cartaDestino.getValor()) == Integer.parseInt(cartaOrigen.getValor()) + 1;
+                            // Permitir mover una carta sobre otra solo si el valor de la carta origen es exactamente uno menor que el de la carta destino
+                            puedeMover = Integer.parseInt(cartaOrigen.getValor()) == Integer.parseInt(cartaDestino.getValor()) - 1;
                         } else {
                             // Para grupos, exigir secuencia válida (orden descendente y boca arriba, sin importar el palo)
                             puedeMover = esGrupoValido(cartasSeleccionadas)
-                                    && Integer.parseInt(cartaDestino.getValor()) == Integer.parseInt(cartaOrigen.getValor()) + 1;
+                                    && Integer.parseInt(cartaOrigen.getValor()) == Integer.parseInt(cartaDestino.getValor()) - 1;
                         }
                     }
 
@@ -243,7 +243,7 @@ public class    GameController extends Controller implements Initializable {
                             CartasPartidaDto cartaDestino = carta;
                             CartasPartidaDto cartaOrigen = cartasSeleccionadas.get(0);
                             boolean puedeMover = esGrupoValido(cartasSeleccionadas)
-                                    && Integer.parseInt(cartaDestino.getValor()) == Integer.parseInt(cartaOrigen.getValor()) + 1;
+                                    && Integer.parseInt(cartaOrigen.getValor()) == Integer.parseInt(cartaDestino.getValor()) - 1;
                             if (puedeMover) {
                                 int colAnterior = cartaOrigen.getColumna();
                                 int ordenAnterior = cartaOrigen.getOrden();
@@ -643,7 +643,7 @@ public class    GameController extends Controller implements Initializable {
             } else {
                 // Permitir mover cualquier grupo válido si el valor es descendente en uno, sin importar el palo
                 if (esGrupoValido(grupo)
-                        && Integer.parseInt(cartaDestino.getValor()) == valorOrigen + 1) {
+                        && Integer.parseInt(cartaOrigen.getValor()) == Integer.parseInt(cartaDestino.getValor()) - 1) {
                     return col;
                 }
             }
