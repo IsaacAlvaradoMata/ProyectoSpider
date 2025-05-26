@@ -6,18 +6,18 @@ import java.io.Serializable;
 @Entity
 @Table(name = "CARTASPARTIDA", schema = "SPIDER")
 @NamedQueries({
-        @NamedQuery(name = "Cartaspartida.findAll", query = "SELECT c FROM Cartaspartida c"),
-        @NamedQuery(name = "Cartaspartida.findByIdCartaPartida", query = "SELECT c FROM Cartaspartida c WHERE c.idCartaPartida = :idCartaPartida"),
-        @NamedQuery(name = "Cartaspartida.findByPalo", query = "SELECT c FROM Cartaspartida c WHERE c.palo = :palo"),
-        @NamedQuery(name = "Cartaspartida.findByValor", query = "SELECT c FROM Cartaspartida c WHERE c.valor = :valor"),
-        @NamedQuery(name = "Cartaspartida.findByColumna", query = "SELECT c FROM Cartaspartida c WHERE c.columna = :columna"),
-        @NamedQuery(name = "Cartaspartida.findByOrden", query = "SELECT c FROM Cartaspartida c WHERE c.orden = :orden"),
-        @NamedQuery(name = "Cartaspartida.findByBocaArriba", query = "SELECT c FROM Cartaspartida c WHERE c.bocaArriba = :bocaArriba"),
-        @NamedQuery(name = "Cartaspartida.findByEnMazo", query = "SELECT c FROM Cartaspartida c WHERE c.enMazo = :enMazo"),
-        @NamedQuery(name = "Cartaspartida.findByEnPila", query = "SELECT c FROM Cartaspartida c WHERE c.enPila = :enPila"),
-        @NamedQuery(name = "Cartaspartida.findByRetirada", query = "SELECT c FROM Cartaspartida c WHERE c.retirada = :retirada")
+        @NamedQuery(name = "Cartaspartida.findAll", query = "SELECT c FROM CartasPartida c"),
+        @NamedQuery(name = "Cartaspartida.findByIdCartaPartida", query = "SELECT c FROM CartasPartida c WHERE c.idCartaPartida = :idCartaPartida"),
+        @NamedQuery(name = "Cartaspartida.findByPalo", query = "SELECT c FROM CartasPartida c WHERE c.palo = :palo"),
+        @NamedQuery(name = "Cartaspartida.findByValor", query = "SELECT c FROM CartasPartida c WHERE c.valor = :valor"),
+        @NamedQuery(name = "Cartaspartida.findByColumna", query = "SELECT c FROM CartasPartida c WHERE c.columna = :columna"),
+        @NamedQuery(name = "Cartaspartida.findByOrden", query = "SELECT c FROM CartasPartida c WHERE c.orden = :orden"),
+        @NamedQuery(name = "Cartaspartida.findByBocaArriba", query = "SELECT c FROM CartasPartida c WHERE c.bocaArriba = :bocaArriba"),
+        @NamedQuery(name = "Cartaspartida.findByEnMazo", query = "SELECT c FROM CartasPartida c WHERE c.enMazo = :enMazo"),
+        @NamedQuery(name = "Cartaspartida.findByEnPila", query = "SELECT c FROM CartasPartida c WHERE c.enPila = :enPila"),
+        @NamedQuery(name = "Cartaspartida.findByRetirada", query = "SELECT c FROM CartasPartida c WHERE c.retirada = :retirada")
 })
-public class Cartaspartida implements Serializable {
+public class CartasPartida implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -151,8 +151,8 @@ public class Cartaspartida implements Serializable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Cartaspartida)) return false;
-        Cartaspartida that = (Cartaspartida) o;
+        if (!(o instanceof CartasPartida)) return false;
+        CartasPartida that = (CartasPartida) o;
         return idCartaPartida != null && idCartaPartida.equals(that.idCartaPartida);
     }
 

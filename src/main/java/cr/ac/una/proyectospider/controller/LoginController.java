@@ -163,7 +163,7 @@ public class LoginController extends Controller implements Initializable {
 
     @FXML
     private void onMouseClickedbtnRegistrarJugador(MouseEvent event) {
-        String nombre = txtfildLogin.getText();
+ /*       String nombre = txtfildLogin.getText();
 
         if (nombre == null || nombre.trim().isEmpty()) {
             Alert alerta = new Alert(Alert.AlertType.WARNING);
@@ -191,60 +191,60 @@ public class LoginController extends Controller implements Initializable {
         Alert exito = new Alert(Alert.AlertType.INFORMATION);
         exito.setTitle("Registro exitoso");
         exito.setHeaderText(null);
-        exito.setContentText("¡Jugador registrado exitosamente!");
+        exito.setContentText("¡Jugador registrado exitosamente!");*/
 
-        exito.showAndWait().ifPresent(response -> {
-            AppContext.getInstance().set("jugadorActivo", jugador);
+//        exito.showAndWait().ifPresent(response -> {
+//            AppContext.getInstance().set("jugadorActivo", jugador);
             FlowController.getInstance().goView("MenuView");
             MenuController controller = (MenuController) FlowController.getInstance().getController("MenuView");
             controller.RunMenuView();
-        });
+//        });
     }
 
     @FXML
     private void onMouseClickedbtnIniciarSesion(MouseEvent event) {
         BtnIniciarSesion.setDisable(true);
-//        String nombre = txtfildLogin.getText();
+        String nombre = txtfildLogin.getText();
 
-//        if (nombre == null || nombre.trim().isEmpty()) {
-//            Alert alerta = new Alert(Alert.AlertType.WARNING);
-//            alerta.setTitle("Campo vacío");
-//            alerta.setHeaderText(null);
-//            alerta.setContentText("Por favor ingrese un nombre de usuario.");
-//            alerta.showAndWait();
-//            BtnIniciarSesion.setDisable(false);
-//            return;
-//        }
-//
-//        JugadorService jugadorService = new JugadorService();
-//        JugadorDto jugador = jugadorService.buscarJugadorPorNombre(nombre.trim());
-//
-//        if (jugador == null) {
-//            Alert noExiste = new Alert(Alert.AlertType.ERROR);
-//            noExiste.setTitle("Jugador no encontrado");
-//            noExiste.setHeaderText(null);
-//            noExiste.setContentText("Jugador no encontrado. Regístrate primero.");
-//            noExiste.showAndWait();
-//            BtnIniciarSesion.setDisable(false);
-//            return;
-//        }
-//
-//        // Si existe, redirigir
-//        Alert exito = new Alert(Alert.AlertType.INFORMATION);
-//        exito.setTitle("Bienvenido");
-//        exito.setHeaderText(null);
-//        exito.setContentText("¡Bienvenido, " + jugador.nombreUsuarioProperty().get() + "!");
+        if (nombre == null || nombre.trim().isEmpty()) {
+            Alert alerta = new Alert(Alert.AlertType.WARNING);
+            alerta.setTitle("Campo vacío");
+            alerta.setHeaderText(null);
+            alerta.setContentText("Por favor ingrese un nombre de usuario.");
+            alerta.showAndWait();
+            BtnIniciarSesion.setDisable(false);
+            return;
+        }
 
-//        exito.showAndWait().ifPresent(response -> {
+        JugadorService jugadorService = new JugadorService();
+        JugadorDto jugador = jugadorService.buscarJugadorPorNombre(nombre.trim());
+
+        if (jugador == null) {
+            Alert noExiste = new Alert(Alert.AlertType.ERROR);
+            noExiste.setTitle("Jugador no encontrado");
+            noExiste.setHeaderText(null);
+            noExiste.setContentText("Jugador no encontrado. Regístrate primero.");
+            noExiste.showAndWait();
+            BtnIniciarSesion.setDisable(false);
+            return;
+        }
+
+        // Si existe, redirigir
+        Alert exito = new Alert(Alert.AlertType.INFORMATION);
+        exito.setTitle("Bienvenido");
+        exito.setHeaderText(null);
+        exito.setContentText("¡Bienvenido, " + jugador.nombreUsuarioProperty().get() + "!");
+
+        exito.showAndWait().ifPresent(response -> {
             AnimationDepartment.stopAllAnimations();
             AnimationDepartment.glitchFadeOut(spBackgroundLogin, Duration.seconds(1.1), () -> {
-//                AppContext.getInstance().set("jugadorActivo", jugador);
+                AppContext.getInstance().set("jugadorActivo", jugador);
                 FlowController.getInstance().goView("MenuView");
                 MenuController controller = (MenuController) FlowController.getInstance().getController("MenuView");
                 controller.RunMenuView();
                 Platform.runLater(() -> BtnIniciarSesion.setDisable(false));
             });
-//        });
+        });
     }
 
     @FXML

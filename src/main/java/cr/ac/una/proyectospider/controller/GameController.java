@@ -119,7 +119,7 @@ public class GameController extends Controller implements Initializable {
     public void RunGameView() {
         ResetGameView();
         if (cartasEnJuego == null) {
-            cartasEnJuego = MazoGenerator.generarMazoPorDificultad("MEDIA");
+            cartasEnJuego = MazoGenerator.generarMazoPorDificultad("FACIL");
         }
 
         // Detener temporizador y resetear tiempo solo si es un nuevo juego

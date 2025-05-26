@@ -30,7 +30,7 @@ public class CartasPartidaDto {
         this.partida = new SimpleObjectProperty<>();
     }
 
-    public CartasPartidaDto(Cartaspartida entity) {
+    public CartasPartidaDto(CartasPartida entity) {
         this();
         this.idCartaPartida.set(entity.getIdCartaPartida());
         this.palo.set(entity.getPalo());
@@ -48,8 +48,8 @@ public class CartasPartidaDto {
         }
     }
 
-    public Cartaspartida toEntity() {
-        Cartaspartida entity = new Cartaspartida();
+    public CartasPartida toEntity() {
+        CartasPartida entity = new CartasPartida();
         entity.setIdCartaPartida(this.idCartaPartida.get());
         entity.setPalo(this.palo.get());
         entity.setValor(this.valor.get());

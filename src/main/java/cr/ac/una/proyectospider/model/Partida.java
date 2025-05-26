@@ -55,7 +55,7 @@ public class Partida implements Serializable {
     private Jugador jugador;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "partida", fetch = FetchType.LAZY)
-    private List<Cartaspartida> cartaspartidaList;
+    private List<CartasPartida> cartasPartidaList;
 
     @Version
     @Column(name = "VERSION")
@@ -132,12 +132,12 @@ public class Partida implements Serializable {
         this.jugador = jugador;
     }
 
-    public List<Cartaspartida> getCartaspartidaList() {
-        return cartaspartidaList;
+    public List<CartasPartida> getCartaspartidaList() {
+        return cartasPartidaList;
     }
 
-    public void setCartaspartidaList(List<Cartaspartida> cartaspartidaList) {
-        this.cartaspartidaList = cartaspartidaList;
+    public void setCartaspartidaList(List<CartasPartida> cartasPartidaList) {
+        this.cartasPartidaList = cartasPartidaList;
     }
 
     public Long getVersion() {
