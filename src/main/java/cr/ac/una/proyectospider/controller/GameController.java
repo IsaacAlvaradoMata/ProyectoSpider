@@ -401,8 +401,9 @@ public class    GameController extends Controller implements Initializable {
                             "/cr/ac/una/proyectospider/resources/1C.png")));
                 }
             } else {
+                String whiteImg = usarEstiloClasico ? "white.png" : "whites.png";
                 pila = new ImageView(new Image(getClass().getResourceAsStream(
-                        "/cr/ac/una/proyectospider/resources/white.png")));
+                        "/cr/ac/una/proyectospider/resources/" + whiteImg)));
             }
 
             pila.setFitWidth(70);
