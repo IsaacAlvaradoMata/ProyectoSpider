@@ -10,7 +10,7 @@ public class MazoGenerator {
     private static final int CARTAS_POR_BARAJA = 13;
     private static final int COLUMNAS = 10;
 
-    public static List<CartasPartidaDto> generarMazoPorDificultad(String dificultad) {
+    public static List<CartasPartidaDto> generarMazoPorDificultad(String dificultad, boolean usarEstiloClasico) {
         List<CartasPartidaDto> mazo = new ArrayList<>();
         String[] palos;
 
@@ -44,7 +44,11 @@ public class MazoGenerator {
                     carta.setEnMazo(0);
                     carta.setEnPila(0);
                     carta.setRetirada(0);
-                    carta.setImagenNombre(numeroPalo + "-" + valor + ".png"); // ✅ Ej: 1-5.png
+                    if (usarEstiloClasico) {
+                        carta.setImagenNombre(numeroPalo + "-" + valor + ".png");
+                    } else {
+                        carta.setImagenNombre(numeroPalo + "s-" + valor + ".png");
+                    }
                     mazo.add(carta);
                 }
             }

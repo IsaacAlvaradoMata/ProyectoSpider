@@ -4,7 +4,7 @@ import cr.ac.una.proyectospider.model.CartasPartidaDto;
 import cr.ac.una.proyectospider.util.AnimationDepartment;
 import cr.ac.una.proyectospider.util.FlowController;
 import cr.ac.una.proyectospider.util.MazoGenerator;
-import javafx.animation.KeyFrame;
+    import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -26,7 +26,7 @@ import javafx.scene.paint.Color;
 import java.net.URL;
 import java.util.*;
 
-public class GameController extends Controller implements Initializable {
+public class    GameController extends Controller implements Initializable {
 
     @FXML
     private ImageView btnGuardarySalir;
@@ -86,6 +86,7 @@ public class GameController extends Controller implements Initializable {
     private Timeline timeline;
     private int segundosTranscurridos = 0;
     private boolean tiempoIniciado = false;
+    private boolean usarEstiloClasico = false; // Por defecto, usar el estilo moderno
 
     @FXML
     void oMouseClickedbtnGuardarySalir(MouseEvent event) {
@@ -119,7 +120,7 @@ public class GameController extends Controller implements Initializable {
     public void RunGameView() {
         ResetGameView();
         if (cartasEnJuego == null) {
-            cartasEnJuego = MazoGenerator.generarMazoPorDificultad("FACIL");
+            cartasEnJuego = MazoGenerator.generarMazoPorDificultad("FACIL", usarEstiloClasico);
         }
 
         // Detener temporizador y resetear tiempo solo si es un nuevo juego
@@ -223,7 +224,7 @@ public class GameController extends Controller implements Initializable {
             cartasColumna.sort(Comparator.comparingInt(CartasPartidaDto::getOrden));
 
             for (CartasPartidaDto carta : cartasColumna) {
-                String imgArchivo = carta.getBocaArriba() == 1 ? carta.getImagenNombre() : "rear.png";
+                String imgArchivo = carta.getBocaArriba() == 1 ? carta.getImagenNombre() : (usarEstiloClasico ? "rear.png" : "rearS.png");
 
                 ImageView img = new ImageView(new Image(getClass().getResourceAsStream(
                         "/cr/ac/una/proyectospider/resources/" + imgArchivo)));
@@ -351,7 +352,7 @@ public class GameController extends Controller implements Initializable {
 
         // Solo mostrar el mazo si hay cartas disponibles
         if (hayCartasEnMazo) {
-            imgMazo = new ImageView(new Image(getClass().getResourceAsStream("/cr/ac/una/proyectospider/resources/rear.png")));
+            imgMazo = new ImageView(new Image(getClass().getResourceAsStream("/cr/ac/una/proyectospider/resources/" + (usarEstiloClasico ? "rear.png" : "rearS.png"))));
             imgMazo.setFitWidth(70);
             imgMazo.setPreserveRatio(true);
             imgMazo.setSmooth(true);
@@ -409,6 +410,8 @@ public class GameController extends Controller implements Initializable {
             pila.setSmooth(true);
             hboxTableroSuperior.getChildren().add(pila);
         }
+        // Verificar victoria al final de la actualización de la vista
+        verificarVictoria();
     }
 
     public void ResetGameView() {
@@ -671,5 +674,28 @@ public class GameController extends Controller implements Initializable {
             int segundos = segundosTranscurridos % 60;
             lblTiempo.setText(String.format("Tiempo: %02d:%02d", minutos, segundos));
         }
+    }
+
+    /**
+     * Verifica si el jugador ha ganado la partida.
+     * Retorna true si hay exactamente 104 cartas con enPila = 1.
+     * Si el jugador ha ganado, muestra un mensaje de victoria usando Platform.runLater().
+     */
+    public boolean verificarVictoria() {
+        long cartasEnPila = cartasEnJuego.stream()
+                .filter(c -> c.getEnPila() == 1)
+                .count();
+        if (cartasEnPila == 104) {
+            Platform.runLater(() -> {
+                detenerTemporizador();
+                javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.INFORMATION);
+                alert.setTitle("¡Victoria!");
+                alert.setHeaderText(null);
+                alert.setContentText("¡Felicidades! Has ganado el Solitario Spider.");
+                alert.showAndWait();
+            });
+            return true;
+        }
+        return false;
     }
 }
