@@ -245,9 +245,27 @@ public void RunGameView() {
                         }
                     } else {
                         cartasSeleccionadas.clear();
-                        cartasSeleccionadas.addAll(obtenerGrupoDesde(carta));
+                        List<CartasPartidaDto> grupo = obtenerGrupoDesde(carta);
+                        cartasSeleccionadas.addAll(grupo);
                         esperandoDestino = true;
-                        System.out.println("Seleccionadas: " + cartasSeleccionadas.size());
+                        // --- AUTO-MOVE: Si solo se hace un clic, buscar destino y mover automáticamente ---
+                        int destino = buscarMejorDestinoAutoMove(grupo);
+                        if (destino != -1) {
+                            int colAnterior = carta.getColumna();
+                            int ordenAnterior = carta.getOrden();
+                            moverCartasSeleccionadas(destino);
+                            cartasEnJuego.stream()
+                                    .filter(c2 -> c2.getColumna() == colAnterior && c2.getOrden() == ordenAnterior - 1)
+                                    .findFirst()
+                                    .ifPresent(c2 -> c2.setBocaArriba(1));
+                            esperandoDestino = false;
+                            cartasSeleccionadas.clear();
+                            RunGameView();
+                        } else {
+                            // Si no hay destino válido, mantener selección manual
+                            System.out.println("No hay destino válido para auto-move");
+                        }
+                        // --- FIN AUTO-MOVE ---
                     }
                 });
 
@@ -574,6 +592,33 @@ public void RunGameView() {
                 }
             }
         }
+    }
+
+    /**
+     * Busca el mejor destino visible para mover una carta o grupo válido,
+     * siguiendo las reglas de Spider (descendente, sin importar el palo para movimientos parciales).
+     * Devuelve el índice de columna destino, o -1 si no hay destino válido.
+     */
+    private int buscarMejorDestinoAutoMove(List<CartasPartidaDto> grupo) {
+        if (grupo == null || grupo.isEmpty()) return -1;
+        CartasPartidaDto cartaOrigen = grupo.get(0);
+        int valorOrigen = Integer.parseInt(cartaOrigen.getValor());
+        // Buscar en todas las columnas
+        for (int col = 0; col < 10; col++) {
+            if (col == cartaOrigen.getColumna()) continue;
+            CartasPartidaDto cartaDestino = obtenerUltimaCartaVisible(col);
+            if (cartaDestino == null) {
+                // Columna vacía: aceptar cualquier grupo válido
+                if (esGrupoValido(grupo)) return col;
+            } else {
+                // Permitir mover cualquier grupo válido si el valor es descendente en uno, sin importar el palo
+                if (esGrupoValido(grupo)
+                    && Integer.parseInt(cartaDestino.getValor()) == valorOrigen + 1) {
+                    return col;
+                }
+            }
+        }
+        return -1;
     }
 
 }
