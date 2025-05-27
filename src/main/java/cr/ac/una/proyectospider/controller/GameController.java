@@ -451,6 +451,28 @@ public class    GameController extends Controller implements Initializable {
                 .max()
                 .orElse(-1) + 1;
 
+        // Evitar mover si ya están en la misma columna y orden
+        if (cartasSeleccionadas.size() == 1) {
+            CartasPartidaDto carta = cartasSeleccionadas.get(0);
+            if (carta.getColumna() == nuevaColumna && carta.getOrden() == nuevoOrden - 1) {
+                System.out.println("Movimiento ignorado: carta ya está en la columna y orden destino.");
+                return;
+            }
+        } else if (cartasSeleccionadas.size() > 1) {
+            boolean yaEstanEnDestino = true;
+            for (int i = 0; i < cartasSeleccionadas.size(); i++) {
+                CartasPartidaDto carta = cartasSeleccionadas.get(i);
+                if (!(carta.getColumna() == nuevaColumna && carta.getOrden() == nuevoOrden + i)) {
+                    yaEstanEnDestino = false;
+                    break;
+                }
+            }
+            if (yaEstanEnDestino) {
+                System.out.println("Movimiento ignorado: grupo ya está en la columna y orden destino.");
+                return;
+            }
+        }
+
         System.out.println("Moviendo " + cartasSeleccionadas.size() +
                 " cartas a columna " + nuevaColumna + " desde orden " + nuevoOrden);
 
