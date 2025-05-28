@@ -4,6 +4,7 @@ CREATE SEQUENCE SEQ_JUGADOR START WITH 1 INCREMENT BY 1 NOMAXVALUE NOMINVALUE NO
 CREATE SEQUENCE SEQ_PARTIDA START WITH 1 INCREMENT BY 1 NOMAXVALUE NOMINVALUE NOCYCLE CACHE 20;
 CREATE SEQUENCE SEQ_CARTASPARTIDA START WITH 1 INCREMENT BY 1 NOMAXVALUE NOMINVALUE NOCYCLE CACHE 20;
 
+
 -- TABLE JUGADOR ---------------------------------------------------------
 
 CREATE TABLE Jugador (
@@ -14,6 +15,8 @@ CREATE TABLE Jugador (
                          Puntos_Acumulados NUMBER,
                          Estilo_Cartas NUMBER,
                          Imagen_Fondo BLOB,
+                         Imagen_Reverso BLOB,
+                         Imagen_Frente BLOB,
                          Version NUMBER DEFAULT 0
 );
 
@@ -24,7 +27,10 @@ COMMENT ON COLUMN Jugador.Partidas_Ganadas IS 'Total de partidas ganadas';
 COMMENT ON COLUMN Jugador.Puntos_Acumulados IS 'Puntos totales acumulados en la partida';
 COMMENT ON COLUMN Jugador.Estilo_Cartas IS 'Estilo de cartas elegido por el jugador';
 COMMENT ON COLUMN Jugador.Imagen_Fondo IS 'Imagen de fondo elegida por el jugador';
+COMMENT ON COLUMN Jugador.Imagen_Reverso IS 'Imagen personalizada del reverso de las cartas (tipo BLOB)';
+COMMENT ON COLUMN Jugador.Imagen_Frente IS 'Imagen personalizada del frente de las cartas (tipo BLOB)';
 COMMENT ON COLUMN Jugador.Version IS 'Número de versión para control de concurrencia optimista';
+
 
 -- TABLE PARTIDA ---------------------------------------------------------
 
