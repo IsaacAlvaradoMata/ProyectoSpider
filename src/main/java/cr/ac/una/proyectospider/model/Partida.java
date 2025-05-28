@@ -132,11 +132,11 @@ public class Partida implements Serializable {
         this.jugador = jugador;
     }
 
-    public List<CartasPartida> getCartaspartidaList() {
+    public List<CartasPartida> getCartasPartidaList() {
         return cartasPartidaList;
     }
 
-    public void setCartaspartidaList(List<CartasPartida> cartasPartidaList) {
+    public void setCartasPartidaList(List<CartasPartida> cartasPartidaList) {
         this.cartasPartidaList = cartasPartidaList;
     }
 

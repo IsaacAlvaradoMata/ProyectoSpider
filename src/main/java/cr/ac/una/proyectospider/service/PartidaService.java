@@ -12,14 +12,11 @@ public class PartidaService {
 
     public PartidaDto crearPartida(PartidaDto partidaDto) {
         EntityManager em = emf.createEntityManager();
-
         try {
             em.getTransaction().begin();
             Partida partida = partidaDto.toEntity();
-            // Importante: relacionar correctamente la entidad jugador
             Jugador jugadorRef = em.getReference(Jugador.class, partidaDto.jugadorProperty().get().idJugadorProperty().get());
             partida.setJugador(jugadorRef);
-
             em.persist(partida);
             em.getTransaction().commit();
             return new PartidaDto(partida);
@@ -34,7 +31,6 @@ public class PartidaService {
 
     public PartidaDto buscarPorId(Long id) {
         EntityManager em = emf.createEntityManager();
-
         try {
             Partida partida = em.find(Partida.class, id);
             return partida != null ? new PartidaDto(partida) : null;
@@ -78,19 +74,23 @@ public class PartidaService {
         try {
             em.getTransaction().begin();
 
+            // Convertir DTO a entidad
             Partida partida = partidaDto.toEntity();
             partida.setJugador(em.getReference(Jugador.class, partida.getJugador().getIdJugador()));
-            partida = em.merge(partida); // actualiza o crea según ID
 
+            // Merge para crear o actualizar
+            partida = em.merge(partida);
+
+            // Eliminar cartas viejas si existen
+            em.createQuery("DELETE FROM CartasPartida c WHERE c.partida.idPartida = :id")
+                    .setParameter("id", partida.getIdPartida())
+                    .executeUpdate();
+
+            // Insertar cartas nuevas
             for (CartasPartidaDto cartaDto : cartas) {
                 CartasPartida carta = cartaDto.toEntity();
-                carta.setPartida(partida); // relación bidireccional
-
-                if (carta.getIdCartaPartida() == null) {
-                    em.persist(carta);
-                } else {
-                    em.merge(carta);
-                }
+                carta.setPartida(partida);
+                em.persist(carta);
             }
 
             em.getTransaction().commit();
@@ -106,7 +106,6 @@ public class PartidaService {
 
     public List<PartidaDto> listarPorJugador(Long idJugador) {
         EntityManager em = emf.createEntityManager();
-
         try {
             TypedQuery<Partida> query = em.createQuery(
                     "SELECT p FROM Partida p WHERE p.jugador.idJugador = :idJugador ORDER BY p.fechaInicio DESC",
@@ -121,11 +120,9 @@ public class PartidaService {
 
     public boolean actualizarPartida(PartidaDto partidaDto) {
         EntityManager em = emf.createEntityManager();
-
         try {
             em.getTransaction().begin();
             Partida partida = em.find(Partida.class, partidaDto.idPartidaProperty().get());
-
             if (partida == null) return false;
 
             partida.setFechaFin(partidaDto.fechaFinProperty().get());
@@ -149,7 +146,6 @@ public class PartidaService {
 
     public boolean eliminarPartida(Long idPartida) {
         EntityManager em = emf.createEntityManager();
-
         try {
             em.getTransaction().begin();
             Partida partida = em.find(Partida.class, idPartida);

@@ -189,7 +189,7 @@ public class    GameController extends Controller implements Initializable {
                                 .filter(c -> c.getColumna() == colAnterior
                                         && c.getOrden() == ordenAnterior - 1)
                                 .findFirst()
-                                .ifPresent(c -> c.setBocaArriba(1));
+                                .ifPresent(c -> c.setBocaArriba(true));
                         // 3) Refrescamos TODO el tablero
                         RunGameView();
                         success = true;
@@ -224,7 +224,7 @@ public class    GameController extends Controller implements Initializable {
             cartasColumna.sort(Comparator.comparingInt(CartasPartidaDto::getOrden));
 
             for (CartasPartidaDto carta : cartasColumna) {
-                String imgArchivo = carta.getBocaArriba() == 1 ? carta.getImagenNombre() : (usarEstiloClasico ? "rear.png" : "rearS.png");
+                String imgArchivo = carta.getBocaArriba() == true ? carta.getImagenNombre() : (usarEstiloClasico ? "rear.png" : "rearS.png");
 
                 ImageView img = new ImageView(new Image(getClass().getResourceAsStream(
                         "/cr/ac/una/proyectospider/resources/" + imgArchivo)));
@@ -235,7 +235,7 @@ public class    GameController extends Controller implements Initializable {
 
                 cartaToImageView.put(carta, img);
 
-                if (carta.getBocaArriba() == 1) {
+                if (carta.getBocaArriba() == true) {
                     // Selección por clic (ya existía)
                     img.setOnMouseClicked(e -> {
                         e.consume();
@@ -252,7 +252,7 @@ public class    GameController extends Controller implements Initializable {
                                 cartasEnJuego.stream()
                                         .filter(c -> c.getColumna() == colAnterior && c.getOrden() == ordenAnterior - 1)
                                         .findFirst()
-                                        .ifPresent(c -> c.setBocaArriba(1));
+                                        .ifPresent(c -> c.setBocaArriba(true));
                                 esperandoDestino = false;
                                 cartasSeleccionadas.clear();
                                 RunGameView();
@@ -275,7 +275,7 @@ public class    GameController extends Controller implements Initializable {
                                 cartasEnJuego.stream()
                                         .filter(c2 -> c2.getColumna() == colAnterior && c2.getOrden() == ordenAnterior - 1)
                                         .findFirst()
-                                        .ifPresent(c2 -> c2.setBocaArriba(1));
+                                        .ifPresent(c2 -> c2.setBocaArriba(true));
                                 esperandoDestino = false;
                                 cartasSeleccionadas.clear();
                                 RunGameView();
@@ -348,7 +348,7 @@ public class    GameController extends Controller implements Initializable {
 
         // Verificar si hay cartas en el mazo
         boolean hayCartasEnMazo = cartasEnJuego.stream()
-                .anyMatch(c -> c.getEnMazo() == 1);
+                .anyMatch(c -> c.getEnMazo() == true);
 
         // Solo mostrar el mazo si hay cartas disponibles
         if (hayCartasEnMazo) {
@@ -370,7 +370,7 @@ public class    GameController extends Controller implements Initializable {
 
         // Contar cuántas secuencias completas se han movido a las pilas
         long secuenciasCompletadas = cartasEnJuego.stream()
-                .filter(c -> c.getEnPila() == 1)
+                .filter(c -> c.getEnPila() == true)
                 .count() / 13; // Cada secuencia tiene 13 cartas
 
         System.out.println("Secuencias completadas: " + secuenciasCompletadas);
@@ -382,14 +382,14 @@ public class    GameController extends Controller implements Initializable {
             if (i < secuenciasCompletadas) {
                 int pilaActual = i;
                 String paloSecuencia = cartasEnJuego.stream()
-                        .filter(c -> c.getEnPila() == 1)
+                        .filter(c -> c.getEnPila() == true)
                         .skip(pilaActual * 13)
                         .findFirst()
                         .map(CartasPartidaDto::getPalo)
                         .orElse("C");
 
                 CartasPartidaDto cartaAs = cartasEnJuego.stream()
-                        .filter(c -> c.getEnPila() == 1 && c.getPalo().equals(paloSecuencia) && c.getValor().equals("1"))
+                        .filter(c -> c.getEnPila() == true && c.getPalo().equals(paloSecuencia) && c.getValor().equals("1"))
                         .findFirst()
                         .orElse(null);
 
@@ -427,7 +427,7 @@ public class    GameController extends Controller implements Initializable {
 
     private CartasPartidaDto obtenerUltimaCartaVisible(int columna) {
         return cartasEnJuego.stream()
-                .filter(c -> c.getColumna() == columna && c.getBocaArriba() == 1)
+                .filter(c -> c.getColumna() == columna && c.getBocaArriba() == true)
                 .max(Comparator.comparingInt(CartasPartidaDto::getOrden))
                 .orElse(null);
     }
@@ -500,13 +500,13 @@ public class    GameController extends Controller implements Initializable {
 
         String palo = grupo.get(0).getPalo();
         int valor = Integer.parseInt(grupo.get(0).getValor());
-        if (grupo.get(0).getBocaArriba() != 1) return false;
+        if (grupo.get(0).getBocaArriba() != true) return false;
 
         for (int i = 1; i < grupo.size(); i++) {
             CartasPartidaDto actual = grupo.get(i);
             int valorActual = Integer.parseInt(actual.getValor());
             // Debe ser descendente y del mismo palo
-            if (valorActual != valor - 1 || actual.getBocaArriba() != 1 || !actual.getPalo().equals(palo)) {
+            if (valorActual != valor - 1 || actual.getBocaArriba() != true || !actual.getPalo().equals(palo)) {
                 return false;
             }
             valor = valorActual;
@@ -546,7 +546,7 @@ public class    GameController extends Controller implements Initializable {
 
         // Obtener cartas del mazo
         List<CartasPartidaDto> cartasEnMazo = cartasEnJuego.stream()
-                .filter(c -> c.getEnMazo() == 1)
+                .filter(c -> c.getEnMazo() == true)
                 .toList();
 
         if (cartasEnMazo.size() < 10) {
@@ -569,10 +569,10 @@ public class    GameController extends Controller implements Initializable {
             CartasPartidaDto carta = cartasEnMazo.get(colIndex);
 
             // Actualizar la carta
-            carta.setEnMazo(0);
+            carta.setEnMazo(false);
             carta.setColumna(col);
             carta.setOrden(nuevoOrden);
-            carta.setBocaArriba(1); // Las cartas repartidas del mazo siempre están boca arriba
+            carta.setBocaArriba(true); // Las cartas repartidas del mazo siempre están boca arriba
         }
 
         // Verificar si se ha completado una secuencia después de repartir
@@ -592,7 +592,7 @@ public class    GameController extends Controller implements Initializable {
             final int columna = col;
 
             List<CartasPartidaDto> cartasColumna = cartasEnJuego.stream()
-                    .filter(c -> c.getColumna() == columna && c.getBocaArriba() == 1)
+                    .filter(c -> c.getColumna() == columna && c.getBocaArriba() == true)
                     .sorted(Comparator.comparingInt(CartasPartidaDto::getOrden))
                     .toList();
 
@@ -622,7 +622,7 @@ public class    GameController extends Controller implements Initializable {
 
                     for (int i = 0; i < 13; i++) {
                         CartasPartidaDto carta = cartasColumna.get(inicio + i);
-                        carta.setEnPila(1);
+                        carta.setEnPila(true);
                         carta.setColumna(-1);
                         carta.setOrden(-1);
                     }
@@ -631,13 +631,13 @@ public class    GameController extends Controller implements Initializable {
 
                     if (inicio > 0) {
                         CartasPartidaDto debajo = cartasColumna.get(inicio - 1);
-                        debajo.setBocaArriba(1);
+                        debajo.setBocaArriba(true);
                     } else {
                         // Si no hay cartas visibles restantes, voltear la última carta oculta
                         cartasEnJuego.stream()
-                                .filter(c -> c.getColumna() == columna && c.getBocaArriba() == 0)
+                                .filter(c -> c.getColumna() == columna && c.getBocaArriba() == false)
                                 .max(Comparator.comparingInt(CartasPartidaDto::getOrden))
-                                .ifPresent(c -> c.setBocaArriba(1));
+                                .ifPresent(c -> c.setBocaArriba(true));
                     }
 
                     RunGameView();
@@ -706,7 +706,7 @@ public class    GameController extends Controller implements Initializable {
      */
     public boolean verificarVictoria() {
         long cartasEnPila = cartasEnJuego.stream()
-                .filter(c -> c.getEnPila() == 1)
+                .filter(c -> c.getEnPila() == true)
                 .count();
         if (cartasEnPila == 104) {
             Platform.runLater(() -> {

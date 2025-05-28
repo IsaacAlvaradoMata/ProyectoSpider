@@ -2,6 +2,7 @@ package cr.ac.una.proyectospider.service;
 
 import cr.ac.una.proyectospider.model.CartasPartida;
 import cr.ac.una.proyectospider.model.CartasPartidaDto;
+import cr.ac.una.proyectospider.model.Partida;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -13,11 +14,10 @@ public class CartasPartidaService {
 
     public boolean guardarCarta(CartasPartidaDto cartaDto) {
         EntityManager em = emf.createEntityManager();
-
         try {
             em.getTransaction().begin();
             CartasPartida carta = cartaDto.toEntity();
-            carta.setPartida(em.getReference(carta.getPartida().getClass(), carta.getPartida().getIdPartida()));
+            carta.setPartida(em.getReference(Partida.class, carta.getPartida().getIdPartida()));
 
             if (carta.getIdCartaPartida() == null) {
                 em.persist(carta);
@@ -36,15 +36,42 @@ public class CartasPartidaService {
         }
     }
 
-    public boolean eliminarCartasPorPartida(Long idPartida) {
+    public boolean guardarCartasPorPartida(Long idPartida, List<CartasPartidaDto> cartas) {
         EntityManager em = emf.createEntityManager();
         try {
             em.getTransaction().begin();
 
+            // Eliminar cartas existentes
+            em.createQuery("DELETE FROM CartasPartida c WHERE c.partida.idPartida = :idPartida")
+                    .setParameter("idPartida", idPartida)
+                    .executeUpdate();
+
+            // Insertar nuevas cartas
+            Partida partidaRef = em.getReference(Partida.class, idPartida);
+            for (CartasPartidaDto dto : cartas) {
+                CartasPartida carta = dto.toEntity();
+                carta.setPartida(partidaRef);
+                em.persist(carta);
+            }
+
+            em.getTransaction().commit();
+            return true;
+        } catch (Exception e) {
+            em.getTransaction().rollback();
+            System.err.println("❌ Error al guardar cartas por partida: " + e.getMessage());
+            return false;
+        } finally {
+            em.close();
+        }
+    }
+
+    public boolean eliminarCartasPorPartida(Long idPartida) {
+        EntityManager em = emf.createEntityManager();
+        try {
+            em.getTransaction().begin();
             Query query = em.createQuery("DELETE FROM CartasPartida c WHERE c.partida.idPartida = :idPartida");
             query.setParameter("idPartida", idPartida);
             query.executeUpdate();
-
             em.getTransaction().commit();
             return true;
         } catch (Exception e) {
@@ -64,11 +91,7 @@ public class CartasPartidaService {
                     CartasPartida.class
             );
             query.setParameter("idPartida", idPartida);
-
-            return query.getResultList()
-                    .stream()
-                    .map(CartasPartidaDto::new)
-                    .collect(Collectors.toList());
+            return query.getResultList().stream().map(CartasPartidaDto::new).collect(Collectors.toList());
         } finally {
             em.close();
         }

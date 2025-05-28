@@ -40,10 +40,10 @@ public class MazoGenerator {
                     carta.setValor(String.valueOf(valor));
                     carta.setColumna(-1);
                     carta.setOrden(-1);
-                    carta.setBocaArriba(0);
-                    carta.setEnMazo(0);
-                    carta.setEnPila(0);
-                    carta.setRetirada(0);
+                    carta.setBocaArriba(false);
+                    carta.setEnMazo(false);
+                    carta.setEnPila(false);
+                    carta.setRetirada(false);
                     if (usarEstiloClasico) {
                         carta.setImagenNombre(numeroPalo + "-" + valor + ".png");
                     } else {
@@ -65,8 +65,8 @@ public class MazoGenerator {
                 CartasPartidaDto carta = mazo.get(cartaIndex++);
                 carta.setColumna(col);
                 carta.setOrden(j);
-                carta.setEnMazo(0);
-                carta.setBocaArriba(0);
+                carta.setEnMazo(false);
+                carta.setBocaArriba(false);
             }
         }
 
@@ -77,12 +77,12 @@ public class MazoGenerator {
                     ultima = carta;
                 }
             }
-            if (ultima != null) ultima.setBocaArriba(1);
+            if (ultima != null) ultima.setBocaArriba(true);
         }
 
         for (int i = cartaIndex; i < mazo.size(); i++) {
             CartasPartidaDto carta = mazo.get(i);
-            carta.setEnMazo(1);
+            carta.setEnMazo(true);
             carta.setColumna(-1);
             carta.setOrden(-1);
         }

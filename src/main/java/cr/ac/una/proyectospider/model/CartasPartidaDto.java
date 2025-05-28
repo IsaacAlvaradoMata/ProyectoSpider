@@ -9,10 +9,10 @@ public class CartasPartidaDto {
     private final StringProperty valor;
     private final IntegerProperty columna;
     private final IntegerProperty orden;
-    private final IntegerProperty bocaArriba;
-    private final IntegerProperty enMazo;
-    private final IntegerProperty enPila;
-    private final IntegerProperty retirada;
+    private final BooleanProperty bocaArriba;
+    private final BooleanProperty enMazo;
+    private final BooleanProperty enPila;
+    private final BooleanProperty retirada;
     private final ObjectProperty<PartidaDto> partida;
     private Long version;
     private String imagenNombre;
@@ -23,10 +23,10 @@ public class CartasPartidaDto {
         this.valor = new SimpleStringProperty();
         this.columna = new SimpleIntegerProperty();
         this.orden = new SimpleIntegerProperty();
-        this.bocaArriba = new SimpleIntegerProperty();
-        this.enMazo = new SimpleIntegerProperty();
-        this.enPila = new SimpleIntegerProperty();
-        this.retirada = new SimpleIntegerProperty();
+        this.bocaArriba = new SimpleBooleanProperty();
+        this.enMazo = new SimpleBooleanProperty();
+        this.enPila = new SimpleBooleanProperty();
+        this.retirada = new SimpleBooleanProperty();
         this.partida = new SimpleObjectProperty<>();
     }
 
@@ -42,7 +42,6 @@ public class CartasPartidaDto {
         this.enPila.set(entity.getEnPila());
         this.retirada.set(entity.getRetirada());
         this.version = entity.getVersion();
-
         if (entity.getPartida() != null) {
             this.partida.set(new PartidaDto(entity.getPartida()));
         }
@@ -60,11 +59,9 @@ public class CartasPartidaDto {
         entity.setEnPila(this.enPila.get());
         entity.setRetirada(this.retirada.get());
         entity.setVersion(this.version);
-
         if (this.partida.get() != null) {
             entity.setPartida(this.partida.get().toEntity());
         }
-
         return entity;
     }
 
@@ -74,13 +71,13 @@ public class CartasPartidaDto {
     public StringProperty valorProperty() { return valor; }
     public IntegerProperty columnaProperty() { return columna; }
     public IntegerProperty ordenProperty() { return orden; }
-    public IntegerProperty bocaArribaProperty() { return bocaArriba; }
-    public IntegerProperty enMazoProperty() { return enMazo; }
-    public IntegerProperty enPilaProperty() { return enPila; }
-    public IntegerProperty retiradaProperty() { return retirada; }
+    public BooleanProperty bocaArribaProperty() { return bocaArriba; }
+    public BooleanProperty enMazoProperty() { return enMazo; }
+    public BooleanProperty enPilaProperty() { return enPila; }
+    public BooleanProperty retiradaProperty() { return retirada; }
     public ObjectProperty<PartidaDto> partidaProperty() { return partida; }
 
-    // Manual getters and setters
+    // Getters y setters
     public Long getIdCartaPartida() { return idCartaPartida.get(); }
     public void setIdCartaPartida(Long id) { this.idCartaPartida.set(id); }
 
@@ -96,17 +93,17 @@ public class CartasPartidaDto {
     public Integer getOrden() { return orden.get(); }
     public void setOrden(Integer o) { this.orden.set(o); }
 
-    public Integer getBocaArriba() { return bocaArriba.get(); }
-    public void setBocaArriba(Integer b) { this.bocaArriba.set(b); }
+    public Boolean getBocaArriba() { return bocaArriba.get(); }
+    public void setBocaArriba(Boolean b) { this.bocaArriba.set(b); }
 
-    public Integer getEnMazo() { return enMazo.get(); }
-    public void setEnMazo(Integer m) { this.enMazo.set(m); }
+    public Boolean getEnMazo() { return enMazo.get(); }
+    public void setEnMazo(Boolean m) { this.enMazo.set(m); }
 
-    public Integer getEnPila() { return enPila.get(); }
-    public void setEnPila(Integer p) { this.enPila.set(p); }
+    public Boolean getEnPila() { return enPila.get(); }
+    public void setEnPila(Boolean p) { this.enPila.set(p); }
 
-    public Integer getRetirada() { return retirada.get(); }
-    public void setRetirada(Integer r) { this.retirada.set(r); }
+    public Boolean getRetirada() { return retirada.get(); }
+    public void setRetirada(Boolean r) { this.retirada.set(r); }
 
     public PartidaDto getPartida() { return partida.get(); }
     public void setPartida(PartidaDto partida) { this.partida.set(partida); }
@@ -114,13 +111,8 @@ public class CartasPartidaDto {
     public Long getVersion() { return version; }
     public void setVersion(Long version) { this.version = version; }
 
-    public String getImagenNombre() {
-        return imagenNombre;
-    }
-
-    public void setImagenNombre(String imagenNombre) {
-        this.imagenNombre = imagenNombre;
-    }
+    public String getImagenNombre() { return imagenNombre; }
+    public void setImagenNombre(String imagenNombre) { this.imagenNombre = imagenNombre; }
 
     @Override
     public String toString() {

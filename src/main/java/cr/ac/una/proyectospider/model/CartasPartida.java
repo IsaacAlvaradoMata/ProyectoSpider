@@ -1,21 +1,22 @@
 package cr.ac.una.proyectospider.model;
 
+import cr.ac.una.proyectospider.util.BooleanToIntegerConverter;
 import jakarta.persistence.*;
 import java.io.Serializable;
 
 @Entity
 @Table(name = "CARTASPARTIDA", schema = "SPIDER")
 @NamedQueries({
-        @NamedQuery(name = "Cartaspartida.findAll", query = "SELECT c FROM CartasPartida c"),
-        @NamedQuery(name = "Cartaspartida.findByIdCartaPartida", query = "SELECT c FROM CartasPartida c WHERE c.idCartaPartida = :idCartaPartida"),
-        @NamedQuery(name = "Cartaspartida.findByPalo", query = "SELECT c FROM CartasPartida c WHERE c.palo = :palo"),
-        @NamedQuery(name = "Cartaspartida.findByValor", query = "SELECT c FROM CartasPartida c WHERE c.valor = :valor"),
-        @NamedQuery(name = "Cartaspartida.findByColumna", query = "SELECT c FROM CartasPartida c WHERE c.columna = :columna"),
-        @NamedQuery(name = "Cartaspartida.findByOrden", query = "SELECT c FROM CartasPartida c WHERE c.orden = :orden"),
-        @NamedQuery(name = "Cartaspartida.findByBocaArriba", query = "SELECT c FROM CartasPartida c WHERE c.bocaArriba = :bocaArriba"),
-        @NamedQuery(name = "Cartaspartida.findByEnMazo", query = "SELECT c FROM CartasPartida c WHERE c.enMazo = :enMazo"),
-        @NamedQuery(name = "Cartaspartida.findByEnPila", query = "SELECT c FROM CartasPartida c WHERE c.enPila = :enPila"),
-        @NamedQuery(name = "Cartaspartida.findByRetirada", query = "SELECT c FROM CartasPartida c WHERE c.retirada = :retirada")
+        @NamedQuery(name = "CartasPartida.findAll", query = "SELECT c FROM CartasPartida c"),
+        @NamedQuery(name = "CartasPartida.findByIdCartaPartida", query = "SELECT c FROM CartasPartida c WHERE c.idCartaPartida = :idCartaPartida"),
+        @NamedQuery(name = "CartasPartida.findByPalo", query = "SELECT c FROM CartasPartida c WHERE c.palo = :palo"),
+        @NamedQuery(name = "CartasPartida.findByValor", query = "SELECT c FROM CartasPartida c WHERE c.valor = :valor"),
+        @NamedQuery(name = "CartasPartida.findByColumna", query = "SELECT c FROM CartasPartida c WHERE c.columna = :columna"),
+        @NamedQuery(name = "CartasPartida.findByOrden", query = "SELECT c FROM CartasPartida c WHERE c.orden = :orden"),
+        @NamedQuery(name = "CartasPartida.findByBocaArriba", query = "SELECT c FROM CartasPartida c WHERE c.bocaArriba = :bocaArriba"),
+        @NamedQuery(name = "CartasPartida.findByEnMazo", query = "SELECT c FROM CartasPartida c WHERE c.enMazo = :enMazo"),
+        @NamedQuery(name = "CartasPartida.findByEnPila", query = "SELECT c FROM CartasPartida c WHERE c.enPila = :enPila"),
+        @NamedQuery(name = "CartasPartida.findByRetirada", query = "SELECT c FROM CartasPartida c WHERE c.retirada = :retirada")
 })
 public class CartasPartida implements Serializable {
 
@@ -39,17 +40,21 @@ public class CartasPartida implements Serializable {
     @Column(name = "ORDEN", nullable = false)
     private Integer orden;
 
-    @Column(name = "BOCA_ARRIBA", nullable = false)
-    private Integer bocaArriba;
+    @Convert(converter = BooleanToIntegerConverter.class)
+    @Column(name = "BOCA_ARRIBA")
+    private Boolean bocaArriba;
 
+    @Convert(converter = BooleanToIntegerConverter.class)
     @Column(name = "EN_MAZO", nullable = false)
-    private Integer enMazo;
+    private Boolean enMazo;
 
+    @Convert(converter = BooleanToIntegerConverter.class)
     @Column(name = "EN_PILA", nullable = false)
-    private Integer enPila;
+    private Boolean enPila;
 
+    @Convert(converter = BooleanToIntegerConverter.class)
     @Column(name = "RETIRADA", nullable = false)
-    private Integer retirada;
+    private Boolean retirada;
 
     @Version
     @Column(name = "VERSION")
@@ -59,7 +64,7 @@ public class CartasPartida implements Serializable {
     @JoinColumn(name = "ID_PARTIDA", referencedColumnName = "ID_PARTIDA", nullable = false)
     private Partida partida;
 
-    // Getters and Setters
+    // Getters y Setters
     public Long getIdCartaPartida() {
         return idCartaPartida;
     }
@@ -100,35 +105,35 @@ public class CartasPartida implements Serializable {
         this.orden = orden;
     }
 
-    public Integer getBocaArriba() {
+    public Boolean getBocaArriba() {
         return bocaArriba;
     }
 
-    public void setBocaArriba(Integer bocaArriba) {
+    public void setBocaArriba(Boolean bocaArriba) {
         this.bocaArriba = bocaArriba;
     }
 
-    public Integer getEnMazo() {
+    public Boolean getEnMazo() {
         return enMazo;
     }
 
-    public void setEnMazo(Integer enMazo) {
+    public void setEnMazo(Boolean enMazo) {
         this.enMazo = enMazo;
     }
 
-    public Integer getEnPila() {
+    public Boolean getEnPila() {
         return enPila;
     }
 
-    public void setEnPila(Integer enPila) {
+    public void setEnPila(Boolean enPila) {
         this.enPila = enPila;
     }
 
-    public Integer getRetirada() {
+    public Boolean getRetirada() {
         return retirada;
     }
 
-    public void setRetirada(Integer retirada) {
+    public void setRetirada(Boolean retirada) {
         this.retirada = retirada;
     }
 
@@ -163,6 +168,6 @@ public class CartasPartida implements Serializable {
 
     @Override
     public String toString() {
-        return "Cartaspartida[ idCartaPartida=" + idCartaPartida + " ]";
+        return "CartasPartida[ idCartaPartida=" + idCartaPartida + " ]";
     }
 }
