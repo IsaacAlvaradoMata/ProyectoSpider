@@ -10,7 +10,6 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-
 <BorderPane fx:id="root" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1000.0" stylesheets="@StyleSpider.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cr.ac.una.proyectospider.controller.GameController">
    <center>
       <AnchorPane BorderPane.alignment="CENTER">
@@ -51,14 +50,14 @@
                      <center>
                         <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                            <children>
-                              <StackPane fx:id="spTableroBackground" layoutX="174.0" layoutY="82.0" prefHeight="150.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                              <StackPane fx:id="spTableroBackground" layoutX="174.0" layoutY="82.0" prefHeight="150.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="200.0" AnchorPane.rightAnchor="200.0" AnchorPane.topAnchor="0.0">
                                  <children>
                                     <ImageView fx:id="imgBackgroundTablero" pickOnBounds="true" />
                                     <VBox alignment="CENTER">
                                        <children>
                                           <HBox fx:id="hboxTableroSuperior" alignment="CENTER" prefHeight="135.0" prefWidth="1000.0" spacing="10.0">
                                              <children>
-                                                <ImageView fx:id="imgMazo" fitWidth="70.0" preserveRatio="true" pickOnBounds="true" />
+                                                <ImageView fx:id="imgMazo" fitWidth="70.0" pickOnBounds="true" preserveRatio="true" />
                                                 <HBox fx:id="hboxPilas" alignment="CENTER" spacing="10.0" HBox.hgrow="ALWAYS" />
                                              </children>
                                              <padding>

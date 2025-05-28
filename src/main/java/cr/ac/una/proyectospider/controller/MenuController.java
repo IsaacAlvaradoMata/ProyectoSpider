@@ -301,6 +301,16 @@ public class MenuController extends Controller implements Initializable {
 
     @FXML
     private void onMouseClickedbtnPersonalizacion(MouseEvent event) {
+        btnPersonalizacion.setDisable(true);
+        AnimationDepartment.stopAllAnimations();
+
+        AnimationDepartment.glitchFadeOut(spBackgroundMenu, Duration.seconds(1.1), () -> {
+            FlowController.getInstance().goView("PersonalizationView");
+            PersonalizationController controller = (PersonalizationController) FlowController.getInstance().getController("PersonalizationView");
+            controller.RunPersonalizationView();
+            Platform.runLater(() -> btnPersonalizacion.setDisable(false));
+
+        });
     }
 
     @FXML

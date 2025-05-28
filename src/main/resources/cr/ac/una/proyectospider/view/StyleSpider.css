@@ -1,16 +1,16 @@
 @font-face {
     font-family: "Cynatar";
-    src: url("../resources/Cynatar.otf");
+    src: url("../resources/Cynatar.ttf");
 }
 
 @font-face {
     font-family: "Raster";
-    src: url("../resources/Raster.otf");
+    src: url("../resources/Raster.ttf");
 }
 
 @font-face {
     font-family: "joystix";
-    src: url("../resources/joystix.otf");
+    src: url("../resources/Joystix.ttf");
 }
 
 /*VISTA INTRO*/
@@ -568,5 +568,39 @@
     -fx-background-color: #000000;
 }
 
+
+/*VISTA PERSONALIZATION*/
+
+#btnAgregarOtro {
+    -fx-image: url('../resources/btnAgregarOtro.png');
+}
+
+
+#btnGuardarCambios {
+    -fx-image: url('../resources/btnGuardarCambios.png');
+}
+
+#imgCartasCyberpunk {
+    -fx-image: url('../resources/imgCyberpunk.png');
+}
+
+#imgCartasClasicas {
+    -fx-image: url('../resources/imgClasicas.png');
+}
+
+#btnFlechaIzquierda {
+    -fx-image: url('../resources/imgFlechaIzquierda.png');
+}
+
+#btnFlechaDerecha {
+    -fx-image: url('../resources/imgFlechaDerecha.png');
+}
+
+/*#imgPrevistaFondo {*/
+/*    -fx-image: url('../resources/TableGame.png');*/
+/*}*/
+/*#imgCartasPrevista {*/
+/*    -fx-image: url('../resources/Preview2.png');*/
+/*}*/
 
 

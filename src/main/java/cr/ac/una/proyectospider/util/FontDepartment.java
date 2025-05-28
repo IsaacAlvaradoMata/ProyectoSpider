@@ -7,9 +7,9 @@ public class FontDepartment {
     public static void loadFonts() {
         try {
 
-            Font.loadFont(FontDepartment.class.getResourceAsStream("/cr/ac/una/proyectospider/resources/raster.ttf"), 16);
-            Font.loadFont(FontDepartment.class.getResourceAsStream("/cr/ac/una/proyectospider/resources/Cynatar.otf"), 16);
-            Font.loadFont(FontDepartment.class.getResourceAsStream("/cr/ac/una/proyectospider/resources/joystix.otf"), 16);
+            Font.loadFont(FontDepartment.class.getResourceAsStream("/cr/ac/una/proyectospider/resources/Raster.ttf"), 16);
+            Font.loadFont(FontDepartment.class.getResourceAsStream("/cr/ac/una/proyectospider/resources/Cynatar.ttf"), 16);
+            Font.loadFont(FontDepartment.class.getResourceAsStream("/cr/ac/una/proyectospider/resources/Joystix.ttf"), 16);
 
             System.out.println("✅ Fuentes cargadas correctamente.");
         } catch (Exception e) {
