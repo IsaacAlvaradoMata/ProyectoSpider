@@ -9,7 +9,7 @@
 }
 
 @font-face {
-    font-family: "joystix";
+    font-family: "Joystix Monospace";
     src: url("../resources/Joystix.ttf");
 }
 
@@ -520,7 +520,7 @@
 }
 
 .table-view-arcade {
-    -fx-font-family: "joystix";
+    -fx-font-family: "Joystix Monospace";
     -fx-background-color: transparent;
     -fx-control-inner-background: transparent;
     -fx-table-cell-border-color: transparent;
