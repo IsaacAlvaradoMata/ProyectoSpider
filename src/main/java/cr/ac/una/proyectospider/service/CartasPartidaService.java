@@ -16,8 +16,10 @@ public class CartasPartidaService {
         EntityManager em = emf.createEntityManager();
         try {
             em.getTransaction().begin();
-            CartasPartida carta = cartaDto.toEntity();
-            carta.setPartida(em.getReference(Partida.class, carta.getPartida().getIdPartida()));
+            Long idPartida = cartaDto.getPartida().getIdPartida();
+            Partida partidaRef = em.getReference(Partida.class, idPartida);
+
+            CartasPartida carta = cartaDto.toEntity(partidaRef);
 
             if (carta.getIdCartaPartida() == null) {
                 em.persist(carta);
@@ -49,8 +51,7 @@ public class CartasPartidaService {
             // Insertar nuevas cartas
             Partida partidaRef = em.getReference(Partida.class, idPartida);
             for (CartasPartidaDto dto : cartas) {
-                CartasPartida carta = dto.toEntity();
-                carta.setPartida(partidaRef);
+                CartasPartida carta = dto.toEntity(partidaRef);
                 em.persist(carta);
             }
 

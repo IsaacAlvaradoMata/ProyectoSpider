@@ -64,95 +64,61 @@ public class CartasPartida implements Serializable {
     @JoinColumn(name = "ID_PARTIDA", referencedColumnName = "ID_PARTIDA", nullable = false)
     private Partida partida;
 
-    // Getters y Setters
-    public Long getIdCartaPartida() {
-        return idCartaPartida;
+    // --- Constructors ---
+    public CartasPartida() {}
+
+    public CartasPartida(CartasPartidaDto dto) {
+        this.idCartaPartida = dto.idCartaPartidaProperty().get();
+        actualizar(dto);
     }
 
-    public void setIdCartaPartida(Long idCartaPartida) {
-        this.idCartaPartida = idCartaPartida;
+    public void actualizar(CartasPartidaDto dto) {
+        this.palo = dto.paloProperty().get();
+        this.valor = dto.valorProperty().get();
+        this.columna = dto.columnaProperty().get();
+        this.orden = dto.ordenProperty().get();
+        this.bocaArriba = dto.bocaArribaProperty().get();
+        this.enMazo = dto.enMazoProperty().get();
+        this.enPila = dto.enPilaProperty().get();
+        this.retirada = dto.retiradaProperty().get();
+        this.version = dto.getVersion();
     }
 
-    public String getPalo() {
-        return palo;
-    }
+    // --- Getters y Setters ---
+    public Long getIdCartaPartida() { return idCartaPartida; }
+    public void setIdCartaPartida(Long idCartaPartida) { this.idCartaPartida = idCartaPartida; }
 
-    public void setPalo(String palo) {
-        this.palo = palo;
-    }
+    public String getPalo() { return palo; }
+    public void setPalo(String palo) { this.palo = palo; }
 
-    public String getValor() {
-        return valor;
-    }
+    public String getValor() { return valor; }
+    public void setValor(String valor) { this.valor = valor; }
 
-    public void setValor(String valor) {
-        this.valor = valor;
-    }
+    public Integer getColumna() { return columna; }
+    public void setColumna(Integer columna) { this.columna = columna; }
 
-    public Integer getColumna() {
-        return columna;
-    }
+    public Integer getOrden() { return orden; }
+    public void setOrden(Integer orden) { this.orden = orden; }
 
-    public void setColumna(Integer columna) {
-        this.columna = columna;
-    }
+    public Boolean getBocaArriba() { return bocaArriba; }
+    public void setBocaArriba(Boolean bocaArriba) { this.bocaArriba = bocaArriba; }
 
-    public Integer getOrden() {
-        return orden;
-    }
+    public Boolean getEnMazo() { return enMazo; }
+    public void setEnMazo(Boolean enMazo) { this.enMazo = enMazo; }
 
-    public void setOrden(Integer orden) {
-        this.orden = orden;
-    }
+    public Boolean getEnPila() { return enPila; }
+    public void setEnPila(Boolean enPila) { this.enPila = enPila; }
 
-    public Boolean getBocaArriba() {
-        return bocaArriba;
-    }
+    public Boolean getRetirada() { return retirada; }
+    public void setRetirada(Boolean retirada) { this.retirada = retirada; }
 
-    public void setBocaArriba(Boolean bocaArriba) {
-        this.bocaArriba = bocaArriba;
-    }
+    public Partida getPartida() { return partida; }
+    public void setPartida(Partida partida) { this.partida = partida; }
 
-    public Boolean getEnMazo() {
-        return enMazo;
-    }
+    public Long getVersion() { return version; }
+    public void setVersion(Long version) { this.version = version; }
 
-    public void setEnMazo(Boolean enMazo) {
-        this.enMazo = enMazo;
-    }
-
-    public Boolean getEnPila() {
-        return enPila;
-    }
-
-    public void setEnPila(Boolean enPila) {
-        this.enPila = enPila;
-    }
-
-    public Boolean getRetirada() {
-        return retirada;
-    }
-
-    public void setRetirada(Boolean retirada) {
-        this.retirada = retirada;
-    }
-
-    public Partida getPartida() {
-        return partida;
-    }
-
-    public void setPartida(Partida partida) {
-        this.partida = partida;
-    }
-
-    public Long getVersion() {
-        return version;
-    }
-
-    public void setVersion(Long version) {
-        this.version = version;
-    }
-
+    // --- Equals & hashCode ---
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

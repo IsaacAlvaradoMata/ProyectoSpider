@@ -48,6 +48,10 @@ public class CartasPartidaDto {
     }
 
     public CartasPartida toEntity() {
+        return toEntity(partida.get() != null ? partida.get().toEntity() : null);
+    }
+
+    public CartasPartida toEntity(Partida partidaRef) {
         CartasPartida entity = new CartasPartida();
         entity.setIdCartaPartida(this.idCartaPartida.get());
         entity.setPalo(this.palo.get());
@@ -59,9 +63,7 @@ public class CartasPartidaDto {
         entity.setEnPila(this.enPila.get());
         entity.setRetirada(this.retirada.get());
         entity.setVersion(this.version);
-        if (this.partida.get() != null) {
-            entity.setPartida(this.partida.get().toEntity());
-        }
+        entity.setPartida(partidaRef);
         return entity;
     }
 

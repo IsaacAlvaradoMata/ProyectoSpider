@@ -19,7 +19,7 @@ public class JugadorService {
                     .orElse(null);
 
             if (existente != null) {
-                return null;  // 🔁 cambio clave: si ya existe, retorna null
+                return null;
             }
 
             Jugador nuevo = new Jugador();
@@ -29,12 +29,14 @@ public class JugadorService {
             nuevo.setPuntosAcumulados(0);
             nuevo.setEstiloCartas(1);
             nuevo.setImagenFondo(null);
+            nuevo.setImagenReverso(null);
+            nuevo.setImagenFrente(null);
 
             em.getTransaction().begin();
             em.persist(nuevo);
             em.getTransaction().commit();
 
-            return new JugadorDto(nuevo);  // sólo si fue insertado
+            return new JugadorDto(nuevo);
         } catch (Exception e) {
             em.getTransaction().rollback();
             System.err.println("❌ Error al registrar jugador: " + e.getMessage());
@@ -43,6 +45,7 @@ public class JugadorService {
             em.close();
         }
     }
+
     public JugadorDto buscarJugadorPorNombre(String nombreUsuario) {
         EntityManager em = emf.createEntityManager();
         try {
@@ -52,6 +55,26 @@ public class JugadorService {
                     .findFirst()
                     .orElse(null);
             return jugador != null ? new JugadorDto(jugador) : null;
+        } finally {
+            em.close();
+        }
+    }
+
+    public void actualizarPersonalizacion(Long idJugador, byte[] imagenFondo, byte[] imagenReverso, byte[] imagenFrente) {
+        EntityManager em = emf.createEntityManager();
+        try {
+            em.getTransaction().begin();
+            Jugador jugador = em.find(Jugador.class, idJugador);
+            if (jugador != null) {
+                jugador.setImagenFondo(imagenFondo);
+                jugador.setImagenReverso(imagenReverso);
+                jugador.setImagenFrente(imagenFrente);
+                em.merge(jugador);
+            }
+            em.getTransaction().commit();
+        } catch (Exception e) {
+            em.getTransaction().rollback();
+            System.err.println("❌ Error al actualizar personalización: " + e.getMessage());
         } finally {
             em.close();
         }

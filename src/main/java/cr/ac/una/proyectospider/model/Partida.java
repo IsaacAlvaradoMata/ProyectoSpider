@@ -54,20 +54,42 @@ public class Partida implements Serializable {
     @JoinColumn(name = "ID_JUGADOR", referencedColumnName = "ID_JUGADOR")
     private Jugador jugador;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "partida", fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "partida", fetch = FetchType.LAZY, orphanRemoval = true)
     private List<CartasPartida> cartasPartidaList;
 
     @Version
     @Column(name = "VERSION")
     private Long version;
 
-    public Partida() {
-    }
+    public Partida() {}
 
     public Partida(Long idPartida) {
         this.idPartida = idPartida;
     }
 
+    public Partida(PartidaDto dto) {
+        this.idPartida = dto.getIdPartida();
+        this.fechaInicio = dto.getFechaInicio();
+        this.fechaFin = dto.getFechaFin();
+        this.puntos = dto.getPuntos();
+        this.tiempoJugado = dto.getTiempoJugado();
+        this.estado = dto.getEstado();
+        this.dificultad = dto.getDificultad();
+        this.version = dto.getVersion();
+        // jugador y cartas se asignan externamente
+    }
+
+    public void actualizar(PartidaDto dto) {
+        this.fechaInicio = dto.getFechaInicio();
+        this.fechaFin = dto.getFechaFin();
+        this.puntos = dto.getPuntos();
+        this.tiempoJugado = dto.getTiempoJugado();
+        this.estado = dto.getEstado();
+        this.dificultad = dto.getDificultad();
+        this.version = dto.getVersion();
+    }
+
+    // Getters & Setters
     public Long getIdPartida() {
         return idPartida;
     }

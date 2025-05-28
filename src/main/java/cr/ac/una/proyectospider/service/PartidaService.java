@@ -14,11 +14,14 @@ public class PartidaService {
         EntityManager em = emf.createEntityManager();
         try {
             em.getTransaction().begin();
-            Partida partida = partidaDto.toEntity();
+
+            Partida partida = partidaDto.toEntitySinJugador();
             Jugador jugadorRef = em.getReference(Jugador.class, partidaDto.jugadorProperty().get().idJugadorProperty().get());
             partida.setJugador(jugadorRef);
+
             em.persist(partida);
             em.getTransaction().commit();
+
             return new PartidaDto(partida);
         } catch (Exception e) {
             em.getTransaction().rollback();
@@ -74,22 +77,21 @@ public class PartidaService {
         try {
             em.getTransaction().begin();
 
-            // Convertir DTO a entidad
-            Partida partida = partidaDto.toEntity();
-            partida.setJugador(em.getReference(Jugador.class, partida.getJugador().getIdJugador()));
+            Partida partida = partidaDto.toEntitySinJugador();
+            partida.setJugador(em.getReference(Jugador.class, partidaDto.getJugador().idJugadorProperty().get()));
 
-            // Merge para crear o actualizar
-            partida = em.merge(partida);
+            // Guardar la partida
+            Partida managed = em.merge(partida);
 
-            // Eliminar cartas viejas si existen
+            // Eliminar cartas previas (limpieza segura)
             em.createQuery("DELETE FROM CartasPartida c WHERE c.partida.idPartida = :id")
-                    .setParameter("id", partida.getIdPartida())
+                    .setParameter("id", managed.getIdPartida())
                     .executeUpdate();
 
-            // Insertar cartas nuevas
+            // Agregar nuevas cartas
             for (CartasPartidaDto cartaDto : cartas) {
                 CartasPartida carta = cartaDto.toEntity();
-                carta.setPartida(partida);
+                carta.setPartida(managed);
                 em.persist(carta);
             }
 
@@ -122,14 +124,14 @@ public class PartidaService {
         EntityManager em = emf.createEntityManager();
         try {
             em.getTransaction().begin();
-            Partida partida = em.find(Partida.class, partidaDto.idPartidaProperty().get());
+            Partida partida = em.find(Partida.class, partidaDto.getIdPartida());
             if (partida == null) return false;
 
-            partida.setFechaFin(partidaDto.fechaFinProperty().get());
-            partida.setEstado(partidaDto.estadoProperty().get());
-            partida.setPuntos(partidaDto.puntosProperty().get());
-            partida.setTiempoJugado(partidaDto.tiempoJugadoProperty().get());
-            partida.setDificultad(partidaDto.dificultadProperty().get());
+            partida.setFechaFin(partidaDto.getFechaFin());
+            partida.setEstado(partidaDto.getEstado());
+            partida.setPuntos(partidaDto.getPuntos());
+            partida.setTiempoJugado(partidaDto.getTiempoJugado());
+            partida.setDificultad(partidaDto.getDificultad());
             partida.setVersion(partidaDto.getVersion());
 
             em.merge(partida);

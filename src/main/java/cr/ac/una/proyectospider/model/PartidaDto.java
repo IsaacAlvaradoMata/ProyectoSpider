@@ -42,22 +42,24 @@ public class PartidaDto {
     }
 
     public Partida toEntity() {
-        Partida p = new Partida();
-        p.setIdPartida(idPartida.get());
-        p.setFechaInicio(fechaInicio.get());
-        p.setFechaFin(fechaFin.get());
-        p.setPuntos(puntos.get());
-        p.setTiempoJugado(tiempoJugado.get());
-        p.setEstado(estado.get());
-        p.setDificultad(dificultad.get());
-        if (jugador.get() != null) {
-            p.setJugador(jugador.get().toEntity());
-        }
-        p.setVersion(this.version);
-        return p;
+        Partida partida = new Partida();
+        partida.setIdPartida(this.getIdPartida());
+        partida.setFechaInicio(this.getFechaInicio());
+        partida.setFechaFin(this.getFechaFin());
+        partida.setPuntos(this.getPuntos());
+        partida.setTiempoJugado(this.getTiempoJugado());
+        partida.setEstado(this.getEstado());
+        partida.setDificultad(this.getDificultad());
+        partida.setVersion(this.version);
+        return partida;
     }
 
-    // Properties
+    // Nuevo método alineado con el constructor Partida(PartidaDto dto)
+    public Partida toEntitySinJugador() {
+        return new Partida(this);
+    }
+
+    // Properties JavaFX
     public ObjectProperty<Long> idPartidaProperty() { return idPartida; }
     public ObjectProperty<Date> fechaInicioProperty() { return fechaInicio; }
     public ObjectProperty<Date> fechaFinProperty() { return fechaFin; }
@@ -67,6 +69,15 @@ public class PartidaDto {
     public StringProperty dificultadProperty() { return dificultad; }
     public ObjectProperty<JugadorDto> jugadorProperty() { return jugador; }
 
+    // Getters normales
+    public Long getIdPartida() { return idPartida.get(); }
+    public Date getFechaInicio() { return fechaInicio.get(); }
+    public Date getFechaFin() { return fechaFin.get(); }
+    public Integer getPuntos() { return puntos.get(); }
+    public Integer getTiempoJugado() { return tiempoJugado.get(); }
+    public String getEstado() { return estado.get(); }
+    public String getDificultad() { return dificultad.get(); }
+    public JugadorDto getJugador() { return jugador.get(); }
     public Long getVersion() { return version; }
     public void setVersion(Long version) { this.version = version; }
 

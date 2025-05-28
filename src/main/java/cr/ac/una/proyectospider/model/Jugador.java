@@ -47,6 +47,16 @@ public class Jugador implements Serializable {
     @Column(name = "IMAGEN_FONDO")
     private byte[] imagenFondo;
 
+    @Lob
+    @Basic (fetch = FetchType.LAZY)
+    @Column(name = "IMAGEN_REVERSO")
+    private byte[] imagenReverso;
+
+    @Lob
+    @Basic(fetch = FetchType.LAZY)
+    @Column(name = "IMAGEN_FRENTE")
+    private byte[] imagenFrente;
+
     @Version
     @Column(name = "VERSION")
     private Long version;
@@ -72,6 +82,8 @@ public class Jugador implements Serializable {
         this.puntosAcumulados = dto.puntosAcumuladosProperty().get();
         this.estiloCartas = dto.estiloCartasProperty().get();
         this.imagenFondo = dto.imagenFondoProperty().get();
+        this.imagenReverso = dto.imagenReversoProperty().get();
+        this.imagenFrente = dto.imagenFrenteProperty().get();
     }
 
     public Long getIdJugador() {
@@ -128,6 +140,21 @@ public class Jugador implements Serializable {
 
     public void setImagenFondo(byte[] imagenFondo) {
         this.imagenFondo = imagenFondo;
+    }
+    public byte[] getImagenReverso() {
+        return imagenReverso;
+    }
+
+    public void setImagenReverso(byte[] imagenReverso) {
+        this.imagenReverso = imagenReverso;
+    }
+
+    public byte[] getImagenFrente() {
+        return imagenFrente;
+    }
+
+    public void setImagenFrente(byte[] imagenFrente) {
+        this.imagenFrente = imagenFrente;
     }
 
     public Long getVersion() {
