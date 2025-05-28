@@ -34,58 +34,56 @@
                            <children>
                               <HBox alignment="TOP_CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="100.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
                                  <children>
-                                    <VBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="200.0" prefWidth="100.0" spacing="30.0" HBox.hgrow="ALWAYS">
+                                    <VBox fx:id="vboxRigth" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="200.0" prefWidth="100.0" spacing="30.0" HBox.hgrow="ALWAYS">
                                        <children>
                                           <Label fx:id="lblJugador" styleClass="label-subtitle-menu" text="JUGADOR: " />
-                                          <StackPane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="500.0" prefWidth="800.0">
+                                          <StackPane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="500.0" prefWidth="800.0" styleClass="stackPreview">
                                              <children>
-                                                <ImageView fx:id="imgPrevistaFondo" fitHeight="500.0" fitWidth="800.0" pickOnBounds="true" preserveRatio="true" />
-                                                <ImageView fx:id="imgCartasPrevista" fitHeight="500.0" fitWidth="800.0" pickOnBounds="true" preserveRatio="true" />
+                                                <ImageView fx:id="imgPrevistaFondo" fitHeight="500.0" fitWidth="800.0" opacity="0.6" pickOnBounds="true" />
+                                                <ImageView fx:id="imgCartasPrevista" fitHeight="500.0" fitWidth="800.0" pickOnBounds="true" />
                                              </children>
                                           </StackPane>
                                           <ImageView fx:id="btnGuardarCambios" fitHeight="72.0" fitWidth="267.0" onMouseClicked="#onMouseClickedbtnGuardarCambios" pickOnBounds="true" preserveRatio="true" styleClass="neon-image-button" />
                                        </children>
+                                       <padding>
+                                          <Insets left="50.0" />
+                                       </padding>
                                     </VBox>
-                                    <VBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="200.0" prefWidth="622.0" spacing="30.0" HBox.hgrow="ALWAYS">
+                                    <VBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="200.0" prefWidth="622.0" spacing="20.0" HBox.hgrow="ALWAYS">
                                        <children>
-                                          <Label fx:id="lblEstilosCartas" styleClass="label-subtitle-menu" text="ESTILOS DE CARTAS" />
-                                          <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="40.0">
+                                          <VBox fx:id="vboxleft" alignment="CENTER" spacing="30.0">
                                              <children>
-                                                <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="15.0">
+                                                <Label fx:id="lblEstilosCartas" styleClass="label-subtitle-menu" text="ESTILOS DE CARTAS" />
+                                                <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="40.0">
                                                    <children>
-                                                      <ImageView fx:id="imgCartasCyberpunk" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
-                                                      <Label fx:id="lblCyberpunk" styleClass="label-subtitle-menu" text="CYBERPUNK" />
-                                                      <RadioButton fx:id="rbtnCyberpunk" mnemonicParsing="false" />
+                                                      <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="15.0">
+                                                         <children>
+                                                            <ImageView fx:id="imgCartasCyberpunk" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
+                                                            <Label fx:id="lblCyberpunk" styleClass="label-subtitle-menu" text="CYBERPUNK" />
+                                                            <RadioButton fx:id="rbtnCyberpunk" mnemonicParsing="false" />
+                                                         </children>
+                                                      </VBox>
+                                                      <VBox alignment="TOP_CENTER" layoutX="383.0" layoutY="10.0" prefHeight="200.0" prefWidth="100.0" spacing="15.0">
+                                                         <children>
+                                                            <ImageView fx:id="imgCartasClasicas" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
+                                                            <Label fx:id="lblClasicas" styleClass="label-subtitle-menu" text="CLÁSICAS" />
+                                                            <RadioButton fx:id="rbtnClasicas" mnemonicParsing="false" />
+                                                         </children>
+                                                      </VBox>
                                                    </children>
-                                                </VBox>
-                                                <VBox alignment="TOP_CENTER" layoutX="383.0" layoutY="10.0" prefHeight="200.0" prefWidth="100.0" spacing="15.0">
+                                                </HBox>
+                                                <Label fx:id="lblSeleccionFondo" styleClass="label-subtitle-menu" text="SELECCIÓN DE FONDO DE JUEGO" />
+                                                <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="30.0">
                                                    <children>
-                                                      <ImageView fx:id="imgCartasClasicas" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
-                                                      <Label fx:id="lblClasicas" styleClass="label-subtitle-menu" text="CLASICAS" />
-                                                      <RadioButton fx:id="rbtnClasicas" mnemonicParsing="false" />
+                                                      <ImageView fx:id="btnFlechaIzquierda" fitHeight="50.0" fitWidth="50.0" onMouseClicked="#OnMouseClickedbtnFlechaIzquierda" pickOnBounds="true" preserveRatio="true" styleClass="neon-image-button" />
+                                                      <ImageView fx:id="imgFondoPreview" fitHeight="150.0" fitWidth="200.0" layoutX="210.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true" />
+                                                      <ImageView fx:id="btnFlechaDerecha" fitHeight="50.0" fitWidth="50.0" onMouseClicked="#OnMouseClickedbtnFlechaDerecha" pickOnBounds="true" preserveRatio="true" styleClass="neon-image-button" />
                                                    </children>
-                                                </VBox>
-                                             </children>
-                                          </HBox>
-                                          <Label fx:id="lblSeleccionFondo" layoutX="423.0" layoutY="60.0" styleClass="label-subtitle-menu" text="SELECCION DE FONDO DE JUEGO">
-                                             <VBox.margin>
-                                                <Insets top="10.0" />
-                                             </VBox.margin>
-                                          </Label>
-                                          <HBox prefHeight="100.0" prefWidth="200.0">
-                                             <children>
-                                                <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
-                                                <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="10.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true" />
-                                                <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="210.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true" />
-                                             </children>
-                                          </HBox>
-                                          <HBox alignment="CENTER" spacing="30.0">
-                                             <children>
-                                                <ImageView fx:id="btnFlechaIzquierda" fitHeight="50.0" fitWidth="50.0" onMouseClicked="#OnMouseClickedbtnFlechaIzquierda" pickOnBounds="true" preserveRatio="true" styleClass="neon-image-button" />
+                                                </HBox>
                                                 <ImageView fx:id="btnAgregarOtro" fitHeight="70.0" fitWidth="251.0" onMouseClicked="#onMouseClickedbtnAgregarOtro" pickOnBounds="true" preserveRatio="true" styleClass="neon-image-button" />
-                                                <ImageView fx:id="btnFlechaDerecha" fitHeight="50.0" fitWidth="50.0" layoutX="160.0" layoutY="24.0" onMouseClicked="#OnMouseClickedbtnFlechaDerecha" pickOnBounds="true" preserveRatio="true" styleClass="neon-image-button" />
                                              </children>
-                                          </HBox>
+                                          </VBox>
+                                          <HBox alignment="CENTER" spacing="30.0" />
                                           <ImageView fx:id="btnVolver" fitHeight="70.0" fitWidth="170.0" onMouseClicked="#onMouseClickedbtnVolver" pickOnBounds="true" preserveRatio="true" styleClass="neon-image-button">
                                              <VBox.margin>
                                                 <Insets />
