@@ -4,7 +4,7 @@
     import cr.ac.una.proyectospider.util.AnimationDepartment;
     import cr.ac.una.proyectospider.util.FlowController;
     import cr.ac.una.proyectospider.util.MazoGenerator;
-        import javafx.animation.KeyFrame;
+    import javafx.animation.KeyFrame;
     import javafx.animation.Timeline;
     import javafx.application.Platform;
     import javafx.fxml.FXML;
@@ -79,7 +79,6 @@
         private List<CartasPartidaDto> cartasEnJuego;
         private List<CartasPartidaDto> cartasSeleccionadas = new ArrayList<>();
         private List<CartasPartidaDto> cartasArrastradas = new ArrayList<>();
-        private boolean esperandoDestino = false;
         private Map<CartasPartidaDto, ImageView> cartaToImageView = new HashMap<>();
         private int puntaje = 500;
         private int movimientos = 0;
@@ -240,52 +239,27 @@
                         // Selección por clic (ya existía)
                         img.setOnMouseClicked(e -> {
                             e.consume();
-                            if (esperandoDestino && !cartasSeleccionadas.isEmpty()) {
-                                CartasPartidaDto cartaDestino = carta;
-                                CartasPartidaDto cartaOrigen = cartasSeleccionadas.get(0);
-                                boolean puedeMover = esGrupoValido(cartasSeleccionadas)
-                                        && Integer.parseInt(cartaOrigen.getValor()) == Integer.parseInt(cartaDestino.getValor()) - 1;
-                                if (puedeMover) {
-                                    int colAnterior = cartaOrigen.getColumna();
-                                    int ordenAnterior = cartaOrigen.getOrden();
-                                    int nuevaCol = cartaDestino.getColumna();
-                                    moverCartasSeleccionadas(nuevaCol);
-                                    cartasEnJuego.stream()
-                                            .filter(c -> c.getColumna() == colAnterior && c.getOrden() == ordenAnterior - 1)
-                                            .findFirst()
-                                            .ifPresent(c -> c.setBocaArriba(true));
-                                    esperandoDestino = false;
-                                    cartasSeleccionadas.clear();
-                                    RunGameView();
-                                } else {
-                                    System.out.println("Movimiento inválido entre cartas.");
-                                    esperandoDestino = false;
-                                    cartasSeleccionadas.clear();
-                                }
-                            } else {
+                            cartasSeleccionadas.clear();
+                            List<CartasPartidaDto> grupo = obtenerGrupoDesde(carta);
+                            cartasSeleccionadas.addAll(grupo);
+                            // --- AUTO-MOVE: Si solo se hace un clic, buscar destino y mover automáticamente ---
+                            int destino = buscarMejorDestinoAutoMove(grupo);
+                            if (destino != -1) {
+                                int colAnterior = carta.getColumna();
+                                int ordenAnterior = carta.getOrden();
+                                moverCartasSeleccionadas(destino);
+                                cartasEnJuego.stream()
+                                        .filter(c2 -> c2.getColumna() == colAnterior && c2.getOrden() == ordenAnterior - 1)
+                                        .findFirst()
+                                        .ifPresent(c2 -> c2.setBocaArriba(true));
                                 cartasSeleccionadas.clear();
-                                List<CartasPartidaDto> grupo = obtenerGrupoDesde(carta);
-                                cartasSeleccionadas.addAll(grupo);
-                                esperandoDestino = true;
-                                // --- AUTO-MOVE: Si solo se hace un clic, buscar destino y mover automáticamente ---
-                                int destino = buscarMejorDestinoAutoMove(grupo);
-                                if (destino != -1) {
-                                    int colAnterior = carta.getColumna();
-                                    int ordenAnterior = carta.getOrden();
-                                    moverCartasSeleccionadas(destino);
-                                    cartasEnJuego.stream()
-                                            .filter(c2 -> c2.getColumna() == colAnterior && c2.getOrden() == ordenAnterior - 1)
-                                            .findFirst()
-                                            .ifPresent(c2 -> c2.setBocaArriba(true));
-                                    esperandoDestino = false;
-                                    cartasSeleccionadas.clear();
-                                    RunGameView();
-                                } else {
-                                    // Si no hay destino válido, mantener selección manual
-                                    System.out.println("No hay destino válido para auto-move");
-                                }
-                                // --- FIN AUTO-MOVE ---
+                                RunGameView();
+                            } else {
+                                // Si no hay destino válido, no hacer nada
+                                System.out.println("No hay destino válido para auto-move");
+                                cartasSeleccionadas.clear();
                             }
+                            // --- FIN AUTO-MOVE ---
                         });
 
                         // Inicio de drag: cargamos el mismo grupo que con click
