@@ -720,6 +720,8 @@ public class GameController extends Controller implements Initializable {
      */
     private void animarSugerenciaVisual(List<CartasPartidaDto> grupo, int columnaDestino) {
         if (grupo == null || grupo.isEmpty()) return;
+        // Deshabilitar el botón de pista mientras dura la animación
+        if (btnPista != null) btnPista.setDisable(true);
         // Crear un Pane temporal para los clones
         Pane animPane = new Pane();
         animPane.setPickOnBounds(false); // No bloquear eventos
@@ -749,7 +751,6 @@ public class GameController extends Controller implements Initializable {
             origX.add(parentBounds.getMinX());
             origY.add(parentBounds.getMinY());
             animPane.getChildren().add(clone);
-            original.setVisible(false); // Oculta la carta original
         }
         // Calcular posición destino (debajo de la última carta visible en columnaDestino)
         Pane columnaDestinoPane = (Pane) hboxTablero.getChildren().get(columnaDestino);
@@ -791,6 +792,8 @@ public class GameController extends Controller implements Initializable {
             for (ImageView original : originales) {
                 original.setVisible(true);
             }
+            // Habilitar el botón de pista al finalizar la animación
+            if (btnPista != null) btnPista.setDisable(false);
         });
         seq.play();
     }
