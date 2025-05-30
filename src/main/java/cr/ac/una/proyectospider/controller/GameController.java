@@ -751,6 +751,8 @@ public class GameController extends Controller implements Initializable {
             origX.add(parentBounds.getMinX());
             origY.add(parentBounds.getMinY());
             animPane.getChildren().add(clone);
+            // --- OCULTAR LA ORIGINAL ---
+            original.setVisible(false);
         }
         // Calcular posición destino (debajo de la última carta visible en columnaDestino)
         Pane columnaDestinoPane = (Pane) hboxTablero.getChildren().get(columnaDestino);
