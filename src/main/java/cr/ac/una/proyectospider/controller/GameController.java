@@ -88,7 +88,26 @@ public class GameController extends Controller implements Initializable {
     private int segundosTranscurridos = 0;
     private boolean tiempoIniciado = false;
     private boolean usarEstiloClasico = false; // Por defecto, usar el estilo moderno
+    private MovimientoSugerido lastHint = null;
     private int lastHintIndex = -1; // Para rotar entre pistas
+
+    private static class MovimientoSugerido {
+        List<CartasPartidaDto> grupo;
+        CartasPartidaDto destino;
+        int columnaOrigen;
+        int columnaDestino;
+        int longitud;
+        int valorSuperior;
+
+        MovimientoSugerido(List<CartasPartidaDto> grupo, CartasPartidaDto destino, int columnaOrigen, int columnaDestino) {
+            this.grupo = grupo;
+            this.destino = destino;
+            this.columnaOrigen = columnaOrigen;
+            this.columnaDestino = columnaDestino;
+            this.longitud = grupo.size();
+            this.valorSuperior = Integer.parseInt(grupo.get(0).getValor());
+        }
+    }
 
     @FXML
     void oMouseClickedbtnGuardarySalir(MouseEvent event) {
@@ -701,55 +720,11 @@ public class GameController extends Controller implements Initializable {
      */
     public void darPista() {
         limpiarPistasVisuales();
-        class MovimientoSugerido {
-            List<CartasPartidaDto> grupo;
-            CartasPartidaDto destino;
-            int longitud;
-            int valorSuperior;
-            int columnaOrigen;
-            int columnaDestino;
-            MovimientoSugerido(List<CartasPartidaDto> grupo, CartasPartidaDto destino, int columnaOrigen, int columnaDestino) {
-                this.grupo = grupo;
-                this.destino = destino;
-                this.longitud = grupo.size();
-                this.valorSuperior = Integer.parseInt(grupo.get(0).getValor());
-                this.columnaOrigen = columnaOrigen;
-                this.columnaDestino = columnaDestino;
-            }
-        }
-        List<MovimientoSugerido> sugerencias = new ArrayList<>();
-        for (int col = 0; col < 10; col++) {
-            final int colFinal = col;
-            List<CartasPartidaDto> visibles = cartasEnJuego.stream()
-                    .filter(c -> c.getColumna() == colFinal && c.getBocaArriba() == true)
-                    .sorted(Comparator.comparingInt(CartasPartidaDto::getOrden))
-                    .toList();
-            for (int i = 0; i < visibles.size(); i++) {
-                List<CartasPartidaDto> grupo = visibles.subList(i, visibles.size());
-                if (!esGrupoValido(grupo)) continue;
-                CartasPartidaDto cartaSuperior = grupo.get(0);
-                int valorSuperior = Integer.parseInt(cartaSuperior.getValor());
-                for (int colDest = 0; colDest < 10; colDest++) {
-                    final int colDestFinal = colDest;
-                    if (colDestFinal == colFinal) continue;
-                    CartasPartidaDto cartaDestino = obtenerUltimaCartaVisible(colDestFinal);
-                    if (cartaDestino == null) {
-                        sugerencias.add(new MovimientoSugerido(grupo, null, colFinal, colDestFinal));
-                    } else {
-                        int valorDestino = Integer.parseInt(cartaDestino.getValor());
-                        if (valorSuperior == valorDestino - 1) {
-                            sugerencias.add(new MovimientoSugerido(grupo, cartaDestino, colFinal, colDestFinal));
-                        }
-                    }
-                }
-            }
-        }
-        sugerencias.sort(Comparator.comparingInt((MovimientoSugerido m) -> -m.longitud)
-                .thenComparingInt(m -> -m.valorSuperior));
+        List<MovimientoSugerido> sugerencias = calcularSugerencias();
         if (!sugerencias.isEmpty()) {
-            // Rotar entre sugerencias
             lastHintIndex = (lastHintIndex + 1) % sugerencias.size();
             MovimientoSugerido mejor = sugerencias.get(lastHintIndex);
+            lastHint = mejor; // Guarda la sugerencia para el auto click
             for (CartasPartidaDto c : mejor.grupo) {
                 ImageView iv = cartaToImageView.get(c);
                 if (iv != null) iv.setStyle("-fx-effect: dropshadow(gaussian, #00eaff, 16, 0.7, 0, 0); -fx-border-color: #00eaff; -fx-border-width: 2;");
@@ -760,6 +735,7 @@ public class GameController extends Controller implements Initializable {
             }
         } else {
             lastHintIndex = -1;
+            lastHint = null;
             boolean hayCartasEnMazo = cartasEnJuego.stream().anyMatch(c -> c.getEnMazo() == true);
             boolean todasColumnasConCartas = true;
             for (int col = 0; col < 10; col++) {
@@ -773,6 +749,64 @@ public class GameController extends Controller implements Initializable {
             if (hayCartasEnMazo && todasColumnasConCartas && imgMazo != null) {
                 imgMazo.setStyle("-fx-effect: dropshadow(gaussian, #00eaff, 22, 0.8, 0, 0); -fx-border-color: #00eaff; -fx-border-width: 3;");
             }
+        }
+    }
+
+    /**
+     * Método común para calcular sugerencias de movimientos.
+     */
+    private List<MovimientoSugerido> calcularSugerencias() {
+        List<MovimientoSugerido> sugerencias = new ArrayList<>();
+        for (int col = 0; col < 10; col++) {
+            final int colFinal = col;
+            List<CartasPartidaDto> visibles = cartasEnJuego.stream()
+                    .filter(c -> c.getColumna() == colFinal && c.getBocaArriba() == true)
+                    .sorted(Comparator.comparingInt(CartasPartidaDto::getOrden))
+                    .toList();
+            for (int i = 0; i < visibles.size(); i++) {
+                List<CartasPartidaDto> grupo = visibles.subList(i, visibles.size());
+                if (!esGrupoValido(grupo)) continue;
+                CartasPartidaDto cartaSuperior = grupo.get(0);
+                int valorSuperior = Integer.parseInt(cartaSuperior.getValor());
+                for (int colDest = 0; colDest < 10; colDest++) {
+                    if (colDest == colFinal) continue;
+                    CartasPartidaDto cartaDestino = obtenerUltimaCartaVisible(colDest);
+                    if (cartaDestino == null) {
+                        sugerencias.add(new MovimientoSugerido(grupo, null, colFinal, colDest));
+                    } else {
+                        int valorDestino = Integer.parseInt(cartaDestino.getValor());
+                        if (valorSuperior == valorDestino - 1) {
+                            sugerencias.add(new MovimientoSugerido(grupo, cartaDestino, colFinal, colDest));
+                        }
+                    }
+                }
+            }
+        }
+        sugerencias.sort(Comparator.comparingInt((MovimientoSugerido m) -> -m.longitud)
+                .thenComparingInt(m -> -m.valorSuperior));
+        return sugerencias;
+    }
+
+    /**
+     * Método para auto-move inteligente y sincronizado con la pista.
+     */
+    public void autoClick() {
+        MovimientoSugerido sugerencia = lastHint;
+        if (sugerencia == null) {
+            List<MovimientoSugerido> sugerencias = calcularSugerencias();
+            if (!sugerencias.isEmpty()) {
+                sugerencia = sugerencias.get(0);
+            }
+        }
+        if (sugerencia != null) {
+            cartasSeleccionadas.clear();
+            cartasSeleccionadas.addAll(sugerencia.grupo);
+            moverCartasSeleccionadas(sugerencia.columnaDestino);
+            cartasSeleccionadas.clear();
+            RunGameView();
+            lastHint = null; // Limpia la sugerencia después de usarla
+        } else {
+            System.out.println("No hay movimientos automáticos disponibles.");
         }
     }
 
@@ -812,3 +846,4 @@ public class GameController extends Controller implements Initializable {
         tt.play();
     }
 }
+
