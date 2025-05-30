@@ -715,6 +715,87 @@ public class GameController extends Controller implements Initializable {
     }
 
     /**
+     * Animación visual de sugerencia: simula el movimiento de un grupo de cartas desde su posición original hasta la columna destino y regresa, usando clones visuales.
+     * No modifica el modelo de datos real.
+     */
+    private void animarSugerenciaVisual(List<CartasPartidaDto> grupo, int columnaDestino) {
+        if (grupo == null || grupo.isEmpty()) return;
+        // Crear un Pane temporal para los clones
+        Pane animPane = new Pane();
+        animPane.setPickOnBounds(false); // No bloquear eventos
+        spGamebackground.getChildren().add(animPane);
+
+        // Clonar los ImageView y calcular posiciones iniciales
+        List<ImageView> clones = new ArrayList<>();
+        List<Double> origX = new ArrayList<>();
+        List<Double> origY = new ArrayList<>();
+        List<ImageView> originales = new ArrayList<>();
+
+        // Ocultar las cartas originales mientras dura la animación
+        for (CartasPartidaDto carta : grupo) {
+            ImageView original = cartaToImageView.get(carta);
+            if (original == null) continue;
+            originales.add(original);
+            // Obtener posición global del original
+            javafx.geometry.Bounds bounds = original.localToScene(original.getBoundsInLocal());
+            javafx.geometry.Bounds parentBounds = spGamebackground.sceneToLocal(bounds);
+            ImageView clone = new ImageView(original.getImage());
+            clone.setFitWidth(original.getFitWidth());
+            clone.setPreserveRatio(true);
+            clone.setSmooth(true);
+            clone.setLayoutX(parentBounds.getMinX());
+            clone.setLayoutY(parentBounds.getMinY());
+            clones.add(clone);
+            origX.add(parentBounds.getMinX());
+            origY.add(parentBounds.getMinY());
+            animPane.getChildren().add(clone);
+            original.setVisible(false); // Oculta la carta original
+        }
+        // Calcular posición destino (debajo de la última carta visible en columnaDestino)
+        Pane columnaDestinoPane = (Pane) hboxTablero.getChildren().get(columnaDestino);
+        double destX = 0, destY = 0;
+        javafx.geometry.Bounds destBounds = columnaDestinoPane.localToScene(columnaDestinoPane.getBoundsInLocal());
+        javafx.geometry.Bounds destParentBounds = spGamebackground.sceneToLocal(destBounds);
+        destX = destParentBounds.getMinX();
+        // Calcular Y destino según cuántas cartas hay en la columna destino
+        int cartasEnColDest = (int) cartasEnJuego.stream()
+            .filter(c -> c.getColumna() == columnaDestino)
+            .count();
+        double desplazamiento = 22; // mismo desplazamiento que usas en el tablero
+        destY = destParentBounds.getMinY() + cartasEnColDest * desplazamiento;
+        // Crear animaciones para cada carta
+        javafx.animation.ParallelTransition toDest = new javafx.animation.ParallelTransition();
+        javafx.animation.ParallelTransition toOrig = new javafx.animation.ParallelTransition();
+        for (int i = 0; i < clones.size(); i++) {
+            ImageView clone = clones.get(i);
+            double targetX = destX;
+            double targetY = destY + i * desplazamiento;
+            javafx.animation.TranslateTransition go = new javafx.animation.TranslateTransition(javafx.util.Duration.millis(400), clone);
+            go.setToX(targetX - origX.get(i));
+            go.setToY(targetY - origY.get(i));
+            javafx.animation.TranslateTransition back = new javafx.animation.TranslateTransition(javafx.util.Duration.millis(400), clone);
+            back.setToX(0);
+            back.setToY(0);
+            toDest.getChildren().add(go);
+            toOrig.getChildren().add(back);
+        }
+        // Secuencia: ir al destino, pausar, regresar, limpiar
+        javafx.animation.SequentialTransition seq = new javafx.animation.SequentialTransition(
+            toDest,
+            new javafx.animation.PauseTransition(javafx.util.Duration.millis(350)),
+            toOrig
+        );
+        seq.setOnFinished(e -> {
+            spGamebackground.getChildren().remove(animPane);
+            // Mostrar de nuevo las cartas originales
+            for (ImageView original : originales) {
+                original.setVisible(true);
+            }
+        });
+        seq.play();
+    }
+
+    /**
      * Analiza el tablero y resalta visualmente la mejor jugada posible.
      * Si no hay jugada, resalta el mazo si se puede repartir.
      */
@@ -733,6 +814,8 @@ public class GameController extends Controller implements Initializable {
                 ImageView iv = cartaToImageView.get(mejor.destino);
                 if (iv != null) iv.setStyle("-fx-effect: dropshadow(gaussian, #00eaff, 16, 0.7, 0, 0); -fx-border-color: #00eaff; -fx-border-width: 2;");
             }
+            // --- ANIMACIÓN VISUAL DE LA SUGERENCIA ---
+            animarSugerenciaVisual(mejor.grupo, mejor.columnaDestino);
         } else {
             lastHintIndex = -1;
             lastHint = null;
@@ -799,6 +882,7 @@ public class GameController extends Controller implements Initializable {
             }
         }
         if (sugerencia != null) {
+            // Selecciona exactamente el grupo y columna destino de la pista
             cartasSeleccionadas.clear();
             cartasSeleccionadas.addAll(sugerencia.grupo);
             moverCartasSeleccionadas(sugerencia.columnaDestino);
