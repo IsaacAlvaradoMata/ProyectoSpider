@@ -81,6 +81,38 @@ public class PartidaDto {
     public Long getVersion() { return version; }
     public void setVersion(Long version) { this.version = version; }
 
+    // Setters normales
+    public void setIdPartida(Long id) { this.idPartida.set(id); }
+
+    public void setFechaInicio(Date fechaInicio) {
+        this.fechaInicio.set(fechaInicio);
+    }
+
+    public void setFechaFin(Date fechaFin) {
+        this.fechaFin.set(fechaFin);
+    }
+
+    public void setPuntos(Integer puntos) {
+        this.puntos.set(puntos);
+    }
+
+    public void setTiempoJugado(Integer tiempoJugado) {
+        this.tiempoJugado.set(tiempoJugado);
+    }
+
+    public void setEstado(String estado) {
+        this.estado.set(estado);
+    }
+
+    public void setDificultad(String dificultad) {
+        this.dificultad.set(dificultad);
+    }
+
+    public void setJugador(JugadorDto jugador) {
+        this.jugador.set(jugador);
+    }
+
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

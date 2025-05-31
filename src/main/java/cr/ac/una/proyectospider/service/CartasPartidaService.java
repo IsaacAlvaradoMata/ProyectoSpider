@@ -8,6 +8,10 @@ import jakarta.persistence.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Servicio dedicado exclusivamente a operaciones CRUD sobre CartasPartida.
+ * Usado por PartidaService (delegación).
+ */
 public class CartasPartidaService {
 
     private final EntityManagerFactory emf = Persistence.createEntityManagerFactory("cr.ac.una_ProyectoSpider_jar_1.0-SNAPSHOTPU");
@@ -43,12 +47,10 @@ public class CartasPartidaService {
         try {
             em.getTransaction().begin();
 
-            // Eliminar cartas existentes
             em.createQuery("DELETE FROM CartasPartida c WHERE c.partida.idPartida = :idPartida")
                     .setParameter("idPartida", idPartida)
                     .executeUpdate();
 
-            // Insertar nuevas cartas
             Partida partidaRef = em.getReference(Partida.class, idPartida);
             for (CartasPartidaDto dto : cartas) {
                 CartasPartida carta = dto.toEntity(partidaRef);

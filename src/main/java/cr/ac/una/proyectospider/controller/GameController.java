@@ -1,6 +1,8 @@
 package cr.ac.una.proyectospider.controller;
 
 import cr.ac.una.proyectospider.model.CartasPartidaDto;
+import cr.ac.una.proyectospider.model.PartidaDto;
+import cr.ac.una.proyectospider.service.PartidaService;
 import cr.ac.una.proyectospider.util.AnimationDepartment;
 import cr.ac.una.proyectospider.util.FlowController;
 import cr.ac.una.proyectospider.util.MazoGenerator;
@@ -90,6 +92,7 @@ public class GameController extends Controller implements Initializable {
     private boolean usarEstiloClasico = false; // Por defecto, usar el estilo moderno
     private MovimientoSugerido lastHint = null;
     private int lastHintIndex = -1; // Para rotar entre pistas
+    private PartidaDto partidaDto;
 
     private static class MovimientoSugerido {
         List<CartasPartidaDto> grupo;
@@ -111,17 +114,30 @@ public class GameController extends Controller implements Initializable {
 
     @FXML
     void oMouseClickedbtnGuardarySalir(MouseEvent event) {
-
         btnGuardarySalir.setDisable(true);
         AnimationDepartment.stopAllAnimations();
         detenerTemporizador();
         tiempoIniciado = false;
+
+        List<CartasPartidaDto> cartasActuales = obtenerEstadoDelTablero();
+
+        // Marcar partida como pausada
+        partidaDto.setEstado("PAUSADA");
+        partidaDto.setFechaFin(new Date());
+
+        boolean exito = new PartidaService().guardarPartidaCompleta(partidaDto, cartasActuales);
+        if (!exito) {
+            System.err.println("❌ No se pudo guardar la partida al salir.");
+        }
+
         FlowController.getInstance().goView("MenuView");
         MenuController controller = (MenuController) FlowController.getInstance().getController("MenuView");
         controller.RunMenuView();
-        Platform.runLater(() -> btnGuardarySalir.setDisable(false));
 
+        Platform.runLater(() -> btnGuardarySalir.setDisable(false));
     }
+
+
 
     @FXML
     void oMouseClickedbtnPista(MouseEvent event) {
@@ -138,7 +154,8 @@ public class GameController extends Controller implements Initializable {
 
     }
 
-    public void RunGameView() {
+    public void RunGameView(PartidaDto partidaDto) {
+        this.partidaDto = partidaDto;
         ResetGameView();
         if (cartasEnJuego == null) {
             cartasEnJuego = MazoGenerator.generarMazoPorDificultad("FACIL", usarEstiloClasico);
@@ -212,7 +229,7 @@ public class GameController extends Controller implements Initializable {
                                 .findFirst()
                                 .ifPresent(c -> c.setBocaArriba(true));
                         // 3) Refrescamos TODO el tablero
-                        RunGameView();
+                        RunGameView(partidaDto);
                         success = true;
                     } else {
                         System.out.println("Drop inválido en columna " + colIndex);
@@ -279,7 +296,7 @@ public class GameController extends Controller implements Initializable {
                                     .findFirst()
                                     .ifPresent(c2 -> c2.setBocaArriba(true));
                             cartasSeleccionadas.clear();
-                            RunGameView();
+                            RunGameView(partidaDto);
                         } else {
                             // Si no hay destino válido, animar shake
                             for (CartasPartidaDto c : grupo) {
@@ -584,7 +601,7 @@ public class GameController extends Controller implements Initializable {
         verificarSecuenciaCompleta();
 
         // Actualizar la vista (RunGameView ya verifica si hay cartas en el mazo)
-        RunGameView();
+        RunGameView(partidaDto);
     }
 
     /**
@@ -645,7 +662,7 @@ public class GameController extends Controller implements Initializable {
                                 .ifPresent(c -> c.setBocaArriba(true));
                     }
 
-                    RunGameView();
+                    RunGameView(partidaDto);
                     return;
                 }
             }
@@ -762,8 +779,8 @@ public class GameController extends Controller implements Initializable {
         destX = destParentBounds.getMinX();
         // Calcular Y destino según cuántas cartas hay en la columna destino
         int cartasEnColDest = (int) cartasEnJuego.stream()
-            .filter(c -> c.getColumna() == columnaDestino)
-            .count();
+                .filter(c -> c.getColumna() == columnaDestino)
+                .count();
         double desplazamiento = 22; // mismo desplazamiento que usas en el tablero
         destY = destParentBounds.getMinY() + cartasEnColDest * desplazamiento;
         // Crear animaciones para cada carta
@@ -784,9 +801,9 @@ public class GameController extends Controller implements Initializable {
         }
         // Secuencia: ir al destino, pausar, regresar, limpiar
         javafx.animation.SequentialTransition seq = new javafx.animation.SequentialTransition(
-            toDest,
-            new javafx.animation.PauseTransition(javafx.util.Duration.millis(350)),
-            toOrig
+                toDest,
+                new javafx.animation.PauseTransition(javafx.util.Duration.millis(350)),
+                toOrig
         );
         seq.setOnFinished(e -> {
             spGamebackground.getChildren().remove(animPane);
@@ -813,11 +830,13 @@ public class GameController extends Controller implements Initializable {
             lastHint = mejor; // Guarda la sugerencia para el auto click
             for (CartasPartidaDto c : mejor.grupo) {
                 ImageView iv = cartaToImageView.get(c);
-                if (iv != null) iv.setStyle("-fx-effect: dropshadow(gaussian, #00eaff, 16, 0.7, 0, 0); -fx-border-color: #00eaff; -fx-border-width: 2;");
+                if (iv != null)
+                    iv.setStyle("-fx-effect: dropshadow(gaussian, #00eaff, 16, 0.7, 0, 0); -fx-border-color: #00eaff; -fx-border-width: 2;");
             }
             if (mejor.destino != null) {
                 ImageView iv = cartaToImageView.get(mejor.destino);
-                if (iv != null) iv.setStyle("-fx-effect: dropshadow(gaussian, #00eaff, 16, 0.7, 0, 0); -fx-border-color: #00eaff; -fx-border-width: 2;");
+                if (iv != null)
+                    iv.setStyle("-fx-effect: dropshadow(gaussian, #00eaff, 16, 0.7, 0, 0); -fx-border-color: #00eaff; -fx-border-width: 2;");
             }
             // --- ANIMACIÓN VISUAL DE LA SUGERENCIA ---
             animarSugerenciaVisual(mejor.grupo, mejor.columnaDestino);
@@ -892,7 +911,7 @@ public class GameController extends Controller implements Initializable {
             cartasSeleccionadas.addAll(sugerencia.grupo);
             moverCartasSeleccionadas(sugerencia.columnaDestino);
             cartasSeleccionadas.clear();
-            RunGameView();
+            RunGameView(partidaDto);
             lastHint = null; // Limpia la sugerencia después de usarla
         } else {
             System.out.println("No hay movimientos automáticos disponibles.");
@@ -934,5 +953,47 @@ public class GameController extends Controller implements Initializable {
         tt.setOnFinished(e -> node.setTranslateX(0));
         tt.play();
     }
+
+    private List<CartasPartidaDto> obtenerEstadoDelTablero() {
+        List<CartasPartidaDto> cartasActuales = new ArrayList<>();
+
+        // Recolectar cartas por columna (0 a 9)
+        for (int col = 0; col < 10; col++) {
+            Pane columna = (Pane) hboxTablero.getChildren().get(col);
+            int orden = 0;
+
+            for (Node node : columna.getChildren()) {
+                if (node instanceof ImageView) {
+                    ImageView img = (ImageView) node;
+                    CartasPartidaDto carta = cartaToImageView.entrySet().stream()
+                            .filter(entry -> entry.getValue() == img)
+                            .map(Map.Entry::getKey)
+                            .findFirst()
+                            .orElse(null);
+
+                    if (carta != null) {
+                        carta.setColumna(col);
+                        carta.setOrden(orden++);
+                        carta.setEnMazo(false);
+                        carta.setEnPila(false);
+                        cartasActuales.add(carta);
+                    }
+                }
+            }
+        }
+
+        // Agregar cartas que están en el mazo
+        cartasEnJuego.stream()
+                .filter(c -> c.getEnMazo())
+                .forEach(cartasActuales::add);
+
+        // Agregar cartas que están en las pilas (finalizadas)
+        cartasEnJuego.stream()
+                .filter(c -> c.getEnPila())
+                .forEach(cartasActuales::add);
+
+        return cartasActuales;
+    }
 }
+
 

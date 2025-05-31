@@ -73,6 +73,9 @@ public class JugadorDto {
 
     public Long getVersion() { return version; }
     public void setVersion(Long version) { this.version = version; }
+    public Long getIdJugador() {
+        return idJugador.get();
+    }
 
     @Override
     public boolean equals(Object o) {

@@ -5,10 +5,12 @@
 package cr.ac.una.proyectospider.controller;
 
 import java.net.URL;
+import java.util.Date;
 import java.util.ResourceBundle;
 
 import cr.ac.una.proyectospider.model.JugadorDto;
 import cr.ac.una.proyectospider.model.JugadorRankingMock;
+import cr.ac.una.proyectospider.model.PartidaDto;
 import cr.ac.una.proyectospider.model.PartidaMock;
 import cr.ac.una.proyectospider.util.AnimationDepartment;
 import cr.ac.una.proyectospider.util.AppContext;
@@ -287,13 +289,25 @@ public class MenuController extends Controller implements Initializable {
         AnimationDepartment.stopAllAnimations();
 
         AnimationDepartment.glitchFadeOut(spBackgroundMenu, Duration.seconds(1.1), () -> {
+            // 🛠️ Crear una nueva partida con jugador
+            PartidaDto partidaDto = new PartidaDto();
+            partidaDto.setEstado("EN_JUEGO");
+            partidaDto.setFechaInicio(new Date());
+
+            // ✅ Agregar jugador activo
+            JugadorDto jugadorActivo = (JugadorDto) AppContext.getInstance().get("jugadorActivo");
+            partidaDto.setJugador(jugadorActivo);
+
+            // 🚀 Lanzar vista
             FlowController.getInstance().goView("GameView");
             GameController controller = (GameController) FlowController.getInstance().getController("GameView");
-            controller.RunGameView();
-            Platform.runLater(() -> btnNuevaPartida.setDisable(false));
+            controller.RunGameView(partidaDto);
 
+            Platform.runLater(() -> btnNuevaPartida.setDisable(false));
         });
     }
+
+
 
     @FXML
     private void onMouseClickedbtnContinuarPartida(MouseEvent event) {
