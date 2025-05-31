@@ -29,6 +29,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
@@ -89,11 +90,34 @@ public class MenuController extends Controller implements Initializable {
     private Label lblPartidasPausadas;
     @FXML
     private TableView<PartidaMock> tblviewPartidasPausadas;
+    @FXML
+    private Label lblDificultad;
+    @FXML
+    private RadioButton rbtnFacil;
+    @FXML
+    private RadioButton rbtnMedio;
+    @FXML
+    private RadioButton rbtnDificil;
+    @FXML
+    private Label lblFaciil;
+    @FXML
+    private Label lblMedio;
+    @FXML
+    private Label lblDificl;
+    @FXML
+    private HBox hboxDificultades;
 
+    private ToggleGroup tgDificultad;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
+        tgDificultad = new ToggleGroup();
+        rbtnFacil.setToggleGroup(tgDificultad);
+        rbtnMedio.setToggleGroup(tgDificultad);
+        rbtnDificil.setToggleGroup(tgDificultad);
+
+        // Dejar “Fácil” seleccionado por defecto
+        rbtnFacil.setSelected(true);
     }
 
     @Override
@@ -109,6 +133,28 @@ public class MenuController extends Controller implements Initializable {
             lblPuntajeAcomuladoDinamico.setText(String.valueOf(jugador.puntosAcumuladosProperty().get()));
             lblTotalPartidasGanadasDinamico.setText(String.valueOf(jugador.partidasGanadasProperty().get()));
         }
+
+        // Usando la misma constante
+        Object fondoEnContext = AppContext.getInstance().get(AppContext.KEY_FONDO_SELECCIONADO);
+        if (fondoEnContext instanceof Image) {
+            imgFondoActual.setImage((Image) fondoEnContext);
+        } else {
+            imgFondoActual.setImage(
+                    new Image(getClass().getResourceAsStream("/cr/ac/una/proyectospider/resources/DefaultBack3.png"))
+            );
+        }
+
+        // 3) Cargar el estilo de cartas que guardamos en AppContext
+        Object estiloEnContext = AppContext.getInstance().get(AppContext.KEY_ESTILO_CARTAS);
+        if (estiloEnContext instanceof String) {
+            String ruta = (String) estiloEnContext;
+            imgCartasActual.setImage(new Image(getClass().getResourceAsStream(ruta)));
+        } else {
+            imgCartasActual.setImage(
+                    new Image(getClass().getResourceAsStream(AppContext.RUTA_CARTAS_CYBERPUNK))
+            );
+        }
+
         populateTableView();
         System.out.println("Run Menu View");
 
@@ -166,6 +212,7 @@ public class MenuController extends Controller implements Initializable {
                 AnimationDepartment.slideFromLeft(lblPartidasPausadas, Duration.ZERO);
                 AnimationDepartment.slideFromRight(lblFondoActual, Duration.ZERO);
                 AnimationDepartment.slideFromRight(lblCartasActual, Duration.ZERO);
+                AnimationDepartment.slideFromRight(lblDificultad, Duration.ZERO);
 
                 AnimationDepartment.glitchTextWithFlicker(lblJugadorRegistrado);
                 AnimationDepartment.glitchTextWithFlicker(lblPuntajeAcomulado);
@@ -173,6 +220,10 @@ public class MenuController extends Controller implements Initializable {
                 AnimationDepartment.glitchTextWithFlicker(lblPartidasPausadas);
                 AnimationDepartment.glitchTextWithFlicker(lblFondoActual);
                 AnimationDepartment.glitchTextWithFlicker(lblCartasActual);
+                AnimationDepartment.glitchTextWithFlicker(lblDificultad);
+                AnimationDepartment.glitchTextWithFlicker(lblFaciil);
+                AnimationDepartment.glitchTextWithFlicker(lblMedio);
+                AnimationDepartment.glitchTextWithFlicker(lblDificl);
 
             });
             t3.play();
@@ -185,6 +236,8 @@ public class MenuController extends Controller implements Initializable {
                 AnimationDepartment.slideFromLeft(tblviewPartidasPausadas, Duration.ZERO);
                 AnimationDepartment.slideFromRight(spFondoActual, Duration.ZERO);
                 AnimationDepartment.slideFromRight(spCartasActual, Duration.ZERO);
+                AnimationDepartment.slideFromRight(hboxDificultades, Duration.ZERO);
+
 
 
             });
@@ -246,9 +299,11 @@ public class MenuController extends Controller implements Initializable {
         lblTotalPartidasGanadasDinamico.setOpacity(0);
         lblFondoActual.setOpacity(0);
         lblCartasActual.setOpacity(0);
+        lblDificultad.setOpacity(0);
         spMenuLogo.setOpacity(0);
         spFondoActual.setOpacity(0);
         spCartasActual.setOpacity(0);
+        hboxDificultades.setOpacity(0);
 
         btnNuevaPartida.setOpacity(0);
         btnNuevaPartida.setTranslateY(0);
@@ -289,23 +344,39 @@ public class MenuController extends Controller implements Initializable {
         AnimationDepartment.stopAllAnimations();
 
         AnimationDepartment.glitchFadeOut(spBackgroundMenu, Duration.seconds(1.1), () -> {
-            // 🛠️ Crear una nueva partida con jugador
+            // 1) Leer la dificultad seleccionada
+            String dif;
+            if (rbtnFacil.isSelected()) {
+                dif = "FACIL";
+            } else if (rbtnMedio.isSelected()) {
+                dif = "MEDIA";
+            } else {
+                dif = "DIFICIL";
+            }
+
+            // 2) Crear DTO de nueva partida
             PartidaDto partidaDto = new PartidaDto();
             partidaDto.setEstado("EN_JUEGO");
             partidaDto.setFechaInicio(new Date());
+            partidaDto.setDificultad(dif);
 
-            // ✅ Agregar jugador activo
             JugadorDto jugadorActivo = (JugadorDto) AppContext.getInstance().get("jugadorActivo");
             partidaDto.setJugador(jugadorActivo);
 
-            // 🚀 Lanzar vista
+            // 3) Navegar a GameView Y restablecer primerIngreso allí
             FlowController.getInstance().goView("GameView");
-            GameController controller = (GameController) FlowController.getInstance().getController("GameView");
-            controller.RunGameView(partidaDto);
+            GameController controladorJuego =
+                    (GameController) FlowController.getInstance().getController("GameView");
+            controladorJuego.primerIngreso = true;  // <— Solo aquí
+
+            // 4) Finalmente, inicializar la vista de juego
+            controladorJuego.RunGameView(partidaDto);
 
             Platform.runLater(() -> btnNuevaPartida.setDisable(false));
         });
     }
+
+
 
 
 

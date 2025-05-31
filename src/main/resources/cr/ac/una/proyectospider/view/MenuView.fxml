@@ -2,6 +2,7 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -98,25 +99,61 @@
                                     <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
                                  </padding>
                               </VBox>
-                              <VBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="200.0" prefWidth="100.0" spacing="10.0" HBox.hgrow="ALWAYS">
+                              <VBox alignment="TOP_CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="200.0" prefWidth="100.0" spacing="10.0" HBox.hgrow="ALWAYS">
                                  <children>
                                     <Label fx:id="lblFondoActual" styleClass="label-subtitle-menu" text="FONDO DE JUEGO ACTUAL " />
-                                    <StackPane fx:id="spFondoActual" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="305.0" prefWidth="305.0" styleClass="sp-imagelogo">
+                                    <StackPane fx:id="spFondoActual" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="205.0" prefWidth="305.0" styleClass="sp-imagelogo">
                                        <children>
-                                          <ImageView fx:id="imgFondoActual" fitHeight="300.0" fitWidth="300.0" pickOnBounds="true" preserveRatio="true" />
+                                          <ImageView fx:id="imgFondoActual" fitHeight="200.0" fitWidth="300.0" pickOnBounds="true" preserveRatio="true" />
                                        </children>
+                                       <VBox.margin>
+                                          <Insets top="15.0" />
+                                       </VBox.margin>
                                     </StackPane>
                                     <Label fx:id="lblCartasActual" styleClass="label-subtitle-menu" text="ESTILO DE CARTAS ACTUAL">
+                                       <VBox.margin>
+                                          <Insets top="40.0" />
+                                       </VBox.margin>
+                                    </Label>
+                                    <StackPane fx:id="spCartasActual" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="205.0" prefWidth="305.0" styleClass="sp-imagelogo">
+                                       <children>
+                                          <ImageView fx:id="imgCartasActual" fitHeight="200.0" fitWidth="300.0" pickOnBounds="true" preserveRatio="true" />
+                                       </children>
+                                       <VBox.margin>
+                                          <Insets top="15.0" />
+                                       </VBox.margin>
+                                    </StackPane>
+                                    <ImageView fitHeight="5.0" fitWidth="400.0" pickOnBounds="true" preserveRatio="true" />
+                                    <Label fx:id="lblDificultad" styleClass="label-subtitle-menu" text="DIFICULTAD DE PARTIDA">
                                        <VBox.margin>
                                           <Insets top="30.0" />
                                        </VBox.margin>
                                     </Label>
-                                    <StackPane fx:id="spCartasActual" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="305.0" prefWidth="305.0" styleClass="sp-imagelogo">
+                                    <HBox fx:id="hboxDificultades" alignment="TOP_CENTER" prefHeight="100.0" prefWidth="200.0" spacing="30.0">
                                        <children>
-                                          <ImageView fx:id="imgCartasActual" fitHeight="300.0" fitWidth="300.0" pickOnBounds="true" preserveRatio="true" />
+                                          <VBox alignment="TOP_CENTER" spacing="10.0">
+                                             <children>
+                                                <RadioButton fx:id="rbtnFacil" mnemonicParsing="false" />
+                                                <Label fx:id="lblFaciil" styleClass="label-subtitle-menu" text="FÁCIL" />
+                                             </children>
+                                          </VBox>
+                                          <VBox alignment="TOP_CENTER" spacing="10.0">
+                                             <children>
+                                                <RadioButton fx:id="rbtnMedio" mnemonicParsing="false" />
+                                                <Label fx:id="lblMedio" styleClass="label-subtitle-menu" text="MEDIA" />
+                                             </children>
+                                          </VBox>
+                                          <VBox alignment="TOP_CENTER" spacing="10.0">
+                                             <children>
+                                                <RadioButton fx:id="rbtnDificil" mnemonicParsing="false" />
+                                                <Label fx:id="lblDificl" styleClass="label-subtitle-menu" text="DIFÍCIL" />
+                                             </children>
+                                          </VBox>
                                        </children>
-                                    </StackPane>
-                                    <ImageView fitHeight="5.0" fitWidth="400.0" pickOnBounds="true" preserveRatio="true" />
+                                       <VBox.margin>
+                                          <Insets top="15.0" />
+                                       </VBox.margin>
+                                    </HBox>
                                  </children>
                                  <padding>
                                     <Insets bottom="20.0" left="20.0" right="20.0" top="60.0" />

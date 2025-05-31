@@ -10,7 +10,11 @@ public class AppContext {
 
     private static AppContext INSTANCE = null;
     private static HashMap<String, Object> context = new HashMap<>();
-     
+    public static final String KEY_ESTILO_CARTAS = "estiloCartasSeleccionado";
+    public static final String RUTA_CARTAS_CYBERPUNK = "/cr/ac/una/proyectospider/resources/imgCyberpunk.png";
+    public static final String RUTA_CARTAS_CLASICAS  = "/cr/ac/una/proyectospider/resources/imgClasicas.png";
+    public static final String KEY_FONDO_SELECCIONADO  = "fondoSeleccionado";
+
     private AppContext() {
         //cargarPropiedades();
     }

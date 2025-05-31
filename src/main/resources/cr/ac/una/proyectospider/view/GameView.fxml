@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane fx:id="root" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1000.0" stylesheets="@StyleSpider.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cr.ac.una.proyectospider.controller.GameController">
+<BorderPane fx:id="root" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="901.0" prefWidth="1500.0" stylesheets="@StyleSpider.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cr.ac.una.proyectospider.controller.GameController">
    <center>
       <AnchorPane BorderPane.alignment="CENTER">
          <children>
@@ -21,12 +21,12 @@
                      <top>
                         <VBox alignment="CENTER" prefHeight="113.0" prefWidth="1000.0" BorderPane.alignment="CENTER">
                            <children>
-                              <Label fx:id="lblTitullo" styleClass="label-title-info" text="SOLITARIO SPIDER" />
+                              <Label fx:id="lblTitulo" styleClass="label-titleee-ayudaa" text="NUEVA PARTIDA" />
                               <HBox alignment="CENTER" prefHeight="40.0" prefWidth="1000.0" spacing="40.0">
                                  <children>
                                     <Label fx:id="lblNombreJugador" prefHeight="23.0" prefWidth="625.0" styleClass="label-subtitle-menu" text="NOMBRE DE JUGADOR REGISTRADO" />
                                     <Pane maxHeight="-Infinity" maxWidth="1.7976931348623157E308" prefHeight="70.0" prefWidth="200.0" />
-                                    <Label fx:id="lblPuntaje" prefHeight="23.0" prefWidth="234.0" styleClass="label-subtitle-menu" text="PUNTAJE: " />
+                                    <Label fx:id="lblPuntaje" prefHeight="23.0" prefWidth="234.0" styleClass="label-subtitle-menu" text="PUNTAJE" />
                                     <Label fx:id="lblTiempo" prefHeight="23.0" prefWidth="254.0" styleClass="label-subtitle-menu" text="TIMEPO: " />
                                  </children>
                               </HBox>
@@ -34,13 +34,13 @@
                         </VBox>
                      </top>
                      <bottom>
-                        <HBox alignment="CENTER" prefHeight="78.0" prefWidth="1000.0" spacing="40.0" BorderPane.alignment="CENTER">
+                        <HBox alignment="CENTER" prefHeight="78.0" prefWidth="1000.0" spacing="60.0" BorderPane.alignment="CENTER">
                            <children>
-                              <Label styleClass="label-subtitle-menu" text="DIFICULTAD: " />
+                              <Label fx:id="lblDificultad" styleClass="label-subtitle-menu" text="DIFICULTAD: " />
                               <Label fx:id="lblMovimientos" layoutX="50.0" layoutY="41.0" styleClass="label-subtitle-menu" text="MOVIMIENTOS:" />
                               <Pane maxHeight="-Infinity" maxWidth="1.7976931348623157E308" prefHeight="70.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
-                              <ImageView fx:id="btnPista" fitHeight="50.0" fitWidth="50.0" onMouseClicked="#oMouseClickedbtnPista" pickOnBounds="true" preserveRatio="true" />
-                              <ImageView fx:id="btnGuardarySalir" fitHeight="50.0" fitWidth="50.0" layoutX="524.0" layoutY="35.0" onMouseClicked="#oMouseClickedbtnGuardarySalir" pickOnBounds="true" preserveRatio="true" />
+                              <ImageView fx:id="btnPista" fitHeight="50.0" fitWidth="50.0" onMouseClicked="#oMouseClickedbtnPista" pickOnBounds="true" preserveRatio="true" styleClass="neon-image-button" />
+                              <ImageView fx:id="btnGuardarySalir" fitHeight="50.0" fitWidth="50.0" layoutX="524.0" layoutY="35.0" onMouseClicked="#onMouseClickedbtnGuardarySalir" pickOnBounds="true" preserveRatio="true" styleClass="neon-image-button" />
                            </children>
                            <padding>
                               <Insets left="40.0" right="40.0" />
@@ -48,29 +48,29 @@
                         </HBox>
                      </bottom>
                      <center>
-                        <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                        <StackPane fx:id="spTableroBackground" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="700.0" prefWidth="1300.0" styleClass="spFondoTablero">
                            <children>
-                              <StackPane fx:id="spTableroBackground" layoutX="174.0" layoutY="82.0" prefHeight="150.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="200.0" AnchorPane.rightAnchor="200.0" AnchorPane.topAnchor="0.0">
+                              <ImageView fx:id="imgBackgroundTablero" fitHeight="700.0" fitWidth="1300.0" pickOnBounds="true" />
+                              <VBox alignment="CENTER">
                                  <children>
-                                    <ImageView fx:id="imgBackgroundTablero" pickOnBounds="true" />
-                                    <VBox alignment="CENTER">
+                                    <HBox fx:id="hboxTableroSuperior" alignment="BOTTOM_CENTER" prefHeight="135.0" prefWidth="1000.0" spacing="10.0">
                                        <children>
-                                          <HBox fx:id="hboxTableroSuperior" alignment="CENTER" prefHeight="135.0" prefWidth="1000.0" spacing="10.0">
-                                             <children>
-                                                <ImageView fx:id="imgMazo" fitWidth="70.0" pickOnBounds="true" preserveRatio="true" />
-                                                <HBox fx:id="hboxPilas" alignment="CENTER" spacing="10.0" HBox.hgrow="ALWAYS" />
-                                             </children>
-                                             <padding>
-                                                <Insets left="30.0" right="30.0" />
-                                             </padding>
-                                          </HBox>
-                                          <HBox fx:id="hboxTablero" alignment="TOP_CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="100.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
+                                          <ImageView fx:id="imgMazo" fitWidth="70.0" pickOnBounds="true" preserveRatio="true" />
+                                          <HBox fx:id="hboxPilas" alignment="BOTTOM_CENTER" spacing="10.0" HBox.hgrow="ALWAYS" />
                                        </children>
-                                    </VBox>
+                                       <padding>
+                                          <Insets left="30.0" right="30.0" />
+                                       </padding>
+                                    </HBox>
+                                    <HBox fx:id="hboxTablero" alignment="TOP_CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="100.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+                                       <padding>
+                                          <Insets left="10.0" top="20.0" />
+                                       </padding>
+                                    </HBox>
                                  </children>
-                              </StackPane>
+                              </VBox>
                            </children>
-                        </AnchorPane>
+                        </StackPane>
                      </center>
                   </BorderPane>
                </children>

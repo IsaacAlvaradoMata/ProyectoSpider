@@ -4,13 +4,16 @@
  */
 package cr.ac.una.proyectospider.controller;
 
+import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
 import cr.ac.una.proyectospider.util.AnimationDepartment;
+import cr.ac.una.proyectospider.util.AppContext;
 import cr.ac.una.proyectospider.util.FlowController;
+import cr.ac.una.proyectospider.util.Mensaje;
 import javafx.animation.FadeTransition;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -25,6 +28,8 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.stage.FileChooser;
+import javafx.stage.Window;
 import javafx.util.Duration;
 
 
@@ -91,7 +96,7 @@ public class PersonalizationController extends Controller implements Initializab
 
     public void RunPersonalizationView() {
         ResetPersonalizationView();
-        System.out.println("Run Login View");
+        System.out.println("Run Personalization View");
 
         // 🟡 Reposicionar y asegurar fondo en el índice 0
         if (!spBackgroundPersonalization.getChildren().contains(imgBackgroundPersonalization)) {
@@ -101,13 +106,14 @@ public class PersonalizationController extends Controller implements Initializab
             spBackgroundPersonalization.getChildren().add(0, imgBackgroundPersonalization);
         }
 
-        // 🔁 Re-bind y recarga de imagen
+        // 🔁 Re‐bind y recarga de imagen
         if (root.getScene() != null) {
             imgBackgroundPersonalization.fitWidthProperty().bind(root.getScene().widthProperty());
             imgBackgroundPersonalization.fitHeightProperty().bind(root.getScene().heightProperty());
         }
 
-        imgBackgroundPersonalization.setImage(new Image(getClass().getResourceAsStream("/cr/ac/una/proyectospider/resources/option6.gif")));
+        imgBackgroundPersonalization.setImage(
+                new Image(getClass().getResourceAsStream("/cr/ac/una/proyectospider/resources/option6.gif")));
         imgBackgroundPersonalization.setPreserveRatio(false);
         imgBackgroundPersonalization.setSmooth(true);
         imgBackgroundPersonalization.setOpacity(0.3);
@@ -126,14 +132,16 @@ public class PersonalizationController extends Controller implements Initializab
             System.out.println("se hizo el glitchFadeIn");
             imgPrevistaFondo.setEffect(new ColorAdjust(0, 0, -0.4, 0));
 
+            // --- Inicializar la lista de fondos predeterminados si está vacía ---
             if (fondosPredeterminados.isEmpty()) {
                 for (int i = 1; i <= 6; i++) {
                     fondosPredeterminados.add(new Image(getClass().getResourceAsStream(
-                            "/cr/ac/una/proyectospider/resources/DefaultBack" + i + ".png"
-                    )));
+                            "/cr/ac/una/proyectospider/resources/DefaultBack" + i + ".png")));
                 }
             }
             mostrarFondoPreview();
+
+            // Animaciones de texto y neón (las tuyas ya estaban aquí)
             AnimationDepartment.glitchTextWithFlicker(lblTitulo);
             AnimationDepartment.glitchTextWithFlicker(lblJugador);
             AnimationDepartment.glitchTextWithFlicker(lblEstilosCartas);
@@ -155,37 +163,75 @@ public class PersonalizationController extends Controller implements Initializab
             AnimationDepartment.slideFromRight(vboxRigth, Duration.seconds(1.8));
             AnimationDepartment.slideUpWithEpicBounceClean(btnVolver, Duration.seconds(2), sceneHeight);
 
+            // ─────────────────────────────────────────────────────────────
+            //  Aquí es donde ajustamos QUÉ estilo estaba guardado
+            // ─────────────────────────────────────────────────────────────
 
+            // 1) Leemos lo que haya en AppContext.KEY_ESTILO_CARTAS (puede ser null, o bien la ruta que guardamos)
+            Object estiloGuardado = AppContext.getInstance().get(AppContext.KEY_ESTILO_CARTAS);
 
+            // 2) Dos posibles valores (constantes):
+            final String rutaCyberpunk = AppContext.RUTA_CARTAS_CYBERPUNK;
+            final String rutaClasicas   = AppContext.RUTA_CARTAS_CLASICAS;
 
+            // 3) Comprobamos:
+            if (estiloGuardado == null) {
+                // ─ Si nunca se guardó nada, por defecto “Cyberpunk”
+                rbtnCyberpunk.setSelected(true);
+                rbtnClasicas.setSelected(false);
+                // View previa de Cyberpunk (preview2.png)
+                imgCartasPrevista.setImage(new Image(
+                        getClass().getResourceAsStream("/cr/ac/una/proyectospider/resources/Preview2.png")));
+            }
+            else {
+                String ruta = estiloGuardado.toString();
+                if (ruta.equals(rutaCyberpunk)) {
+                    // ─ El usuario había seleccionado Cyberpunk previamente
+                    rbtnCyberpunk.setSelected(true);
+                    rbtnClasicas.setSelected(false);
+                    imgCartasPrevista.setImage(new Image(
+                            getClass().getResourceAsStream("/cr/ac/una/proyectospider/resources/Preview2.png")));
+                }
+                else if (ruta.equals(rutaClasicas)) {
+                    // ─ El usuario había seleccionado Clásicas previamente
+                    rbtnCyberpunk.setSelected(false);
+                    rbtnClasicas.setSelected(true);
+                    imgCartasPrevista.setImage(new Image(
+                            getClass().getResourceAsStream("/cr/ac/una/proyectospider/resources/Preview1.png")));
+                }
+                else {
+                    // ─ Si el valor guardado no coincide con ninguno (por si se corrompió), usar “Cyberpunk” de fallback
+                    rbtnCyberpunk.setSelected(true);
+                    rbtnClasicas.setSelected(false);
+                    imgCartasPrevista.setImage(new Image(
+                            getClass().getResourceAsStream("/cr/ac/una/proyectospider/resources/Preview2.png")));
+                }
+            }
 
-
-
-
-            rbtnCyberpunk.setSelected(true);
-            imgCartasPrevista.setImage(new Image(getClass().getResourceAsStream("/cr/ac/una/proyectospider/resources/Preview2.png")));
-
+            // 4) Listener para el RadioButton “Cyberpunk”
             rbtnCyberpunk.setOnAction(ev -> {
                 if (rbtnCyberpunk.isSelected()) {
                     rbtnClasicas.setSelected(false);
-                    imgCartasPrevista.setImage(new Image(getClass().getResourceAsStream("/cr/ac/una/proyectospider/resources/Preview2.png")));
+                    imgCartasPrevista.setImage(new Image(
+                            getClass().getResourceAsStream("/cr/ac/una/proyectospider/resources/Preview2.png")));
                 }
             });
 
+            // 5) Listener para el RadioButton “Clásicas”
             rbtnClasicas.setOnAction(ev -> {
                 if (rbtnClasicas.isSelected()) {
                     rbtnCyberpunk.setSelected(false);
-                    imgCartasPrevista.setImage(new Image(getClass().getResourceAsStream("/cr/ac/una/proyectospider/resources/Preview1.png")));
+                    imgCartasPrevista.setImage(new Image(
+                            getClass().getResourceAsStream("/cr/ac/una/proyectospider/resources/Preview1.png")));
                 }
             });
-
-
+            // ─────────────────────────────────────────────────────────────
 
         });
 
-        System.out.println("Run final");
-
+        System.out.println("RunPersonalizationView final");
     }
+
 
     private void mostrarFondoPreview() {
         Image fondoActual = fondosPredeterminados.get(currentIndex);
@@ -254,7 +300,29 @@ public class PersonalizationController extends Controller implements Initializab
 
     @FXML
     private void onMouseClickedbtnGuardarCambios(MouseEvent event) {
+        // 1. Guardar el fondo seleccionado
+        Image fondoSeleccionado = imgPrevistaFondo.getImage();
+        AppContext.getInstance().set(AppContext.KEY_FONDO_SELECCIONADO, fondoSeleccionado);
+
+        // 2. Guardar la RUTA del estilo de cartas, según RadioButton
+        String claveEstilo;
+        if (rbtnCyberpunk.isSelected()) {
+            claveEstilo = AppContext.RUTA_CARTAS_CYBERPUNK;
+        } else {
+            claveEstilo = AppContext.RUTA_CARTAS_CLASICAS;
+        }
+        AppContext.getInstance().set(AppContext.KEY_ESTILO_CARTAS, claveEstilo);
+
+        // 3. Feedback al usuario
+        new Mensaje().showModal(
+                javafx.scene.control.Alert.AlertType.INFORMATION,
+                "Configuración guardada",
+                getStage(),
+                "El fondo y el estilo de cartas han sido guardados correctamente."
+        );
     }
+
+
 
     @FXML
     private void OnMouseClickedbtnFlechaIzquierda(MouseEvent event) {
@@ -270,6 +338,35 @@ public class PersonalizationController extends Controller implements Initializab
 
     @FXML
     private void onMouseClickedbtnAgregarOtro(MouseEvent event) {
+        Window ventanaActual = root.getScene().getWindow();
+
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Selecciona un fondo de pantalla");
+        fileChooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("Imágenes (*.png, *.jpg, *.jpeg, *.gif)",
+                        "*.png", "*.jpg", "*.jpeg", "*.gif")
+        );
+
+        File archivoSeleccionado = fileChooser.showOpenDialog(ventanaActual);
+
+        if (archivoSeleccionado != null) {
+            try {
+                String uri = archivoSeleccionado.toURI().toString();
+                Image imagenPersonalizada = new Image(uri);
+
+                imgPrevistaFondo.setImage(imagenPersonalizada);
+
+
+            } catch (Exception ex) {
+                new Mensaje().showModal(
+                        javafx.scene.control.Alert.AlertType.ERROR,
+                        "Error al cargar imagen",
+                        getStage(),
+                        "No se pudo cargar la imagen seleccionada:\n" + ex.getMessage()
+                );
+            }
+        }
+
     }
 
     @FXML

@@ -243,13 +243,13 @@
 
 /*IMAGENES DE EJEMPLO PARA FONDO Y ESTILO DE CARTAS*/
 
-#imgFondoActual {
-    -fx-image: url('../resources/TableGame.png');
-}
+/*#imgFondoActual {*/
+/*    -fx-image: url('../resources/TableGame.png');*/
+/*}*/
 
-#imgCartasActual {
-    -fx-image: url('../resources/EstiloCartas1.png');
-}
+/*#imgCartasActual {*/
+/*    -fx-image: url('../resources/EstiloCartas1.png');*/
+/*}*/
 
 
 
@@ -485,6 +485,22 @@
 #btnPista {
     -fx-image: url('../resources/btnPista.png');
 }
+
+.spFondoTablero{
+
+    -fx-border-color: linear-gradient(
+            from 0% 0% to 100% 100%,
+            #ff00ff,
+            #00ffff,
+            #ffc107
+    );
+    -fx-border-width: 5px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 7px;
+
+
+}
+
 
 /*VISTA POINTS*/
 

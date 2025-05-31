@@ -4,16 +4,16 @@ import cr.ac.una.proyectospider.model.CartasPartidaDto;
 import cr.ac.una.proyectospider.model.PartidaDto;
 import cr.ac.una.proyectospider.service.PartidaService;
 import cr.ac.una.proyectospider.util.AnimationDepartment;
+import cr.ac.una.proyectospider.util.AppContext;
 import cr.ac.una.proyectospider.util.FlowController;
 import cr.ac.una.proyectospider.util.MazoGenerator;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
-import javafx.animation.TranslateTransition;
+import javafx.animation.*;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.ClipboardContent;
@@ -66,7 +66,7 @@ public class GameController extends Controller implements Initializable {
     private Label lblPuntaje;
 
     @FXML
-    private Label lblTitullo;
+    private Label lblTitulo;
 
     @FXML
     private Label lblTiempo;
@@ -79,6 +79,9 @@ public class GameController extends Controller implements Initializable {
 
     @FXML
     private StackPane spTableroBackground;
+
+    @FXML
+    private Label lblDificultad;
 
     private List<CartasPartidaDto> cartasEnJuego;
     private List<CartasPartidaDto> cartasSeleccionadas = new ArrayList<>();
@@ -93,6 +96,8 @@ public class GameController extends Controller implements Initializable {
     private MovimientoSugerido lastHint = null;
     private int lastHintIndex = -1; // Para rotar entre pistas
     private PartidaDto partidaDto;
+    public boolean primerIngreso = true;
+
 
     private static class MovimientoSugerido {
         List<CartasPartidaDto> grupo;
@@ -113,28 +118,37 @@ public class GameController extends Controller implements Initializable {
     }
 
     @FXML
-    void oMouseClickedbtnGuardarySalir(MouseEvent event) {
+    void onMouseClickedbtnGuardarySalir(MouseEvent event) {
         btnGuardarySalir.setDisable(true);
         AnimationDepartment.stopAllAnimations();
         detenerTemporizador();
         tiempoIniciado = false;
 
-        List<CartasPartidaDto> cartasActuales = obtenerEstadoDelTablero();
+//        ESTO SIGUE ESTANDO IGUAL, SOLO LO COMENTE
 
-        // Marcar partida como pausada
-        partidaDto.setEstado("PAUSADA");
-        partidaDto.setFechaFin(new Date());
+//        List<CartasPartidaDto> cartasActuales = obtenerEstadoDelTablero();
 
-        boolean exito = new PartidaService().guardarPartidaCompleta(partidaDto, cartasActuales);
-        if (!exito) {
-            System.err.println("❌ No se pudo guardar la partida al salir.");
-        }
+//        // Marcar partida como pausada
+//        partidaDto.setEstado("PAUSADA");
+//        partidaDto.setFechaFin(new Date());
+//
+//        boolean exito = new PartidaService().guardarPartidaCompleta(partidaDto, cartasActuales);
+//        if (!exito) {
+//            System.err.println("❌ No se pudo guardar la partida al salir.");
+//        }
 
+        cartasEnJuego = null;
+        cartaToImageView.clear();
+        movimientos = 0;
+        puntaje = 500;
+
+        AnimationDepartment.glitchFadeOut(spGamebackground, Duration.seconds(1.1), () -> {
         FlowController.getInstance().goView("MenuView");
         MenuController controller = (MenuController) FlowController.getInstance().getController("MenuView");
         controller.RunMenuView();
 
         Platform.runLater(() -> btnGuardarySalir.setDisable(false));
+        });
     }
 
 
@@ -157,27 +171,294 @@ public class GameController extends Controller implements Initializable {
     public void RunGameView(PartidaDto partidaDto) {
         this.partidaDto = partidaDto;
         ResetGameView();
-        if (cartasEnJuego == null) {
-            cartasEnJuego = MazoGenerator.generarMazoPorDificultad("FACIL", usarEstiloClasico);
+
+        // — Fondo general “GameBackground.gif” —
+        if (!spGamebackground.getChildren().contains(imgBackgroundGame)) {
+            spGamebackground.getChildren().add(0, imgBackgroundGame);
+        } else {
+            spGamebackground.getChildren().remove(imgBackgroundGame);
+            spGamebackground.getChildren().add(0, imgBackgroundGame);
+        }
+        if (root.getScene() != null) {
+            imgBackgroundGame.fitWidthProperty().bind(root.getScene().widthProperty());
+            imgBackgroundGame.fitHeightProperty().bind(root.getScene().heightProperty());
+        }
+        imgBackgroundGame.setImage(
+                new Image(getClass().getResourceAsStream(
+                        "/cr/ac/una/proyectospider/resources/GameBackground.gif")));
+        imgBackgroundGame.setPreserveRatio(false);
+        imgBackgroundGame.setSmooth(true);
+        imgBackgroundGame.setOpacity(0.4);
+        imgBackgroundGame.setVisible(true);
+
+        // — Fondo del tablero (imgBackgroundTablero) con neon glow —
+        Object fondoEnContext = AppContext.getInstance().get(AppContext.KEY_FONDO_SELECCIONADO);
+        if (fondoEnContext instanceof Image) {
+            imgBackgroundTablero.setImage((Image) fondoEnContext);
+        } else {
+            imgBackgroundTablero.setImage(new Image(
+                    getClass().getResourceAsStream(
+                            "/cr/ac/una/proyectospider/resources/DefaultBack3.png")));
+        }
+        AnimationDepartment.animateNeonGlow(imgBackgroundTablero);
+
+        // — Seleccionar estilo de cartas (clásico o cyberpunk) —
+        Object estiloEnContext = AppContext.getInstance().get(AppContext.KEY_ESTILO_CARTAS);
+        if (estiloEnContext instanceof String) {
+            String rutaEstilo = (String) estiloEnContext;
+            usarEstiloClasico = rutaEstilo.equals(AppContext.RUTA_CARTAS_CLASICAS);
+        } else {
+            usarEstiloClasico = false;
         }
 
-        // Detener temporizador y resetear tiempo solo si es un nuevo juego
+        // — Dificultad y label —
+        String dificultad = partidaDto.getDificultad();
+        if (dificultad == null) dificultad = "FACIL";
+        lblDificultad.setText("DIFICULTAD: " + dificultad);
+
+        // — Generar mazo (solo la primera vez) —
+        if (cartasEnJuego == null) {
+            cartasEnJuego = MazoGenerator.generarMazoPorDificultad(dificultad, usarEstiloClasico);
+        }
+
+        // — Reset temporizador si no se ha iniciado —
         if (!tiempoIniciado) {
             segundosTranscurridos = 0;
             actualizarLabelTiempo();
             detenerTemporizador();
         }
 
+        // — Limpiar contenedores antes de pintar —
         hboxTablero.getChildren().clear();
         hboxTableroSuperior.getChildren().clear();
         imgMazo.setImage(null);
 
-        // Actualizar labels de puntaje y movimientos
-        lblPuntaje.setText("Puntaje: " + puntaje);
-        lblMovimientos.setText("Movimientos: " + movimientos);
+        // — Actualizar labels —
+        lblPuntaje.setText("PUNTAJE: " + puntaje);
+        lblMovimientos.setText("MOVIMIENTOS: " + movimientos);
         actualizarLabelTiempo();
 
-        // Creamos las 10 columnas y les añadimos handlers de drag & drop
+        // — PINTAR COLUMNAS + CARTAS: solo este método —
+        dibujarColumnasYCargarCartasEnTablero();
+
+        // — PINTAR MAZO + PILAS: solo este método —
+        actualizarVistaDelMazoYPilas();
+
+        // — Animaciones de primer ingreso (solo la primera vez) —
+        if (primerIngreso) {
+            Platform.runLater(this::aplicarAnimacionesDeEntrada);
+            primerIngreso = false;
+        }
+    }
+
+
+    private void aplicarAnimacionesDeEntrada(){
+        root.requestFocus();
+        root.setVisible(true);
+        root.setOpacity(1); // 🔓 Forzar visibilidad total
+
+        root.applyCss();
+        root.layout(); // ⬅️ Refresca el layout completamente
+
+        double sceneHeight = root.getScene().getHeight();
+        AnimationDepartment.glitchFadeIn(root, Duration.seconds(0.6));
+        System.out.println("se hizo el glitchFadeIn");
+
+        PauseTransition t1 = new PauseTransition(Duration.seconds(1));
+        t1.setOnFinished(e -> {
+            AnimationDepartment.slideFromTop(lblTitulo, Duration.ZERO);
+            AnimationDepartment.glitchTextWithFlicker(lblTitulo);
+        });
+        t1.play();
+
+        PauseTransition t2 = new PauseTransition(Duration.seconds(2.5));
+        t2.setOnFinished(e -> {
+            AnimationDepartment.slideFromLeft(lblNombreJugador, Duration.ZERO);
+            AnimationDepartment.slideFromRight(lblPuntaje, Duration.ZERO);
+            AnimationDepartment.slideFromRight(lblTiempo, Duration.ZERO);
+            AnimationDepartment.glitchTextWithFlicker(lblNombreJugador);
+            AnimationDepartment.glitchTextWithFlicker(lblPuntaje);
+            AnimationDepartment.glitchTextWithFlicker(lblTiempo);
+
+        });
+        t2.play();
+
+        PauseTransition t3 = new PauseTransition(Duration.seconds(3));
+        t3.setOnFinished(e -> {
+            AnimationDepartment.slideUpWithEpicBounceClean(spTableroBackground, Duration.ZERO, sceneHeight);
+
+        });
+        t3.play();
+
+        PauseTransition t4 = new PauseTransition(Duration.seconds(3.8));
+        t4.setOnFinished(e -> {
+            AnimationDepartment.slideFromLeft(lblMovimientos, Duration.ZERO);
+            AnimationDepartment.glitchTextWithFlicker(lblMovimientos);
+            AnimationDepartment.slideFromRight(btnPista, Duration.ZERO);
+            AnimationDepartment.animateNeonGlow(btnPista);
+
+        });
+        t4.play();
+
+        PauseTransition t5 = new PauseTransition(Duration.seconds(4.1));
+        t5.setOnFinished(e -> {
+            AnimationDepartment.slideFromLeft(lblDificultad, Duration.ZERO);
+            AnimationDepartment.glitchTextWithFlicker(lblDificultad);
+            AnimationDepartment.slideFromRight(btnGuardarySalir, Duration.ZERO);
+            AnimationDepartment.animateNeonGlow(btnGuardarySalir);
+
+
+        });
+        t5.play();
+
+
+
+
+    }
+
+    public void ResetGameView() {
+        // 1) Hacer fadeOut / reset visual general
+        root.setOpacity(0);
+
+        imgBackgroundGame.setOpacity(0.7);
+        imgBackgroundGame.setTranslateX(0);
+        imgBackgroundGame.setTranslateY(0);
+        imgBackgroundGame.setEffect(null);
+
+        lblTitulo.setOpacity(0);
+        lblTitulo.setTranslateX(0);
+        lblTitulo.setTranslateY(0);
+        lblTitulo.setScaleX(1.0);
+        lblTitulo.setScaleY(1.0);
+
+        lblNombreJugador.setOpacity(0);
+        lblNombreJugador.setTranslateX(0);
+        lblNombreJugador.setTranslateY(0);
+        lblNombreJugador.setScaleX(1.0);
+        lblNombreJugador.setScaleY(1.0);
+
+        lblPuntaje.setOpacity(0);
+        lblPuntaje.setTranslateX(0);
+        lblPuntaje.setTranslateY(0);
+        lblPuntaje.setScaleX(1.0);
+        lblPuntaje.setScaleY(1.0);
+
+        lblTiempo.setOpacity(0);
+        lblTiempo.setTranslateX(0);
+        lblTiempo.setTranslateY(0);
+        lblTiempo.setScaleX(1.0);
+        lblTiempo.setScaleY(1.0);
+
+        lblMovimientos.setOpacity(0);
+        lblMovimientos.setTranslateX(0);
+        lblMovimientos.setTranslateY(0);
+        lblMovimientos.setScaleX(1.0);
+        lblMovimientos.setScaleY(1.0);
+
+        lblDificultad.setOpacity(0);
+        lblDificultad.setTranslateX(0);
+        lblDificultad.setTranslateY(0);
+        lblDificultad.setScaleX(1.0);
+        lblDificultad.setScaleY(1.0);
+
+        spTableroBackground.setOpacity(0);
+        spTableroBackground.setTranslateX(0);
+        spTableroBackground.setTranslateY(0);
+        spTableroBackground.setEffect(null);
+        spTableroBackground.setVisible(true);
+
+        btnPista.setOpacity(0);
+        btnPista.setTranslateY(0);
+
+        btnGuardarySalir.setOpacity(0);
+        btnGuardarySalir.setTranslateY(0);
+
+        // 2) Reset del root / spGamebackground
+        root.setEffect(null);
+        root.setOpacity(1);
+        root.setVisible(true);
+        spGamebackground.setEffect(null);
+        spGamebackground.setOpacity(1);
+        spGamebackground.setVisible(true);
+
+        // 3) Limpiar contenedores de cartas
+        hboxTablero.getChildren().clear();
+        hboxPilas.getChildren().clear();
+
+        // 4) Si no hay temporizador iniciado, reiniciar tiempo
+        if (!tiempoIniciado) {
+            segundosTranscurridos = 0;
+            actualizarLabelTiempo();
+            detenerTemporizador();
+        }
+    }
+
+    private void repartirCartasDelMazo() {
+        iniciarTemporizadorSiEsNecesario();
+        movimientos++;
+        puntaje = Math.max(0, puntaje - 1);
+
+        lblMovimientos.setText("MOVIMIENTOS: " + movimientos);
+        lblPuntaje.setText("PUNTAJE: " + puntaje);
+
+        // Verificar si todas las columnas tienen al menos una carta
+        boolean todasColumnasConCartas = true;
+        for (int colIndex = 0; colIndex < 10; colIndex++) {
+            final int cIndex = colIndex;  // <— cIndex es “efectivamente final”
+            boolean columnaConCartas = cartasEnJuego.stream()
+                    .anyMatch(c -> c.getColumna() == cIndex);
+            if (!columnaConCartas) {
+                todasColumnasConCartas = false;
+                break;
+            }
+        }
+
+        if (!todasColumnasConCartas) {
+            System.out.println("No se pueden repartir cartas: algunas columnas están vacías");
+            return;
+        }
+
+        // Obtener cartas que quedan en el mazo
+        List<CartasPartidaDto> cartasEnMazo = cartasEnJuego.stream()
+                .filter(CartasPartidaDto::getEnMazo)
+                .toList();
+
+        if (cartasEnMazo.size() < 10) {
+            System.out.println("No hay suficientes cartas en el mazo para repartir");
+            return;
+        }
+
+        // Repartir una carta a cada columna
+        for (int i = 0; i < 10; i++) {
+            final int cIndex = i;  // index “efectivamente final” para usar en lambda
+            int nuevoOrden = cartasEnJuego.stream()
+                    .filter(c -> c.getColumna() == cIndex)   // aquí usamos cIndex
+                    .mapToInt(CartasPartidaDto::getOrden)
+                    .max()
+                    .orElse(-1) + 1;
+
+            CartasPartidaDto carta = cartasEnMazo.get(cIndex);
+            carta.setEnMazo(false);
+            carta.setColumna(cIndex);
+            carta.setOrden(nuevoOrden);
+            carta.setBocaArriba(true);
+        }
+
+        // Verificar si se completa alguna secuencia tras repartir
+        verificarSecuenciaCompleta();
+
+        // *** EN LUGAR DE RunGameView(partidaDto) ***
+        // simplemente redibujamos columnas y mazo/pilas:
+        dibujarColumnasYCargarCartasEnTablero();
+        actualizarVistaDelMazoYPilas();
+    }
+
+
+
+    private void dibujarColumnasYCargarCartasEnTablero() {
+        hboxTablero.getChildren().clear();
+
+        // 1) Crear 10 columnas (Pane) y asignarles OnDragOver / OnDragDropped
         for (int col = 0; col < 10; col++) {
             final int colIndex = col;
             Pane columna = new Pane();
@@ -192,17 +473,17 @@ public class GameController extends Controller implements Initializable {
                 event.consume();
             });
 
-            // Manejar el drop
+            // Manejar el drop en esa columna
             columna.setOnDragDropped(event -> {
                 Dragboard db = event.getDragboard();
                 boolean success = false;
                 if (db.hasString() && !cartasSeleccionadas.isEmpty()) {
-                    // Nos guardamos origen antes de mover
+                    // Origen antes de mover
                     CartasPartidaDto cartaOrigen = cartasSeleccionadas.get(0);
                     int colAnterior = cartaOrigen.getColumna();
                     int ordenAnterior = cartaOrigen.getOrden();
 
-                    // Encontramos la carta destino (última visible en la columna destino)
+                    // Última carta visible en columna destino (colIndex)
                     CartasPartidaDto cartaDestino = obtenerUltimaCartaVisible(colIndex);
                     boolean puedeMover;
                     if (cartaDestino == null) {
@@ -210,30 +491,33 @@ public class GameController extends Controller implements Initializable {
                         puedeMover = esGrupoValido(cartasSeleccionadas);
                     } else {
                         if (cartasSeleccionadas.size() == 1) {
-                            // Permitir mover una carta sobre otra solo si el valor de la carta origen es exactamente uno menor que el de la carta destino
-                            puedeMover = Integer.parseInt(cartaOrigen.getValor()) == Integer.parseInt(cartaDestino.getValor()) - 1;
+                            // Una carta: valorOrigen == valorDestino - 1
+                            puedeMover = Integer.parseInt(cartaOrigen.getValor())
+                                    == Integer.parseInt(cartaDestino.getValor()) - 1;
                         } else {
-                            // Para grupos, exigir secuencia válida (orden descendente y boca arriba, sin importar el palo)
+                            // Varios: verificar secuencia válida y valor descendente en uno
                             puedeMover = esGrupoValido(cartasSeleccionadas)
-                                    && Integer.parseInt(cartaOrigen.getValor()) == Integer.parseInt(cartaDestino.getValor()) - 1;
+                                    && Integer.parseInt(cartaOrigen.getValor())
+                                    == Integer.parseInt(cartaDestino.getValor()) - 1;
                         }
                     }
 
                     if (puedeMover) {
-                        // 1) Movemos los datos
+                        // 1) Actualizar modelo
                         moverCartasSeleccionadas(colIndex);
-                        // 2) Volteamos la carta que quedó justo debajo en la columna origen
+                        // 2) Voltear carta debajo en la columna origen, si existe
                         cartasEnJuego.stream()
                                 .filter(c -> c.getColumna() == colAnterior
                                         && c.getOrden() == ordenAnterior - 1)
                                 .findFirst()
                                 .ifPresent(c -> c.setBocaArriba(true));
-                        // 3) Refrescamos TODO el tablero
-                        RunGameView(partidaDto);
+                        // 3) Redibujar SOLO las columnas + cartas
+                        dibujarColumnasYCargarCartasEnTablero();
+                        // 4) Actualizar mazo/pilas en caso de que se haya completado secuencia
+                        actualizarVistaDelMazoYPilas();
                         success = true;
                     } else {
-                        System.out.println("Drop inválido en columna " + colIndex);
-                        // Animar shake en las cartas seleccionadas
+                        // Si drop inválido: shake en las cartas seleccionadas
                         for (CartasPartidaDto c : cartasSeleccionadas) {
                             ImageView iv = cartaToImageView.get(c);
                             if (iv != null) shakeNode(iv);
@@ -248,7 +532,7 @@ public class GameController extends Controller implements Initializable {
             hboxTablero.getChildren().add(columna);
         }
 
-        // Agrupar y ordenar cartas por columna
+        // 2) Agrupar las cartas por columna (modelo)
         Map<Integer, List<CartasPartidaDto>> columnasMap = new HashMap<>();
         for (CartasPartidaDto carta : cartasEnJuego) {
             if (carta.getColumna() != -1) {
@@ -258,7 +542,8 @@ public class GameController extends Controller implements Initializable {
             }
         }
 
-        double desplazamiento = 22;
+        // 3) Por cada columna, ordenamos sus cartas y las “pintamos” en pantalla
+        double desplazamiento = 22; // espacio vertical entre cartas
         for (int col = 0; col < 10; col++) {
             Pane columna = (Pane) hboxTablero.getChildren().get(col);
             columna.getChildren().clear();
@@ -267,74 +552,81 @@ public class GameController extends Controller implements Initializable {
             cartasColumna.sort(Comparator.comparingInt(CartasPartidaDto::getOrden));
 
             for (CartasPartidaDto carta : cartasColumna) {
-                String imgArchivo = carta.getBocaArriba() == true ? carta.getImagenNombre() : (usarEstiloClasico ? "rear.png" : "rearS.png");
+                // Elegir imagen según bocaArriba o estilo clásico
+                String imgArchivo = carta.getBocaArriba()
+                        ? carta.getImagenNombre()
+                        : (usarEstiloClasico ? "rear.png" : "rearS.png");
 
-                ImageView img = new ImageView(new Image(getClass().getResourceAsStream(
-                        "/cr/ac/una/proyectospider/resources/" + imgArchivo)));
+                ImageView img = new ImageView(new Image(
+                        getClass().getResourceAsStream("/cr/ac/una/proyectospider/resources/" + imgArchivo)));
                 img.setFitWidth(70);
                 img.setPreserveRatio(true);
                 img.setSmooth(true);
                 img.setLayoutY(carta.getOrden() * desplazamiento);
 
+                // Guardar referencia para animaciones/shake/drag
                 cartaToImageView.put(carta, img);
 
-                if (carta.getBocaArriba() == true) {
-                    // Selección por clic (ya existía)
+                if (carta.getBocaArriba()) {
+                    // Al hacer clic: autómove
                     img.setOnMouseClicked(e -> {
                         e.consume();
                         cartasSeleccionadas.clear();
                         List<CartasPartidaDto> grupo = obtenerGrupoDesde(carta);
                         cartasSeleccionadas.addAll(grupo);
-                        // --- AUTO-MOVE: Si solo se hace un clic, buscar destino y mover automáticamente ---
+
+                        // AUTÓMOVE: buscar destino y mover
                         int destino = buscarMejorDestinoAutoMove(grupo);
                         if (destino != -1) {
                             int colAnterior = carta.getColumna();
                             int ordenAnterior = carta.getOrden();
                             moverCartasSeleccionadas(destino);
                             cartasEnJuego.stream()
-                                    .filter(c2 -> c2.getColumna() == colAnterior && c2.getOrden() == ordenAnterior - 1)
+                                    .filter(c2 -> c2.getColumna() == colAnterior
+                                            && c2.getOrden() == ordenAnterior - 1)
                                     .findFirst()
                                     .ifPresent(c2 -> c2.setBocaArriba(true));
                             cartasSeleccionadas.clear();
-                            RunGameView(partidaDto);
+                            dibujarColumnasYCargarCartasEnTablero();
+                            actualizarVistaDelMazoYPilas();
                         } else {
-                            // Si no hay destino válido, animar shake
-                            for (CartasPartidaDto c : grupo) {
-                                ImageView iv = cartaToImageView.get(c);
+                            for (CartasPartidaDto c2 : cartaToImageView.keySet()) {
+                                // Si no hay destino válido: shake grupo
+                            }
+                            for (CartasPartidaDto c2 : grupo) {
+                                ImageView iv = cartaToImageView.get(c2);
                                 if (iv != null) shakeNode(iv);
                             }
-                            System.out.println("No hay destino válido para auto-move");
                             cartasSeleccionadas.clear();
                         }
-                        // --- FIN AUTO-MOVE ---
                     });
 
-                    // Inicio de drag: cargamos el mismo grupo que con click
+                    // Drag detectado: iniciar arrastre del grupo completo
                     img.setOnDragDetected(e -> {
                         e.consume();
                         cartasSeleccionadas.clear();
                         cartasSeleccionadas.addAll(obtenerGrupoDesde(carta));
-                        // Guarda una copia de las cartas arrastradas
                         cartasArrastradas.clear();
                         cartasArrastradas.addAll(cartasSeleccionadas);
-                        System.out.println("DragDetected, seleccionadas: " + cartasSeleccionadas.size());
+
                         Dragboard db = img.startDragAndDrop(TransferMode.MOVE);
                         ClipboardContent content = new ClipboardContent();
                         content.putString(carta.getIdCartaPartida().toString());
                         db.setContent(content);
-                        // Oculta todas las cartas seleccionadas mientras se arrastran
-                        for (CartasPartidaDto c : cartasSeleccionadas) {
-                            ImageView iv = cartaToImageView.get(c);
+
+                        // Ocultar todas las cartas mientras se arrastran
+                        for (CartasPartidaDto c2 : cartasSeleccionadas) {
+                            ImageView iv = cartaToImageView.get(c2);
                             if (iv != null) iv.setVisible(false);
                         }
-                        // Previsualización de las cartas arrastradas
+
+                        // Previsualización: si hay varias cartas, apilar snapshot
                         if (cartasSeleccionadas.size() == 1) {
                             ImageView iv = cartaToImageView.get(cartasSeleccionadas.get(0));
                             if (iv != null) db.setDragView(iv.getImage());
-                        } else if (cartasSeleccionadas.size() > 1) {
-                            // Crear imagen apilada
+                        } else {
                             double width = 70;
-                            double height = 22 * (cartasSeleccionadas.size() - 1) + 100; // 100 es el alto de la carta
+                            double height = 22 * (cartasSeleccionadas.size() - 1) + 100;
                             Canvas canvas = new Canvas(width, height);
                             GraphicsContext gc = canvas.getGraphicsContext2D();
                             for (int i = 0; i < cartasSeleccionadas.size(); i++) {
@@ -350,12 +642,11 @@ public class GameController extends Controller implements Initializable {
                         }
                     });
 
-                    // Final del drag
+                    // Cuando termina el drag: volver a mostrar las cartas
                     img.setOnDragDone(e -> {
                         e.consume();
-                        // Vuelve a mostrar todas las cartas arrastradas al finalizar el drag
-                        for (CartasPartidaDto c : cartasArrastradas) {
-                            ImageView iv = cartaToImageView.get(c);
+                        for (CartasPartidaDto c2 : cartasArrastradas) {
+                            ImageView iv = cartaToImageView.get(c2);
                             if (iv != null) iv.setVisible(true);
                         }
                         cartasArrastradas.clear();
@@ -365,87 +656,86 @@ public class GameController extends Controller implements Initializable {
                 columna.getChildren().add(img);
             }
         }
+    }
 
-        hboxTableroSuperior.setSpacing(10);
 
-        // Verificar si hay cartas en el mazo
+    private void actualizarVistaDelMazoYPilas() {
+        hboxTableroSuperior.getChildren().clear();
+
+        // 1) Verificar si hay cartas en el mazo:
         boolean hayCartasEnMazo = cartasEnJuego.stream()
-                .anyMatch(c -> c.getEnMazo() == true);
+                .anyMatch(c -> c.getEnMazo());
 
-        // Solo mostrar el mazo si hay cartas disponibles
+        // 2) Si hay cartas en el mazo, creamos el ImageView del mazo con evento click → repartirCartasDelMazo()
         if (hayCartasEnMazo) {
-            imgMazo = new ImageView(new Image(getClass().getResourceAsStream("/cr/ac/una/proyectospider/resources/" + (usarEstiloClasico ? "rear.png" : "rearS.png"))));
+            imgMazo = new ImageView(new Image(getClass().getResourceAsStream(
+                    "/cr/ac/una/proyectospider/resources/" +
+                            (usarEstiloClasico ? "rear.png" : "rearS.png"))));
             imgMazo.setFitWidth(70);
             imgMazo.setPreserveRatio(true);
             imgMazo.setSmooth(true);
             imgMazo.setOnMouseClicked(e -> repartirCartasDelMazo());
             hboxTableroSuperior.getChildren().add(imgMazo);
         } else {
+            // Si no hay cartas en mazo, solo ponemos un espacio vacío de 70px
             Region espacioMazo = new Region();
             espacioMazo.setPrefWidth(70);
             hboxTableroSuperior.getChildren().add(espacioMazo);
         }
 
+        // 3) Añadir un espaciador fijo de 70px al lado derecho del mazo
         Region espacio = new Region();
         espacio.setPrefWidth(70);
         hboxTableroSuperior.getChildren().add(espacio);
 
-        // Contar cuántas secuencias completas se han movido a las pilas
+        // 4) Contar cuántas secuencias completas (K→A) ya pasaron a pilas
         long secuenciasCompletadas = cartasEnJuego.stream()
-                .filter(c -> c.getEnPila() == true)
-                .count() / 13; // Cada secuencia tiene 13 cartas
+                .filter(c -> c.getEnPila())
+                .count() / 13; // cada secuencia son 13 cartas
 
-        System.out.println("Secuencias completadas: " + secuenciasCompletadas);
-
-        // Mostrar las pilas completadas y las vacías
+        // 5) Mostrar las 8 pilas (las completadas muestran As; las vacías muestran white.png o whites.png)
         for (int i = 0; i < 8; i++) {
             ImageView pila;
-
             if (i < secuenciasCompletadas) {
                 int pilaActual = i;
+                // Tomamos uno de los As de esa secuencia por palo
                 String paloSecuencia = cartasEnJuego.stream()
-                        .filter(c -> c.getEnPila() == true)
+                        .filter(c -> c.getEnPila())
                         .skip(pilaActual * 13)
                         .findFirst()
                         .map(CartasPartidaDto::getPalo)
                         .orElse("C");
 
                 CartasPartidaDto cartaAs = cartasEnJuego.stream()
-                        .filter(c -> c.getEnPila() == true && c.getPalo().equals(paloSecuencia) && c.getValor().equals("1"))
-                        .findFirst()
-                        .orElse(null);
+                        .filter(c -> c.getEnPila()
+                                && c.getPalo().equals(paloSecuencia)
+                                && c.getValor().equals("1"))
+                        .findFirst().orElse(null);
 
                 if (cartaAs != null && cartaAs.getImagenNombre() != null) {
                     pila = new ImageView(new Image(getClass().getResourceAsStream(
                             "/cr/ac/una/proyectospider/resources/" + cartaAs.getImagenNombre())));
                 } else {
+                    // Si no consigo el As, le pongo un “1C.png” por defecto
                     pila = new ImageView(new Image(getClass().getResourceAsStream(
                             "/cr/ac/una/proyectospider/resources/1C.png")));
                 }
             } else {
+                // Pila vacía: mostrar “white.png” o “whites.png” según estilo
                 String whiteImg = usarEstiloClasico ? "white.png" : "whites.png";
                 pila = new ImageView(new Image(getClass().getResourceAsStream(
                         "/cr/ac/una/proyectospider/resources/" + whiteImg)));
             }
-
             pila.setFitWidth(70);
             pila.setPreserveRatio(true);
             pila.setSmooth(true);
             hboxTableroSuperior.getChildren().add(pila);
         }
-        // Verificar victoria al final de la actualización de la vista
+
+        // 6) Verificar si hay victoria (y pop‐up si corresponde):
         verificarVictoria();
     }
 
-    public void ResetGameView() {
-        hboxTablero.getChildren().clear();
-        hboxPilas.getChildren().clear();
-        if (!tiempoIniciado) {
-            segundosTranscurridos = 0;
-            actualizarLabelTiempo();
-            detenerTemporizador();
-        }
-    }
 
     private CartasPartidaDto obtenerUltimaCartaVisible(int columna) {
         return cartasEnJuego.stream()
@@ -511,6 +801,9 @@ public class GameController extends Controller implements Initializable {
                     carta.getColumna(), carta.getOrden());
         }
 
+        lblMovimientos.setText("MOVIMIENTOS: " + movimientos);
+        lblPuntaje.setText("PUNTAJE: " + puntaje);
+
         System.out.println("Movimiento terminado.\n");
 
         // Verificar si se ha completado una secuencia después del movimiento
@@ -544,65 +837,65 @@ public class GameController extends Controller implements Initializable {
      * - Las cartas repartidas se colocan boca arriba
      * - Si no quedan cartas en el mazo, este desaparece
      */
-    private void repartirCartasDelMazo() {
-        iniciarTemporizadorSiEsNecesario();
-        movimientos++;
-        puntaje = Math.max(0, puntaje - 1);
-
-        // Verificar si todas las columnas tienen al menos una carta
-        boolean todasColumnasConCartas = true;
-        for (int colIndex = 0; colIndex < 10; colIndex++) {
-            final int col = colIndex; // Crear una variable final para usar en lambda
-            boolean columnaConCartas = cartasEnJuego.stream()
-                    .anyMatch(c -> c.getColumna() == col);
-            if (!columnaConCartas) {
-                todasColumnasConCartas = false;
-                break;
-            }
-        }
-
-        if (!todasColumnasConCartas) {
-            System.out.println("No se pueden repartir cartas: algunas columnas están vacías");
-            return;
-        }
-
-        // Obtener cartas del mazo
-        List<CartasPartidaDto> cartasEnMazo = cartasEnJuego.stream()
-                .filter(c -> c.getEnMazo() == true)
-                .toList();
-
-        if (cartasEnMazo.size() < 10) {
-            System.out.println("No hay suficientes cartas en el mazo para repartir");
-            return;
-        }
-
-        // Repartir una carta a cada columna
-        for (int colIndex = 0; colIndex < 10; colIndex++) {
-            final int col = colIndex; // Crear una variable final para usar en lambda
-
-            // Encontrar la última carta en la columna actual
-            int nuevoOrden = cartasEnJuego.stream()
-                    .filter(c -> c.getColumna() == col)
-                    .mapToInt(CartasPartidaDto::getOrden)
-                    .max()
-                    .orElse(-1) + 1;
-
-            // Tomar una carta del mazo
-            CartasPartidaDto carta = cartasEnMazo.get(colIndex);
-
-            // Actualizar la carta
-            carta.setEnMazo(false);
-            carta.setColumna(col);
-            carta.setOrden(nuevoOrden);
-            carta.setBocaArriba(true); // Las cartas repartidas del mazo siempre están boca arriba
-        }
-
-        // Verificar si se ha completado una secuencia después de repartir
-        verificarSecuenciaCompleta();
-
-        // Actualizar la vista (RunGameView ya verifica si hay cartas en el mazo)
-        RunGameView(partidaDto);
-    }
+//    private void repartirCartasDelMazo() {
+//        iniciarTemporizadorSiEsNecesario();
+//        movimientos++;
+//        puntaje = Math.max(0, puntaje - 1);
+//
+//        // Verificar si todas las columnas tienen al menos una carta
+//        boolean todasColumnasConCartas = true;
+//        for (int colIndex = 0; colIndex < 10; colIndex++) {
+//            final int col = colIndex; // Crear una variable final para usar en lambda
+//            boolean columnaConCartas = cartasEnJuego.stream()
+//                    .anyMatch(c -> c.getColumna() == col);
+//            if (!columnaConCartas) {
+//                todasColumnasConCartas = false;
+//                break;
+//            }
+//        }
+//
+//        if (!todasColumnasConCartas) {
+//            System.out.println("No se pueden repartir cartas: algunas columnas están vacías");
+//            return;
+//        }
+//
+//        // Obtener cartas del mazo
+//        List<CartasPartidaDto> cartasEnMazo = cartasEnJuego.stream()
+//                .filter(c -> c.getEnMazo() == true)
+//                .toList();
+//
+//        if (cartasEnMazo.size() < 10) {
+//            System.out.println("No hay suficientes cartas en el mazo para repartir");
+//            return;
+//        }
+//
+//        // Repartir una carta a cada columna
+//        for (int colIndex = 0; colIndex < 10; colIndex++) {
+//            final int col = colIndex; // Crear una variable final para usar en lambda
+//
+//            // Encontrar la última carta en la columna actual
+//            int nuevoOrden = cartasEnJuego.stream()
+//                    .filter(c -> c.getColumna() == col)
+//                    .mapToInt(CartasPartidaDto::getOrden)
+//                    .max()
+//                    .orElse(-1) + 1;
+//
+//            // Tomar una carta del mazo
+//            CartasPartidaDto carta = cartasEnMazo.get(colIndex);
+//
+//            // Actualizar la carta
+//            carta.setEnMazo(false);
+//            carta.setColumna(col);
+//            carta.setOrden(nuevoOrden);
+//            carta.setBocaArriba(true); // Las cartas repartidas del mazo siempre están boca arriba
+//        }
+//
+//        // Verificar si se ha completado una secuencia después de repartir
+//        verificarSecuenciaCompleta();
+//
+//        // Actualizar la vista (RunGameView ya verifica si hay cartas en el mazo)
+//        RunGameView(partidaDto);
+//    }
 
     /**
      * Verifica si hay secuencias completas de A a K del mismo palo en alguna columna
@@ -614,7 +907,7 @@ public class GameController extends Controller implements Initializable {
             final int columna = col;
 
             List<CartasPartidaDto> cartasColumna = cartasEnJuego.stream()
-                    .filter(c -> c.getColumna() == columna && c.getBocaArriba() == true)
+                    .filter(c -> c.getColumna() == columna && c.getBocaArriba())
                     .sorted(Comparator.comparingInt(CartasPartidaDto::getOrden))
                     .toList();
 
@@ -642,6 +935,7 @@ public class GameController extends Controller implements Initializable {
                         && Integer.parseInt(primera.getValor()) == 13
                         && Integer.parseInt(ultima.getValor()) == 1) {
 
+                    // Marcar las 13 cartas como “enPila”
                     for (int i = 0; i < 13; i++) {
                         CartasPartidaDto carta = cartasColumna.get(inicio + i);
                         carta.setEnPila(true);
@@ -650,6 +944,7 @@ public class GameController extends Controller implements Initializable {
                     }
 
                     puntaje += 100;
+                    lblPuntaje.setText("PUNTAJE: " + puntaje);
 
                     if (inicio > 0) {
                         CartasPartidaDto debajo = cartasColumna.get(inicio - 1);
@@ -657,17 +952,20 @@ public class GameController extends Controller implements Initializable {
                     } else {
                         // Si no hay cartas visibles restantes, voltear la última carta oculta
                         cartasEnJuego.stream()
-                                .filter(c -> c.getColumna() == columna && c.getBocaArriba() == false)
+                                .filter(c -> c.getColumna() == columna && !c.getBocaArriba())
                                 .max(Comparator.comparingInt(CartasPartidaDto::getOrden))
                                 .ifPresent(c -> c.setBocaArriba(true));
                     }
 
-                    RunGameView(partidaDto);
+                    // *** EN LUGAR DE RunGameView(partidaDto) ***
+                    dibujarColumnasYCargarCartasEnTablero();
+                    actualizarVistaDelMazoYPilas();
                     return;
                 }
             }
         }
     }
+
 
     /**
      * Busca el mejor destino visible para mover una carta o grupo válido,
@@ -717,7 +1015,7 @@ public class GameController extends Controller implements Initializable {
         if (lblTiempo != null) {
             int minutos = segundosTranscurridos / 60;
             int segundos = segundosTranscurridos % 60;
-            lblTiempo.setText(String.format("Tiempo: %02d:%02d", minutos, segundos));
+            lblTiempo.setText(String.format("TIEMPO: %02d:%02d", minutos, segundos));
         }
     }
 
@@ -925,21 +1223,33 @@ public class GameController extends Controller implements Initializable {
      */
     public boolean verificarVictoria() {
         long cartasEnPila = cartasEnJuego.stream()
-                .filter(c -> c.getEnPila() == true)
+                .filter(CartasPartidaDto::getEnPila)
                 .count();
+
         if (cartasEnPila == 104) {
             Platform.runLater(() -> {
                 detenerTemporizador();
-                javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.INFORMATION);
+
+                javafx.scene.control.Alert alert =
+                        new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.INFORMATION);
                 alert.setTitle("¡Victoria!");
                 alert.setHeaderText(null);
                 alert.setContentText("¡Felicidades! Has ganado el Solitario Spider.");
                 alert.showAndWait();
+
+                // — SOLO AQUÍ (fin de partida) restablecemos todo para “Nueva Partida” —
+                primerIngreso = true;
+                cartasEnJuego = null;
+                cartaToImageView.clear();
+                movimientos = 0;
+                puntaje = 500;
             });
             return true;
         }
         return false;
     }
+
+
 
     /**
      * Aplica una animación de "shake" (temblor) a un nodo.
