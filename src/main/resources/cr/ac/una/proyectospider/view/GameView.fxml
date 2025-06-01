@@ -48,9 +48,9 @@
                         </HBox>
                      </bottom>
                      <center>
-                        <StackPane fx:id="spTableroBackground" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="700.0" prefWidth="1300.0" styleClass="spFondoTablero">
+                        <StackPane fx:id="spTableroBackground" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="600.0" prefWidth="1100.0" styleClass="spFondoTablero">
                            <children>
-                              <ImageView fx:id="imgBackgroundTablero" fitHeight="700.0" fitWidth="1300.0" pickOnBounds="true" />
+                              <ImageView fx:id="imgBackgroundTablero" fitHeight="600.0" fitWidth="1100.0" pickOnBounds="true" />
                               <VBox alignment="CENTER">
                                  <children>
                                     <HBox fx:id="hboxTableroSuperior" alignment="BOTTOM_CENTER" prefHeight="135.0" prefWidth="1000.0" spacing="10.0">
