@@ -55,7 +55,7 @@
                                     </HBox>
                                     <HBox alignment="CENTER" prefHeight="40.0" prefWidth="1000.0">
                                        <children>
-                                          <Label fx:id="lblNombreJugador" prefHeight="23.0" prefWidth="625.0" styleClass="label-subtitle-menu" text="NOMBRE DE JUGADOR REGISTRADO" />
+                                          <Label fx:id="lblNombreJugador" prefHeight="23.0" prefWidth="477.0" styleClass="label-subtitle-menu" text="NOMBRE DE JUGADOR REGISTRADO" />
                                           <Pane maxHeight="-Infinity" maxWidth="1.7976931348623157E308" prefHeight="70.0" prefWidth="200.0" />
                                           <Label fx:id="lblPuntaje1" alignment="CENTER" nodeOrientation="LEFT_TO_RIGHT" prefHeight="23.0" prefWidth="112.0" styleClass="label-subtitle-menu" text="PUNTAJE:" />
                                           <Label fx:id="lblPuntaje" layoutX="949.0" layoutY="19.0" prefHeight="23.0" prefWidth="95.0" styleClass="label-subtitle-game" text="PUNTAJE">
@@ -99,6 +99,9 @@
                                              </children>
                                           </VBox>
                                        </children>
+                                       <VBox.margin>
+                                          <Insets top="10.0" />
+                                       </VBox.margin>
                                     </StackPane>
                                  </children>
                               </VBox>
