@@ -67,7 +67,7 @@
                                           <Label fx:id="lblTiempo" layoutX="1233.0" layoutY="19.0" prefHeight="23.0" prefWidth="95.0" styleClass="label-subtitle-game" text="TIMEPO: " />
                                        </children>
                                        <VBox.margin>
-                                          <Insets top="30.0" />
+                                          <Insets top="15.0" />
                                        </VBox.margin>
                                     </HBox>
                                  </children>
