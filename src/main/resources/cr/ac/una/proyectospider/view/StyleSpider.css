@@ -486,6 +486,17 @@
     -fx-image: url('../resources/btnPista.png');
 }
 
+#imgSpider1 {
+    -fx-image: url('../resources/SpiderIconGame.png');
+}
+
+#imgSpider2 {
+    -fx-image: url('../resources/SpiderIconGame.png');
+}
+
+
+
+
 .spFondoTablero{
 
     -fx-border-color: linear-gradient(
@@ -501,6 +512,17 @@
 
 }
 
+
+
+
+.label-subtitle-game {
+    -fx-font-family: "Cynatar";
+    -fx-font-size: 27px;
+    -fx-text-fill: #00ffff; /* Dorado más cálido y legible */
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(gaussian, #ff00ff, 15, 0.6, 0, 0); /* Glow reducido */
+    -fx-alignment: center;
+}
 
 /*VISTA POINTS*/
 

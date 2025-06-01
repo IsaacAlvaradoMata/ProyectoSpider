@@ -186,6 +186,32 @@ public class AnimationDepartment {
         activeAnimations.add(glowCycle);
     }
 
+    public static void animateNeonGlow2(Node node) {
+        Timeline glowCycle = new Timeline(
+                // Paso 0: aplica drop shadow magenta
+                new KeyFrame(Duration.seconds(0), e ->
+                        node.setEffect(new DropShadow(30, Color.web("#ff00ff")))
+                ),
+                // Paso 1.5s: aplica drop shadow cian
+                new KeyFrame(Duration.seconds(1.5), e ->
+                        node.setEffect(new DropShadow(30, Color.web("#00ffff")))
+                ),
+                // Paso 3s: aplica drop shadow amarillo
+                new KeyFrame(Duration.seconds(3), e ->
+                        node.setEffect(new DropShadow(30, Color.web("#ffc107")))
+                ),
+                // Paso 4.5s: vuelve al drop shadow magenta
+                new KeyFrame(Duration.seconds(4.5), e ->
+                        node.setEffect(new DropShadow(30, Color.web("#ff00ff")))
+                )
+        );
+
+        glowCycle.setCycleCount(Animation.INDEFINITE);
+        glowCycle.play();
+
+        activeAnimations.add(glowCycle);
+    }
+
     public static void animateNeonGlowStrong(Node node) {
         Timeline glowCycle = new Timeline(
                 new KeyFrame(Duration.seconds(0), e -> {

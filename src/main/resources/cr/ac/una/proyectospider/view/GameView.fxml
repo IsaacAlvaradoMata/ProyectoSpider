@@ -18,28 +18,22 @@
                <children>
                   <ImageView fx:id="imgBackgroundGame" pickOnBounds="true" />
                   <BorderPane prefHeight="200.0" prefWidth="200.0">
-                     <top>
-                        <VBox alignment="CENTER" prefHeight="113.0" prefWidth="1000.0" BorderPane.alignment="CENTER">
-                           <children>
-                              <Label fx:id="lblTitulo" styleClass="label-titleee-ayudaa" text="NUEVA PARTIDA" />
-                              <HBox alignment="CENTER" prefHeight="40.0" prefWidth="1000.0" spacing="40.0">
-                                 <children>
-                                    <Label fx:id="lblNombreJugador" prefHeight="23.0" prefWidth="625.0" styleClass="label-subtitle-menu" text="NOMBRE DE JUGADOR REGISTRADO" />
-                                    <Pane maxHeight="-Infinity" maxWidth="1.7976931348623157E308" prefHeight="70.0" prefWidth="200.0" />
-                                    <Label fx:id="lblPuntaje" prefHeight="23.0" prefWidth="234.0" styleClass="label-subtitle-menu" text="PUNTAJE" />
-                                    <Label fx:id="lblTiempo" prefHeight="23.0" prefWidth="254.0" styleClass="label-subtitle-menu" text="TIMEPO: " />
-                                 </children>
-                              </HBox>
-                           </children>
-                        </VBox>
-                     </top>
                      <bottom>
-                        <HBox alignment="CENTER" prefHeight="78.0" prefWidth="1000.0" spacing="60.0" BorderPane.alignment="CENTER">
+                        <HBox alignment="CENTER" prefHeight="78.0" prefWidth="1000.0" BorderPane.alignment="CENTER">
                            <children>
-                              <Label fx:id="lblDificultad" styleClass="label-subtitle-menu" text="DIFICULTAD: " />
-                              <Label fx:id="lblMovimientos" layoutX="50.0" layoutY="41.0" styleClass="label-subtitle-menu" text="MOVIMIENTOS:" />
+                              <Label fx:id="lblDificultad1" styleClass="label-subtitle-menu" text="DIFICULTAD: " />
+                              <Label fx:id="lblDificultad" layoutX="50.0" layoutY="38.0" styleClass="label-subtitle-game" text="DIFICULTAD: ">
+                                 <HBox.margin>
+                                    <Insets right="50.0" />
+                                 </HBox.margin>
+                              </Label>
+                              <Label fx:id="lblMovimientos1" layoutX="50.0" layoutY="41.0" prefHeight="23.0" prefWidth="178.0" styleClass="label-subtitle-menu" text="MOVIMIENTOS:" />
+                              <Label fx:id="lblMovimientos" layoutX="454.0" layoutY="38.0" styleClass="label-subtitle-game" text="MOVIMIENTOS:" />
                               <Pane maxHeight="-Infinity" maxWidth="1.7976931348623157E308" prefHeight="70.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
-                              <ImageView fx:id="btnPista" fitHeight="50.0" fitWidth="50.0" onMouseClicked="#oMouseClickedbtnPista" pickOnBounds="true" preserveRatio="true" styleClass="neon-image-button" />
+                              <ImageView fx:id="btnPista" fitHeight="50.0" fitWidth="50.0" onMouseClicked="#oMouseClickedbtnPista" pickOnBounds="true" preserveRatio="true" styleClass="neon-image-button">
+                                 <HBox.margin>
+                                    <Insets right="50.0" />
+                                 </HBox.margin></ImageView>
                               <ImageView fx:id="btnGuardarySalir" fitHeight="50.0" fitWidth="50.0" layoutX="524.0" layoutY="35.0" onMouseClicked="#onMouseClickedbtnGuardarySalir" pickOnBounds="true" preserveRatio="true" styleClass="neon-image-button" />
                            </children>
                            <padding>
@@ -48,29 +42,68 @@
                         </HBox>
                      </bottom>
                      <center>
-                        <StackPane fx:id="spTableroBackground" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="600.0" prefWidth="1100.0" styleClass="spFondoTablero">
+                        <VBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" BorderPane.alignment="TOP_CENTER">
                            <children>
-                              <ImageView fx:id="imgBackgroundTablero" fitHeight="600.0" fitWidth="1100.0" pickOnBounds="true" />
-                              <VBox alignment="CENTER">
+                              <VBox alignment="TOP_CENTER" prefHeight="113.0" prefWidth="1500.0">
                                  <children>
-                                    <HBox fx:id="hboxTableroSuperior" alignment="BOTTOM_CENTER" prefHeight="135.0" prefWidth="1000.0" spacing="10.0">
+                                    <HBox alignment="CENTER" spacing="30.0">
                                        <children>
-                                          <ImageView fx:id="imgMazo" fitWidth="70.0" pickOnBounds="true" preserveRatio="true" />
-                                          <HBox fx:id="hboxPilas" alignment="BOTTOM_CENTER" spacing="10.0" HBox.hgrow="ALWAYS" />
+                                          <ImageView fx:id="imgSpider1" fitHeight="60.0" fitWidth="60.0" layoutX="887.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true" />
+                                          <Label fx:id="lblTitulo" styleClass="label-titleee-ayudaa" text="NUEVA PARTIDA" />
+                                          <ImageView fx:id="imgSpider2" fitHeight="60.0" fitWidth="60.0" pickOnBounds="true" preserveRatio="true" />
                                        </children>
-                                       <padding>
-                                          <Insets left="30.0" right="30.0" />
-                                       </padding>
                                     </HBox>
-                                    <HBox fx:id="hboxTablero" alignment="TOP_CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="100.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
-                                       <padding>
-                                          <Insets left="10.0" top="20.0" />
-                                       </padding>
+                                    <HBox alignment="CENTER" prefHeight="40.0" prefWidth="1000.0">
+                                       <children>
+                                          <Label fx:id="lblNombreJugador" prefHeight="23.0" prefWidth="625.0" styleClass="label-subtitle-menu" text="NOMBRE DE JUGADOR REGISTRADO" />
+                                          <Pane maxHeight="-Infinity" maxWidth="1.7976931348623157E308" prefHeight="70.0" prefWidth="200.0" />
+                                          <Label fx:id="lblPuntaje1" alignment="CENTER" nodeOrientation="LEFT_TO_RIGHT" prefHeight="23.0" prefWidth="112.0" styleClass="label-subtitle-menu" text="PUNTAJE:" />
+                                          <Label fx:id="lblPuntaje" layoutX="949.0" layoutY="19.0" prefHeight="23.0" prefWidth="95.0" styleClass="label-subtitle-game" text="PUNTAJE">
+                                             <HBox.margin>
+                                                <Insets right="50.0" />
+                                             </HBox.margin>
+                                          </Label>
+                                          <Label fx:id="lblTiempo1" prefHeight="23.0" prefWidth="103.0" styleClass="label-subtitle-menu" text="TIMEPO: " />
+                                          <Label fx:id="lblTiempo" layoutX="1233.0" layoutY="19.0" prefHeight="23.0" prefWidth="95.0" styleClass="label-subtitle-game" text="TIMEPO: " />
+                                       </children>
+                                       <VBox.margin>
+                                          <Insets top="30.0" />
+                                       </VBox.margin>
                                     </HBox>
+                                 </children>
+                                 <padding>
+                                    <Insets top="20.0" />
+                                 </padding>
+                              </VBox>
+                              <VBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" VBox.vgrow="ALWAYS">
+                                 <children>
+                                    <StackPane fx:id="spTableroBackground" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="600.0" prefWidth="1100.0" style="-fx-background-color: black;" styleClass="spFondoTablero">
+                                       <children>
+                                          <ImageView fx:id="imgBackgroundTablero" fitHeight="600.0" fitWidth="1100.0" pickOnBounds="true" />
+                                          <VBox alignment="CENTER">
+                                             <children>
+                                                <HBox fx:id="hboxTableroSuperior" alignment="BOTTOM_CENTER" prefHeight="135.0" prefWidth="1000.0" spacing="10.0">
+                                                   <children>
+                                                      <ImageView fx:id="imgMazo" fitWidth="70.0" pickOnBounds="true" preserveRatio="true" />
+                                                      <HBox fx:id="hboxPilas" alignment="BOTTOM_CENTER" spacing="10.0" HBox.hgrow="ALWAYS" />
+                                                   </children>
+                                                   <padding>
+                                                      <Insets left="30.0" right="30.0" />
+                                                   </padding>
+                                                </HBox>
+                                                <HBox fx:id="hboxTablero" alignment="TOP_CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="100.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+                                                   <padding>
+                                                      <Insets left="10.0" top="20.0" />
+                                                   </padding>
+                                                </HBox>
+                                             </children>
+                                          </VBox>
+                                       </children>
+                                    </StackPane>
                                  </children>
                               </VBox>
                            </children>
-                        </StackPane>
+                        </VBox>
                      </center>
                   </BorderPane>
                </children>

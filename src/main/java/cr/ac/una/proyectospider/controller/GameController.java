@@ -72,6 +72,15 @@ public class GameController extends Controller implements Initializable {
     private Label lblTiempo;
 
     @FXML
+    private Label lblMovimientos1;
+
+    @FXML
+    private Label lblPuntaje1;
+
+    @FXML
+    private Label lblTiempo1;
+
+    @FXML
     private BorderPane root;
 
     @FXML
@@ -82,6 +91,14 @@ public class GameController extends Controller implements Initializable {
 
     @FXML
     private Label lblDificultad;
+
+    @FXML
+    private Label lblDificultad1;
+
+    @FXML
+    private ImageView imgSpider1;
+    @FXML
+    private ImageView imgSpider2;
 
     private List<CartasPartidaDto> cartasEnJuego;
     private List<CartasPartidaDto> cartasSeleccionadas = new ArrayList<>();
@@ -97,6 +114,7 @@ public class GameController extends Controller implements Initializable {
     private int lastHintIndex = -1; // Para rotar entre pistas
     private PartidaDto partidaDto;
     public boolean primerIngreso = true;
+
 
 
     private static class MovimientoSugerido {
@@ -191,6 +209,7 @@ public class GameController extends Controller implements Initializable {
         imgBackgroundGame.setOpacity(0.4);
         imgBackgroundGame.setVisible(true);
 
+        imgBackgroundTablero.setEffect(new ColorAdjust(0, 0, -0.2, 0));
         // — Fondo del tablero (imgBackgroundTablero) con neon glow —
         Object fondoEnContext = AppContext.getInstance().get(AppContext.KEY_FONDO_SELECCIONADO);
         if (fondoEnContext instanceof Image) {
@@ -200,7 +219,7 @@ public class GameController extends Controller implements Initializable {
                     getClass().getResourceAsStream(
                             "/cr/ac/una/proyectospider/resources/DefaultBack3.png")));
         }
-        AnimationDepartment.animateNeonGlow(imgBackgroundTablero);
+        AnimationDepartment.animateNeonGlow2(spTableroBackground);
 
         // — Seleccionar estilo de cartas (clásico o cyberpunk) —
         Object estiloEnContext = AppContext.getInstance().get(AppContext.KEY_ESTILO_CARTAS);
@@ -214,7 +233,7 @@ public class GameController extends Controller implements Initializable {
         // — Dificultad y label —
         String dificultad = partidaDto.getDificultad();
         if (dificultad == null) dificultad = "FACIL";
-        lblDificultad.setText("DIFICULTAD: " + dificultad);
+        lblDificultad.setText(" " + dificultad);
 
         // — Generar mazo (solo la primera vez) —
         if (cartasEnJuego == null) {
@@ -234,8 +253,8 @@ public class GameController extends Controller implements Initializable {
         imgMazo.setImage(null);
 
         // — Actualizar labels —
-        lblPuntaje.setText("PUNTAJE: " + puntaje);
-        lblMovimientos.setText("MOVIMIENTOS: " + movimientos);
+        lblPuntaje.setText("" + puntaje);
+        lblMovimientos.setText("" + movimientos);
         actualizarLabelTiempo();
 
         // — PINTAR COLUMNAS + CARTAS: solo este método —
@@ -268,6 +287,8 @@ public class GameController extends Controller implements Initializable {
         t1.setOnFinished(e -> {
             AnimationDepartment.slideFromTop(lblTitulo, Duration.ZERO);
             AnimationDepartment.glitchTextWithFlicker(lblTitulo);
+            AnimationDepartment.fadeIn(imgSpider1, Duration.seconds(1.5));
+            AnimationDepartment.fadeIn(imgSpider2, Duration.seconds(1.5));
         });
         t1.play();
 
@@ -276,9 +297,15 @@ public class GameController extends Controller implements Initializable {
             AnimationDepartment.slideFromLeft(lblNombreJugador, Duration.ZERO);
             AnimationDepartment.slideFromRight(lblPuntaje, Duration.ZERO);
             AnimationDepartment.slideFromRight(lblTiempo, Duration.ZERO);
+            AnimationDepartment.slideFromRight(lblPuntaje1, Duration.ZERO);
+            AnimationDepartment.slideFromRight(lblTiempo1, Duration.ZERO);
             AnimationDepartment.glitchTextWithFlicker(lblNombreJugador);
-            AnimationDepartment.glitchTextWithFlicker(lblPuntaje);
-            AnimationDepartment.glitchTextWithFlicker(lblTiempo);
+            AnimationDepartment.glitchTextWithFlicker(lblPuntaje1);
+            AnimationDepartment.glitchTextWithFlicker(lblTiempo1);
+            AnimationDepartment.slideLoopLeft(imgSpider1, 400, 2);
+            AnimationDepartment.slideLoopRight(imgSpider2, 400, 2);
+            AnimationDepartment.animateNeonGlow(imgSpider1);
+            AnimationDepartment.animateNeonGlow(imgSpider2);
 
         });
         t2.play();
@@ -293,7 +320,8 @@ public class GameController extends Controller implements Initializable {
         PauseTransition t4 = new PauseTransition(Duration.seconds(3.8));
         t4.setOnFinished(e -> {
             AnimationDepartment.slideFromLeft(lblMovimientos, Duration.ZERO);
-            AnimationDepartment.glitchTextWithFlicker(lblMovimientos);
+            AnimationDepartment.slideFromLeft(lblMovimientos1, Duration.ZERO);
+            AnimationDepartment.glitchTextWithFlicker(lblMovimientos1);
             AnimationDepartment.slideFromRight(btnPista, Duration.ZERO);
             AnimationDepartment.animateNeonGlow(btnPista);
 
@@ -303,7 +331,8 @@ public class GameController extends Controller implements Initializable {
         PauseTransition t5 = new PauseTransition(Duration.seconds(4.1));
         t5.setOnFinished(e -> {
             AnimationDepartment.slideFromLeft(lblDificultad, Duration.ZERO);
-            AnimationDepartment.glitchTextWithFlicker(lblDificultad);
+            AnimationDepartment.slideFromLeft(lblDificultad1, Duration.ZERO);
+            AnimationDepartment.glitchTextWithFlicker(lblDificultad1);
             AnimationDepartment.slideFromRight(btnGuardarySalir, Duration.ZERO);
             AnimationDepartment.animateNeonGlow(btnGuardarySalir);
 
@@ -361,6 +390,30 @@ public class GameController extends Controller implements Initializable {
         lblDificultad.setScaleX(1.0);
         lblDificultad.setScaleY(1.0);
 
+        lblPuntaje1.setOpacity(0);
+        lblPuntaje1.setTranslateX(0);
+        lblPuntaje1.setTranslateY(0);
+        lblPuntaje1.setScaleX(1.0);
+        lblPuntaje1.setScaleY(1.0);
+
+        lblTiempo1.setOpacity(0);
+        lblTiempo1.setTranslateX(0);
+        lblTiempo1.setTranslateY(0);
+        lblTiempo1.setScaleX(1.0);
+        lblTiempo1.setScaleY(1.0);
+
+        lblMovimientos1.setOpacity(0);
+        lblMovimientos1.setTranslateX(0);
+        lblMovimientos1.setTranslateY(0);
+        lblMovimientos1.setScaleX(1.0);
+        lblMovimientos1.setScaleY(1.0);
+
+        lblDificultad1.setOpacity(0);
+        lblDificultad1.setTranslateX(0);
+        lblDificultad1.setTranslateY(0);
+        lblDificultad1.setScaleX(1.0);
+        lblDificultad1.setScaleY(1.0);
+
         spTableroBackground.setOpacity(0);
         spTableroBackground.setTranslateX(0);
         spTableroBackground.setTranslateY(0);
@@ -372,6 +425,13 @@ public class GameController extends Controller implements Initializable {
 
         btnGuardarySalir.setOpacity(0);
         btnGuardarySalir.setTranslateY(0);
+
+        imgSpider1.setOpacity(0);
+        imgSpider1.setTranslateX(0);
+        imgSpider1.setTranslateY(0);
+        imgSpider2.setOpacity(0);
+        imgSpider2.setTranslateX(0);
+        imgSpider2.setTranslateY(0);
 
         // 2) Reset del root / spGamebackground
         root.setEffect(null);
@@ -398,8 +458,8 @@ public class GameController extends Controller implements Initializable {
         movimientos++;
         puntaje = Math.max(0, puntaje - 1);
 
-        lblMovimientos.setText("MOVIMIENTOS: " + movimientos);
-        lblPuntaje.setText("PUNTAJE: " + puntaje);
+        lblMovimientos.setText("" + movimientos);
+        lblPuntaje.setText("" + puntaje);
 
         // Verificar si todas las columnas tienen al menos una carta
         boolean todasColumnasConCartas = true;
@@ -801,8 +861,8 @@ public class GameController extends Controller implements Initializable {
                     carta.getColumna(), carta.getOrden());
         }
 
-        lblMovimientos.setText("MOVIMIENTOS: " + movimientos);
-        lblPuntaje.setText("PUNTAJE: " + puntaje);
+        lblMovimientos.setText("" + movimientos);
+        lblPuntaje.setText("" + puntaje);
 
         System.out.println("Movimiento terminado.\n");
 
@@ -944,7 +1004,7 @@ public class GameController extends Controller implements Initializable {
                     }
 
                     puntaje += 100;
-                    lblPuntaje.setText("PUNTAJE: " + puntaje);
+                    lblPuntaje.setText("" + puntaje);
 
                     if (inicio > 0) {
                         CartasPartidaDto debajo = cartasColumna.get(inicio - 1);
@@ -1015,7 +1075,7 @@ public class GameController extends Controller implements Initializable {
         if (lblTiempo != null) {
             int minutos = segundosTranscurridos / 60;
             int segundos = segundosTranscurridos % 60;
-            lblTiempo.setText(String.format("TIEMPO: %02d:%02d", minutos, segundos));
+            lblTiempo.setText(String.format("%02d:%02d", minutos, segundos));
         }
     }
 

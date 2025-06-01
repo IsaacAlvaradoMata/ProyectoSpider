@@ -130,7 +130,7 @@ public class PersonalizationController extends Controller implements Initializab
             double sceneHeight = root.getScene().getHeight();
             AnimationDepartment.glitchFadeIn(root, Duration.seconds(0.6));
             System.out.println("se hizo el glitchFadeIn");
-            imgPrevistaFondo.setEffect(new ColorAdjust(0, 0, -0.4, 0));
+            imgPrevistaFondo.setEffect(new ColorAdjust(0, 0, -0.2, 0));
 
             // --- Inicializar la lista de fondos predeterminados si está vacía ---
             if (fondosPredeterminados.isEmpty()) {
