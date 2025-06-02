@@ -30,7 +30,7 @@
                                           <Insets top="10.0" />
                                        </VBox.margin>
                                     </Label>
-                                    <Label fx:id="lblPuntajeAcomulado" styleClass="label-subtitle-menu" text="PUNTAJE ACOMULADO ">
+                                    <Label fx:id="lblPuntajeAcomulado" styleClass="label-subtitle-menu" text="PUNTAJE ACUMULADO ">
                                        <VBox.margin>
                                           <Insets top="25.0" />
                                        </VBox.margin>
