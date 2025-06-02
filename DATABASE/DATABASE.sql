@@ -1,11 +1,14 @@
--- SEQUENCES -------------------------------------------------------------
+-- ================================
+-- SEQUENCES (con NOCACHE)
+-- ================================
 
 CREATE SEQUENCE SEQ_JUGADOR START WITH 1 INCREMENT BY 1 NOMAXVALUE NOMINVALUE NOCYCLE CACHE 20;
-CREATE SEQUENCE SEQ_PARTIDA START WITH 1 INCREMENT BY 1 NOMAXVALUE NOMINVALUE NOCYCLE CACHE 20;
-CREATE SEQUENCE SEQ_CARTASPARTIDA START WITH 1 INCREMENT BY 1 NOMAXVALUE NOMINVALUE NOCYCLE CACHE 20;
+CREATE SEQUENCE SEQ_PARTIDA START WITH 1 INCREMENT BY 1 NOMAXVALUE NOMINVALUE NOCYCLE NOCACHE;
+CREATE SEQUENCE SEQ_CARTASPARTIDA START WITH 1 INCREMENT BY 1 NOMAXVALUE NOMINVALUE NOCYCLE NOCACHE;
 
-
--- TABLE JUGADOR ---------------------------------------------------------
+-- ================================
+-- TABLA JUGADOR
+-- ================================
 
 CREATE TABLE Jugador (
                          Id_Jugador NUMBER CONSTRAINT PK_JUGADOR PRIMARY KEY,
@@ -31,8 +34,9 @@ COMMENT ON COLUMN Jugador.Imagen_Reverso IS 'Imagen personalizada del reverso de
 COMMENT ON COLUMN Jugador.Imagen_Frente IS 'Imagen personalizada del frente de las cartas (tipo BLOB)';
 COMMENT ON COLUMN Jugador.Version IS 'Número de versión para control de concurrencia optimista';
 
-
--- TABLE PARTIDA ---------------------------------------------------------
+-- ================================
+-- TABLA PARTIDA
+-- ================================
 
 CREATE TABLE Partida (
                          Id_Partida NUMBER CONSTRAINT PK_PARTIDA PRIMARY KEY,
@@ -58,8 +62,9 @@ COMMENT ON COLUMN Partida.Version IS 'Número de versión para control de concur
 
 CREATE INDEX IX_Relationship2 ON Partida (Id_Jugador);
 
-
--- TABLE CARTASPARTIDA ----------------------------------------------------
+-- ================================
+-- TABLA CARTASPARTIDA
+-- ================================
 
 CREATE TABLE CartasPartida (
                                Id_Carta_Partida NUMBER CONSTRAINT PK_CARTASPARTIDA PRIMARY KEY,
@@ -89,8 +94,9 @@ COMMENT ON COLUMN CartasPartida.Version IS 'Número de versión para control de 
 
 CREATE INDEX IX_Relationship4 ON CartasPartida (Id_Partida);
 
-
--- FOREIGN KEYS -----------------------------------------------------------
+-- ================================
+-- FOREIGN KEYS
+-- ================================
 
 ALTER TABLE Partida ADD CONSTRAINT FK_Partida_Jugador
     FOREIGN KEY (Id_Jugador) REFERENCES Jugador(Id_Jugador) ON DELETE CASCADE;
@@ -98,50 +104,57 @@ ALTER TABLE Partida ADD CONSTRAINT FK_Partida_Jugador
 ALTER TABLE CartasPartida ADD CONSTRAINT FK_CartasPartida_Partida
     FOREIGN KEY (Id_Partida) REFERENCES Partida(Id_Partida) ON DELETE CASCADE;
 
+-- ================================
+-- TRIGGERS (seguros y mejorados)
+-- ================================
 
--- TRIGGERS ---------------------------------------------------------------
-
--- Jugador
+-- 🔹 Jugador
 CREATE OR REPLACE TRIGGER ts_Jugador_SEQ_JUGADOR
     BEFORE INSERT ON Jugador FOR EACH ROW
 BEGIN
-    :new.Id_Jugador := SEQ_JUGADOR.NEXTVAL;
+    IF :new.Id_Jugador IS NULL OR :new.Id_Jugador <= 0 THEN
+        :new.Id_Jugador := SEQ_JUGADOR.NEXTVAL;
+    END IF;
 END;
 /
 
 CREATE OR REPLACE TRIGGER tsu_Jugador_SEQ_JUGADOR
     AFTER UPDATE OF Id_Jugador ON Jugador FOR EACH ROW
 BEGIN
-    RAISE_APPLICATION_ERROR(-20010,'Cannot update column Id_Jugador in table Jugador as it uses sequence.');
+    RAISE_APPLICATION_ERROR(-20010,'No se puede modificar el Id_Jugador porque se genera con secuencia.');
 END;
 /
 
--- Partida
+-- 🔹 Partida
 CREATE OR REPLACE TRIGGER ts_Partida_SEQ_PARTIDA
     BEFORE INSERT ON Partida FOR EACH ROW
 BEGIN
-    :new.Id_Partida := SEQ_PARTIDA.NEXTVAL;
+    IF :new.Id_Partida IS NULL OR :new.Id_Partida <= 0 THEN
+        :new.Id_Partida := SEQ_PARTIDA.NEXTVAL;
+    END IF;
 END;
 /
 
 CREATE OR REPLACE TRIGGER tsu_Partida_SEQ_PARTIDA
     AFTER UPDATE OF Id_Partida ON Partida FOR EACH ROW
 BEGIN
-    RAISE_APPLICATION_ERROR(-20010,'Cannot update column Id_Partida in table Partida as it uses sequence.');
+    RAISE_APPLICATION_ERROR(-20010,'No se puede modificar el Id_Partida porque se genera con secuencia.');
 END;
 /
 
--- CartasPartida
+-- 🔹 CartasPartida
 CREATE OR REPLACE TRIGGER ts_CartasPartida_SEQ_CARTASPARTIDA
     BEFORE INSERT ON CartasPartida FOR EACH ROW
 BEGIN
-    :new.Id_Carta_Partida := SEQ_CARTASPARTIDA.NEXTVAL;
+    IF :new.Id_Carta_Partida IS NULL OR :new.Id_Carta_Partida <= 0 THEN
+        :new.Id_Carta_Partida := SEQ_CARTASPARTIDA.NEXTVAL;
+    END IF;
 END;
 /
 
 CREATE OR REPLACE TRIGGER tsu_CartasPartida_SEQ_CARTASPARTIDA
     AFTER UPDATE OF Id_Carta_Partida ON CartasPartida FOR EACH ROW
 BEGIN
-    RAISE_APPLICATION_ERROR(-20010,'Cannot update column Id_Carta_Partida in table CartasPartida as it uses sequence.');
+    RAISE_APPLICATION_ERROR(-20010,'No se puede modificar el Id_Carta_Partida porque se genera con secuencia.');
 END;
 /
