@@ -18,14 +18,20 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.TextAlignment;
 import javafx.util.Duration;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class AnimationDepartment {
 
@@ -836,6 +842,296 @@ public class AnimationDepartment {
 
         ciclo.play();
         activeAnimations.add(ciclo);
+    }
+
+    public static void playVictoryAnimation(
+            StackPane parent,
+            boolean usarEstiloClasico,
+            Runnable onFinished
+    ) {
+        // 1) Crear la capa de celebración (Pane semi-transparente encima de toda la escena)
+        Pane celebrationLayer = new Pane();
+        celebrationLayer.setPickOnBounds(false);
+        celebrationLayer.setMouseTransparent(false);
+        celebrationLayer.setStyle("-fx-background-color: rgba(0, 0, 0, 0.5);"); // Capa oscura semitransparente
+
+        // Vincular el tamaño de la capa al tamaño del padre
+        celebrationLayer.prefWidthProperty().bind(parent.widthProperty());
+        celebrationLayer.prefHeightProperty().bind(parent.heightProperty());
+
+        // Al inicio, la capa está completamente transparente
+        celebrationLayer.setOpacity(0);
+        parent.getChildren().add(celebrationLayer);
+
+        // 2) Fade‐in de la capa completa (0 → 1) en 1 segundo
+        FadeTransition fadeInLayer = new FadeTransition(Duration.seconds(1), celebrationLayer);
+        fadeInLayer.setFromValue(0);
+        fadeInLayer.setToValue(1);
+        fadeInLayer.setInterpolator(Interpolator.EASE_IN);
+        fadeInLayer.setOnFinished(e -> {
+            // Una vez concluido el fade‐in, arrancamos el resto de la animación:
+            startVictoryEffects(celebrationLayer, parent, usarEstiloClasico, onFinished);
+        });
+        fadeInLayer.play();
+    }
+
+    private static void startVictoryEffects(
+            Pane celebrationLayer,
+            StackPane parent,
+            boolean usarEstiloClasico,
+            Runnable onFinished
+    ) {
+        double sceneWidth = parent.getScene().getWidth();
+        double sceneHeight = parent.getScene().getHeight();
+        Random rnd = new Random();
+
+        // 3) Lluvia infinita de cartas traseras
+        String rutaCarta = usarEstiloClasico
+                ? "/cr/ac/una/proyectospider/resources/rear.png"
+                : "/cr/ac/una/proyectospider/resources/rearS.png";
+        Image imagenCarta = new Image(
+                AnimationDepartment.class.getResourceAsStream(rutaCarta)
+        );
+
+        Timeline cartasSpawner = new Timeline(new KeyFrame(Duration.seconds(0.1), ev -> {
+            ImageView cartaIV = new ImageView(imagenCarta);
+            cartaIV.setFitWidth(40);
+            cartaIV.setPreserveRatio(true);
+            cartaIV.setSmooth(true);
+
+            double startX = rnd.nextDouble() * sceneWidth;
+            double startY = -50 - rnd.nextDouble() * 200;
+            cartaIV.setLayoutX(startX);
+            cartaIV.setLayoutY(startY);
+            celebrationLayer.getChildren().add(0, cartaIV);
+
+            // Caída continua
+            TranslateTransition tt = new TranslateTransition(Duration.seconds(2 + rnd.nextDouble()), cartaIV);
+            tt.setFromY(0);
+            tt.setToY(sceneHeight + 100 - startY);
+            tt.setInterpolator(Interpolator.LINEAR);
+            tt.setOnFinished(e2 -> celebrationLayer.getChildren().remove(cartaIV));
+            tt.play();
+
+            // Rotación infinita
+            RotateTransition rot = new RotateTransition(Duration.seconds(1 + rnd.nextDouble()), cartaIV);
+            rot.setByAngle(360 * (rnd.nextBoolean() ? 1 : -1));
+            rot.setCycleCount(Animation.INDEFINITE);
+            rot.setInterpolator(Interpolator.LINEAR);
+            rot.play();
+
+            // “Sway” horizontal infinito
+            TranslateTransition sway = new TranslateTransition(Duration.seconds(1 + rnd.nextDouble()), cartaIV);
+            sway.setByX(20 * (rnd.nextBoolean() ? 1 : -1));
+            sway.setAutoReverse(true);
+            sway.setCycleCount(Animation.INDEFINITE);
+            sway.play();
+        }));
+        cartasSpawner.setCycleCount(Animation.INDEFINITE);
+        cartasSpawner.play();
+
+        // 4) Lluvia infinita de confeti
+        Color[] paleta = new Color[]{
+                Color.RED, Color.ORANGE, Color.YELLOW,
+                Color.LIME, Color.CYAN, Color.MAGENTA
+        };
+        Timeline confettiSpawner = new Timeline(new KeyFrame(Duration.seconds(0.05), ev -> {
+            Circle confetti = new Circle(4);
+            confetti.setFill(paleta[rnd.nextInt(paleta.length)]);
+
+            double startX = rnd.nextDouble() * sceneWidth;
+            double startY = -20 - rnd.nextDouble() * 100;
+            confetti.setLayoutX(startX);
+            confetti.setLayoutY(startY);
+            celebrationLayer.getChildren().add(0, confetti);
+
+            // Caída continua
+            TranslateTransition ttConf = new TranslateTransition(
+                    Duration.seconds(2 + rnd.nextDouble()), confetti);
+            ttConf.setFromY(0);
+            ttConf.setToY(sceneHeight + 50 - startY);
+            ttConf.setInterpolator(Interpolator.LINEAR);
+            ttConf.setOnFinished(e2 -> celebrationLayer.getChildren().remove(confetti));
+            ttConf.play();
+
+            // Giro infinito
+            RotateTransition rotConf = new RotateTransition(
+                    Duration.seconds(2 + rnd.nextDouble()), confetti);
+            rotConf.setByAngle(360);
+            rotConf.setCycleCount(Animation.INDEFINITE);
+            rotConf.setInterpolator(Interpolator.LINEAR);
+            rotConf.play();
+        }));
+        confettiSpawner.setCycleCount(Animation.INDEFINITE);
+        confettiSpawner.play();
+
+        // 5) Telarañas y arañas: 4 ciclos distribuidos horizontalmente
+        Image spiderImg = new Image(
+                AnimationDepartment.class.getResourceAsStream(
+                        "/cr/ac/una/proyectospider/resources/spiderPoints.png"));
+        Image webImg = new Image(
+                AnimationDepartment.class.getResourceAsStream(
+                        "/cr/ac/una/proyectospider/resources/TelaIcon.png"));
+
+        // Retraso base entre cada telaraña/araña
+        double baseDelay = 0.5; // 0.5 s entre cada ciclo
+
+        for (int i = 0; i < 4; i++) {
+            final int idx = i; // Capturar "i" en variable effectively final
+
+            // --- Configurar telaraña ---
+            ImageView tela = new ImageView(webImg);
+            tela.setFitWidth(180);
+            tela.setPreserveRatio(true);
+            tela.setSmooth(true);
+
+            double telaX = idx * (sceneWidth / 4.0) + (sceneWidth / 8.0) - (tela.getFitWidth() / 2.0);
+            tela.setLayoutX(telaX);
+            tela.setLayoutY(0);
+            tela.setOpacity(0);
+            celebrationLayer.getChildren().add(tela);
+
+            // Forzar layout para obtener altura real
+            tela.applyCss();
+            celebrationLayer.applyCss();
+            celebrationLayer.layout();
+            double fullHeight = tela.getBoundsInLocal().getHeight();
+
+            // --- Configurar araña ---
+            ImageView arana = new ImageView(spiderImg);
+            arana.setFitWidth(120);
+            arana.setPreserveRatio(true);
+            arana.setSmooth(true);
+
+            double aranaX = telaX + (tela.getFitWidth() / 2.0) - (arana.getFitWidth() / 2.0);
+            arana.setLayoutX(aranaX);
+            arana.setLayoutY(-300);
+            arana.setOpacity(0);
+            celebrationLayer.getChildren().add(0, arana);
+
+            // --- Clip para revelar telaraña desde arriba (0 → fullHeight) ---
+            Rectangle revealClip = new Rectangle(0, 0, tela.getFitWidth(), 0);
+            tela.setClip(revealClip);
+            tela.setOpacity(1); // Visible, pero clip inicia con altura=0
+
+            // Timeline para revelar telaraña (0 → fullHeight)
+            Timeline revealWeb = new Timeline(
+                    new KeyFrame(Duration.seconds(0),
+                            new KeyValue(revealClip.heightProperty(), 0)),
+                    new KeyFrame(Duration.seconds(0.7),
+                            new KeyValue(revealClip.heightProperty(), fullHeight, Interpolator.EASE_OUT))
+            );
+            revealWeb.setOnFinished(evt -> tela.setClip(null)); // Quitar clip al terminar
+            revealWeb.setDelay(Duration.seconds(idx * baseDelay));
+
+            // Pausa antes de bajar la araña
+            PauseTransition delayBeforeDrop = new PauseTransition(Duration.seconds(0.4 + idx * 0.4));
+            delayBeforeDrop.setOnFinished(evt -> {
+                arana.setOpacity(1);
+                TranslateTransition bajar = new TranslateTransition(Duration.seconds(2), arana);
+                bajar.setToY(300);
+                bajar.play();
+            });
+
+            // Pausa antes de subir la araña y ocultar la telaraña
+            PauseTransition delayBeforeRise = new PauseTransition(Duration.seconds(3.5 + idx * 0.2));
+            delayBeforeRise.setOnFinished(evt -> {
+                TranslateTransition subir = new TranslateTransition(Duration.seconds(3), arana);
+                subir.setToY(-300);
+                subir.setInterpolator(Interpolator.EASE_BOTH);
+                subir.setOnFinished(e2 -> {
+                    arana.setOpacity(0);
+
+                    // Clip inverso para ocultar telaraña (fullHeight → 0)
+                    Rectangle closeClip = new Rectangle(0, 0, tela.getFitWidth(), fullHeight);
+                    tela.setClip(closeClip);
+
+                    Timeline hideWeb = new Timeline(
+                            new KeyFrame(Duration.ZERO,
+                                    new KeyValue(closeClip.heightProperty(), fullHeight)),
+                            new KeyFrame(Duration.seconds(0.6),
+                                    new KeyValue(closeClip.heightProperty(), 0, Interpolator.EASE_IN))
+                    );
+                    hideWeb.setOnFinished(e3 -> {
+                        tela.setClip(null);
+                        tela.setOpacity(0);
+
+                        // Cuando la última araña termine su ciclo, hacemos fade‐out y quitamos la capa
+                        if (idx == 3) {
+                            cartasSpawner.stop();
+                            confettiSpawner.stop();
+
+                            // 6) Fade‐out de la capa entera (1 → 0) en 1 segundo
+                            FadeTransition fadeOutLayer = new FadeTransition(Duration.seconds(1), celebrationLayer);
+                            fadeOutLayer.setFromValue(1);
+                            fadeOutLayer.setToValue(0);
+                            fadeOutLayer.setInterpolator(Interpolator.EASE_OUT);
+                            fadeOutLayer.setOnFinished(e4 -> {
+                                parent.getChildren().remove(celebrationLayer);
+                                if (onFinished != null) {
+                                    onFinished.run();
+                                }
+                            });
+                            fadeOutLayer.play();
+                        }
+                    });
+                    hideWeb.play();
+                });
+                subir.play();
+            });
+
+            // Secuencia completa: revealWeb → bajar araña → subir araña + ocultar telaraña
+            SequentialTransition ciclo = new SequentialTransition(
+                    revealWeb,
+                    delayBeforeDrop,
+                    delayBeforeRise
+            );
+            ciclo.play();
+        }
+
+        // 7) Label “¡VICTORIA!” en el centro, encima de todo lo demás
+        Font cynatar = Font.loadFont(
+                AnimationDepartment.class.getResourceAsStream("/cr/ac/una/proyectospider/resources/Cynatar.ttf"),
+                150
+        );
+
+        Label lblVictoria = new Label("¡VICTORIA!");
+        lblVictoria.setTextFill(Color.web("#ffc107")); // color dorado
+        lblVictoria.setFont(cynatar);
+        lblVictoria.setTextAlignment(TextAlignment.CENTER);
+        lblVictoria.setOpacity(0);
+        lblVictoria.setScaleX(0.1);
+        lblVictoria.setScaleY(0.1);
+
+        // Efectos de neón, glitch y pulso
+        AnimationDepartment.animateNeonGlow2(lblVictoria);
+        AnimationDepartment.glitchTextWithFlicker(lblVictoria);
+        AnimationDepartment.pulse(lblVictoria, 1.5);
+
+        // Centrar etiqueta
+        lblVictoria.layoutXProperty().bind(
+                parent.widthProperty().divide(2).subtract(lblVictoria.widthProperty().divide(2))
+        );
+        lblVictoria.layoutYProperty().bind(
+                parent.heightProperty().divide(2).subtract(lblVictoria.heightProperty().divide(2))
+        );
+        celebrationLayer.getChildren().add(lblVictoria);
+        lblVictoria.toFront();
+
+        // Fade‐in + Scale‐up del label
+        FadeTransition fade = new FadeTransition(Duration.seconds(1.2), lblVictoria);
+        fade.setFromValue(0);
+        fade.setToValue(1);
+        fade.setInterpolator(Interpolator.EASE_OUT);
+
+        ScaleTransition scaleUp = new ScaleTransition(Duration.seconds(1.2), lblVictoria);
+        scaleUp.setFromX(0.1);
+        scaleUp.setFromY(0.1);
+        scaleUp.setToX(1.0);
+        scaleUp.setToY(1.0);
+        scaleUp.setInterpolator(Interpolator.EASE_OUT);
+
+        new ParallelTransition(fade, scaleUp).play();
     }
 
 

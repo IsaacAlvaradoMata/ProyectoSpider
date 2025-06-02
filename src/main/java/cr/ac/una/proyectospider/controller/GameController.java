@@ -1222,23 +1222,34 @@ public class GameController extends Controller implements Initializable {
         long cartasEnPila = cartasEnJuego.stream()
                 .filter(CartasPartidaDto::getEnPila)
                 .count();
-
         if (cartasEnPila == 104) {
             Platform.runLater(() -> {
+                // 1) Detenemos el temporizador
                 detenerTemporizador();
 
-                javafx.scene.control.Alert alert =
-                        new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.INFORMATION);
-                alert.setTitle("¡Victoria!");
-                alert.setHeaderText(null);
-                alert.setContentText("¡Felicidades! Has ganado el Solitario Spider.");
-                alert.showAndWait();
+                // 2) Invocamos la animación de victoria y le pasamos un callback
+                //    que se ejecutará únicamente cuando toda la animación haya terminado.
+                AnimationDepartment.playVictoryAnimation(spGamebackground, usarEstiloClasico, () -> {
+                    // 3) Este bloque se ejecuta después de que el fade‐out final de la capa de celebración haya concluido.
 
-                primerIngreso = true;
-                cartasEnJuego = null;
-                cartaToImageView.clear();
-                movimientos = 0;
-                puntaje = 500;
+                    // 3.1) Restablecemos banderas y datos para que, si el usuario inicia
+                    //      “Nueva Partida” en adelante, vuelvan a mostrarse las animaciones de entrada.
+                    primerIngreso = true;
+                    cartasEnJuego = null;
+                    cartaToImageView.clear();
+                    movimientos = 0;
+                    puntaje = 500;
+                    tiempoIniciado = false;
+
+                    AnimationDepartment.stopAllAnimations();
+                    AnimationDepartment.glitchFadeOut(spGamebackground, Duration.seconds(1.1), () -> {
+                        FlowController.getInstance().goView("MenuView");
+                        MenuController controller = (MenuController) FlowController.getInstance().getController("MenuView");
+                        controller.RunMenuView();
+
+
+                    });
+                });
             });
             return true;
         }
