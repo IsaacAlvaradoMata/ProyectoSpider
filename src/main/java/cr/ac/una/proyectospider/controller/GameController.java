@@ -563,6 +563,7 @@ public class GameController extends Controller implements Initializable {
         final double SPACING_MAX = 22.0;
         final double SPACING_MIN = 8.0;
         final double ALTURA_CARTA = 100.0; // Aproximado, igual que en dragView
+        final double ALTURA_VISIBLE_MIN = 20.0; // Altura mínima visible para no tapar el número
 
         double spacing;
         if (cantidadCartas <= 7) {
@@ -575,9 +576,11 @@ public class GameController extends Controller implements Initializable {
         // Ajuste para que todas quepan dentro del Pane
         double maxSpacing = (ALTURA_PANE - ALTURA_CARTA) / Math.max(1, cantidadCartas - 1);
         spacing = Math.min(spacing, maxSpacing);
-        spacing = Math.max(SPACING_MIN, spacing);
+        // Nunca permitir que el espaciado sea menor a la altura visible mínima
+        spacing = Math.max(ALTURA_VISIBLE_MIN, spacing);
         return spacing;
     }
+
     // Save carts on the DB
     private void dibujarColumnasYCargarCartasEnTablero() {
         hboxTablero.getChildren().clear();
@@ -1112,15 +1115,39 @@ public class GameController extends Controller implements Initializable {
         int cartasEnColDest = (int) cartasEnJuego.stream()
                 .filter(c -> c.getColumna() == columnaDestino)
                 .count();
-        double desplazamiento = 22;
-        destY = destParentBounds.getMinY() + cartasEnColDest * desplazamiento;
+        int totalCartasDespues = cartasEnColDest + grupo.size();
+        double spacing = calcularEspaciadoVertical(totalCartasDespues);
+
+        // Calcular la posición Y real del primer clon: justo después de la última carta visible
+        double baseY;
+        if (cartasEnColDest > 0) {
+            // Buscar la última carta visible en la columna destino
+            CartasPartidaDto ultima = cartasEnJuego.stream()
+                .filter(c -> c.getColumna() == columnaDestino)
+                .max(Comparator.comparingInt(CartasPartidaDto::getOrden))
+                .orElse(null);
+            if (ultima != null) {
+                ImageView ivUltima = cartaToImageView.get(ultima);
+                if (ivUltima != null) {
+                    javafx.geometry.Bounds b = ivUltima.localToScene(ivUltima.getBoundsInLocal());
+                    javafx.geometry.Bounds pb = spGamebackground.sceneToLocal(b);
+                    baseY = pb.getMinY() + spacing;
+                } else {
+                    baseY = destParentBounds.getMinY() + cartasEnColDest * spacing;
+                }
+            } else {
+                baseY = destParentBounds.getMinY() + cartasEnColDest * spacing;
+            }
+        } else {
+            baseY = destParentBounds.getMinY();
+        }
 
         javafx.animation.ParallelTransition toDest = new javafx.animation.ParallelTransition();
         javafx.animation.ParallelTransition toOrig = new javafx.animation.ParallelTransition();
         for (int i = 0; i < clones.size(); i++) {
             ImageView clone = clones.get(i);
             double targetX = destX;
-            double targetY = destY + i * desplazamiento;
+            double targetY = baseY + i * spacing;
             javafx.animation.TranslateTransition go = new javafx.animation.TranslateTransition(javafx.util.Duration.millis(400), clone);
             go.setToX(targetX - origX.get(i));
             go.setToY(targetY - origY.get(i));
