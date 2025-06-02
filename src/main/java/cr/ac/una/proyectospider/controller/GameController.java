@@ -165,23 +165,42 @@ public class GameController extends Controller implements Initializable {
 
     @FXML
     void onMouseClickedbtnGuardarySalir(MouseEvent event) {
+        System.out.println("🚨 [DEBUG] Iniciando proceso de Guardar y Salir...");
         btnGuardarySalir.setDisable(true);
         AnimationDepartment.stopAllAnimations();
         detenerTemporizador();
         tiempoIniciado = false;
 
-//        ESTO SIGUE ESTANDO IGUAL, SOLO LO COMENTE
+        List<CartasPartidaDto> cartasActuales = obtenerEstadoDelTablero();
+        System.out.println("📦 [DEBUG] Total cartas del tablero: " + cartasActuales.size());
 
-//        List<CartasPartidaDto> cartasActuales = obtenerEstadoDelTablero();
+        partidaDto.setEstado("PAUSADA");
+        partidaDto.setFechaFin(new Date());
+        System.out.println("🕒 [DEBUG] Estado de la partida: " + partidaDto.getEstado());
+        System.out.println("🕒 [DEBUG] Fecha fin de partida: " + partidaDto.getFechaFin());
 
-//        // Marcar partida como pausada
-//        partidaDto.setEstado("PAUSADA");
-//        partidaDto.setFechaFin(new Date());
-//
-//        boolean exito = new PartidaService().guardarPartidaCompleta(partidaDto, cartasActuales);
-//        if (!exito) {
-//            System.err.println("❌ No se pudo guardar la partida al salir.");
-//        }
+        PartidaService partidaService = new PartidaService();
+
+        if (partidaDto.getIdPartida() == null) {
+            System.out.println("🆕 [DEBUG] Partida sin ID, se procederá a crearla...");
+            PartidaDto nuevaPartida = partidaService.crearPartida(partidaDto);
+            if (nuevaPartida == null) {
+                System.err.println("❌ No se pudo crear la partida.");
+                btnGuardarySalir.setDisable(false);
+                return;
+            }
+            partidaDto = nuevaPartida;
+        }
+
+        for (CartasPartidaDto carta : cartasActuales) {
+            carta.setPartida(partidaDto);
+            System.out.println("🧩 [DEBUG] Asignando ID_PARTIDA a carta: " + carta.getOrden() + " ➜ " + partidaDto.getIdPartida());
+        }
+
+        boolean exito = partidaService.guardarPartidaCompleta(partidaDto, cartasActuales);
+        if (!exito) {
+            System.err.println("❌ [ERROR] No se pudo guardar la partida completa.");
+        }
 
         cartasEnJuego = null;
         cartaToImageView.clear();
@@ -189,15 +208,13 @@ public class GameController extends Controller implements Initializable {
         puntaje = 500;
 
         AnimationDepartment.glitchFadeOut(spGamebackground, Duration.seconds(1.1), () -> {
-        FlowController.getInstance().goView("MenuView");
-        MenuController controller = (MenuController) FlowController.getInstance().getController("MenuView");
-        controller.RunMenuView();
+            FlowController.getInstance().goView("MenuView");
+            MenuController controller = (MenuController) FlowController.getInstance().getController("MenuView");
+            controller.RunMenuView();
 
-        Platform.runLater(() -> btnGuardarySalir.setDisable(false));
+            Platform.runLater(() -> btnGuardarySalir.setDisable(false));
         });
     }
-
-
 
     @FXML
     void oMouseClickedbtnPista(MouseEvent event) {

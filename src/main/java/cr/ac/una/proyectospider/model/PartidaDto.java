@@ -41,7 +41,11 @@ public class PartidaDto {
         this.version = partida.getVersion();
     }
 
-    public Partida toEntity() {
+    /**
+     * ⚠️ Método inseguro: No incluye Jugador.
+     * Úsalo solo si el jugador se seteará aparte en el servicio.
+     */
+    public Partida toEntitySinJugador() {
         Partida partida = new Partida();
         partida.setIdPartida(this.getIdPartida());
         partida.setFechaInicio(this.getFechaInicio());
@@ -54,12 +58,17 @@ public class PartidaDto {
         return partida;
     }
 
-    // Nuevo método alineado con el constructor Partida(PartidaDto dto)
-    public Partida toEntitySinJugador() {
-        return new Partida(this);
+    /**
+     * ✅ Método seguro que incluye Jugador.
+     * Úsalo cuando necesites la entidad completa.
+     */
+    public Partida toEntityConJugador(Jugador jugadorEntity) {
+        Partida partida = toEntitySinJugador();
+        partida.setJugador(jugadorEntity);
+        return partida;
     }
 
-    // Properties JavaFX
+    // JavaFX Properties
     public ObjectProperty<Long> idPartidaProperty() { return idPartida; }
     public ObjectProperty<Date> fechaInicioProperty() { return fechaInicio; }
     public ObjectProperty<Date> fechaFinProperty() { return fechaFin; }
@@ -69,7 +78,7 @@ public class PartidaDto {
     public StringProperty dificultadProperty() { return dificultad; }
     public ObjectProperty<JugadorDto> jugadorProperty() { return jugador; }
 
-    // Getters normales
+    // Getters
     public Long getIdPartida() { return idPartida.get(); }
     public Date getFechaInicio() { return fechaInicio.get(); }
     public Date getFechaFin() { return fechaFin.get(); }
@@ -79,39 +88,17 @@ public class PartidaDto {
     public String getDificultad() { return dificultad.get(); }
     public JugadorDto getJugador() { return jugador.get(); }
     public Long getVersion() { return version; }
-    public void setVersion(Long version) { this.version = version; }
 
-    // Setters normales
+    // Setters
     public void setIdPartida(Long id) { this.idPartida.set(id); }
-
-    public void setFechaInicio(Date fechaInicio) {
-        this.fechaInicio.set(fechaInicio);
-    }
-
-    public void setFechaFin(Date fechaFin) {
-        this.fechaFin.set(fechaFin);
-    }
-
-    public void setPuntos(Integer puntos) {
-        this.puntos.set(puntos);
-    }
-
-    public void setTiempoJugado(Integer tiempoJugado) {
-        this.tiempoJugado.set(tiempoJugado);
-    }
-
-    public void setEstado(String estado) {
-        this.estado.set(estado);
-    }
-
-    public void setDificultad(String dificultad) {
-        this.dificultad.set(dificultad);
-    }
-
-    public void setJugador(JugadorDto jugador) {
-        this.jugador.set(jugador);
-    }
-
+    public void setFechaInicio(Date fechaInicio) { this.fechaInicio.set(fechaInicio); }
+    public void setFechaFin(Date fechaFin) { this.fechaFin.set(fechaFin); }
+    public void setPuntos(Integer puntos) { this.puntos.set(puntos); }
+    public void setTiempoJugado(Integer tiempoJugado) { this.tiempoJugado.set(tiempoJugado); }
+    public void setEstado(String estado) { this.estado.set(estado); }
+    public void setDificultad(String dificultad) { this.dificultad.set(dificultad); }
+    public void setJugador(JugadorDto jugador) { this.jugador.set(jugador); }
+    public void setVersion(Long version) { this.version = version; }
 
     @Override
     public boolean equals(Object o) {

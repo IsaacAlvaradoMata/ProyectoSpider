@@ -47,10 +47,12 @@ public class CartasPartidaDto {
         }
     }
 
+    // ❌ Método desactivado para evitar error de clave foránea
     public CartasPartida toEntity() {
-        return toEntity(partida.get() != null ? partida.get().toEntity() : null);
+        throw new IllegalStateException("⚠️ No usar toEntity() sin referencia de Partida gestionada. Usa toEntity(Partida partidaRef).");
     }
 
+    // ✅ Método recomendado
     public CartasPartida toEntity(Partida partidaRef) {
         CartasPartida entity = new CartasPartida();
         entity.setIdCartaPartida(this.idCartaPartida.get());
@@ -63,7 +65,7 @@ public class CartasPartidaDto {
         entity.setEnPila(this.enPila.get());
         entity.setRetirada(this.retirada.get());
         entity.setVersion(this.version);
-        entity.setPartida(partidaRef);
+        entity.setPartida(partidaRef); // ⚠️ clave foránea segura
         return entity;
     }
 

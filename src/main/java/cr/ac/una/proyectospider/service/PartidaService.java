@@ -12,26 +12,20 @@ public class PartidaService {
 
     public PartidaDto crearPartida(PartidaDto partidaDto) {
         EntityManager em = emf.createEntityManager();
-        EntityTransaction tx = em.getTransaction();
         try {
-            tx.begin();
+            em.getTransaction().begin();
 
             Partida partida = partidaDto.toEntitySinJugador();
-
-            // 🛡️ Validar jugador no nulo
-            if (partidaDto.getJugador() == null || partidaDto.getJugador().getIdJugador() == null) {
-                throw new IllegalStateException("Jugador no asignado a la partida.");
-            }
-
             Jugador jugadorRef = em.getReference(Jugador.class, partidaDto.getJugador().getIdJugador());
             partida.setJugador(jugadorRef);
 
             em.persist(partida);
-            tx.commit();
+            em.flush(); // 🔐 asegura ID_PARTIDA generado
+            em.getTransaction().commit();
 
             return new PartidaDto(partida);
         } catch (Exception e) {
-            if (tx.isActive()) tx.rollback();
+            if (em.getTransaction().isActive()) em.getTransaction().rollback();
             System.err.println("❌ Error al crear partida: " + e.getMessage());
             return null;
         } finally {
@@ -41,36 +35,43 @@ public class PartidaService {
 
     public boolean guardarPartidaCompleta(PartidaDto partidaDto, List<CartasPartidaDto> cartas) {
         EntityManager em = emf.createEntityManager();
-        EntityTransaction tx = em.getTransaction();
-
         try {
-            tx.begin();
-
-            // 🛡️ Validar jugador
-            if (partidaDto.getJugador() == null || partidaDto.getJugador().getIdJugador() == null) {
-                throw new IllegalStateException("Jugador no asignado a la partida.");
-            }
+            System.out.println("🔍 [DEBUG] Iniciando guardado completo de partida...");
+            em.getTransaction().begin();
 
             Partida partida = partidaDto.toEntitySinJugador();
             Jugador jugadorRef = em.getReference(Jugador.class, partidaDto.getJugador().getIdJugador());
             partida.setJugador(jugadorRef);
 
-            // Guardar partida primero
-            em.persist(partida);
-            em.flush(); // Asegura que tenga ID antes de insertar cartas
+            Partida managed;
 
-            // Guardar cartas asociadas
-            for (CartasPartidaDto cartaDto : cartas) {
-                CartasPartida carta = cartaDto.toEntity();
-                carta.setPartida(partida);
+            if (partidaDto.getIdPartida() == null) {
+                em.persist(partida);
+                em.flush(); // 🔥 Sincroniza con DB y obtiene el ID real
+                partidaDto.setIdPartida(partidaDto.getIdPartida());
+                System.out.println("🎯 [DEBUG] Partida NUEVA persistida con ID real: " + partidaDto.getIdPartida());
+                managed = partida;
+            } else {
+                managed = em.merge(partida);
+                System.out.println("♻️ [DEBUG] Partida EXISTENTE mergeada con ID: " + managed.getIdPartida());
+            }
+
+            System.out.println("🧹 [DEBUG] Eliminando cartas antiguas para ID_PARTIDA: " + managed.getIdPartida());
+            em.createQuery("DELETE FROM CartasPartida c WHERE c.partida.idPartida = :idPartida")
+                    .setParameter("idPartida", managed.getIdPartida())
+                    .executeUpdate();
+
+            for (CartasPartidaDto dto : cartas) {
+                System.out.println("🃏 [DEBUG] Insertando carta con orden: " + dto.getOrden() + " y valor: " + dto.getValor());
+                CartasPartida carta = dto.toEntity(managed); // usar partida gestionada
                 em.persist(carta);
             }
 
-            tx.commit();
+            em.getTransaction().commit();
             return true;
         } catch (Exception e) {
-            if (tx.isActive()) tx.rollback();
-            System.err.println("❌ Error al guardar partida completa: " + e.getMessage());
+            if (em.getTransaction().isActive()) em.getTransaction().rollback();
+            System.err.println("❌ [ERROR] Error al guardar partida completa: " + e);
             return false;
         } finally {
             em.close();
@@ -115,9 +116,8 @@ public class PartidaService {
 
     public boolean actualizarPartida(PartidaDto partidaDto) {
         EntityManager em = emf.createEntityManager();
-        EntityTransaction tx = em.getTransaction();
         try {
-            tx.begin();
+            em.getTransaction().begin();
             Partida partida = em.find(Partida.class, partidaDto.getIdPartida());
             if (partida == null) return false;
 
@@ -129,10 +129,10 @@ public class PartidaService {
             partida.setVersion(partidaDto.getVersion());
 
             em.merge(partida);
-            tx.commit();
+            em.getTransaction().commit();
             return true;
         } catch (Exception e) {
-            if (tx.isActive()) tx.rollback();
+            if (em.getTransaction().isActive()) em.getTransaction().rollback();
             System.err.println("❌ Error al actualizar partida: " + e.getMessage());
             return false;
         } finally {
@@ -142,18 +142,17 @@ public class PartidaService {
 
     public boolean eliminarPartida(Long idPartida) {
         EntityManager em = emf.createEntityManager();
-        EntityTransaction tx = em.getTransaction();
         try {
-            tx.begin();
+            em.getTransaction().begin();
             Partida partida = em.find(Partida.class, idPartida);
             if (partida != null) {
                 em.remove(partida);
-                tx.commit();
+                em.getTransaction().commit();
                 return true;
             }
             return false;
         } catch (Exception e) {
-            if (tx.isActive()) tx.rollback();
+            if (em.getTransaction().isActive()) em.getTransaction().rollback();
             System.err.println("❌ Error al eliminar partida: " + e.getMessage());
             return false;
         } finally {

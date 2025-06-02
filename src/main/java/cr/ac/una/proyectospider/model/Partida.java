@@ -20,11 +20,10 @@ import java.util.List;
 public class Partida implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
+    
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "PARTIDA_SEQ")
     @SequenceGenerator(name = "PARTIDA_SEQ", sequenceName = "SPIDER.SEQ_PARTIDA", allocationSize = 1)
-    @Basic(optional = false)
     @Column(name = "ID_PARTIDA")
     private Long idPartida;
 
