@@ -7,7 +7,7 @@ import cr.ac.una.proyectospider.util.AnimationDepartment;
 import cr.ac.una.proyectospider.util.AppContext;
 import cr.ac.una.proyectospider.util.FlowController;
 import cr.ac.una.proyectospider.util.MazoGenerator;
-import cr.ac.una.proyectospider.util.SoundUtil;
+
 import javafx.animation.*;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
