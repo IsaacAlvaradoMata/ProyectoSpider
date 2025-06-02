@@ -7,6 +7,7 @@ import cr.ac.una.proyectospider.util.AnimationDepartment;
 import cr.ac.una.proyectospider.util.AppContext;
 import cr.ac.una.proyectospider.util.FlowController;
 import cr.ac.una.proyectospider.util.MazoGenerator;
+import cr.ac.una.proyectospider.util.SoundUtil;
 import javafx.animation.*;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -286,6 +287,7 @@ public class GameController extends Controller implements Initializable {
         }
 
         // — Reset temporizador si no se ha iniciado —
+        // ��� Reset temporizador si no se ha iniciado —
         if (!tiempoIniciado) {
             segundosTranscurridos = 0;
             actualizarLabelTiempo();
