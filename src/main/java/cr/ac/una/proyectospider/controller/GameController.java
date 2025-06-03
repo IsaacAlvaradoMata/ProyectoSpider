@@ -7,6 +7,7 @@ import cr.ac.una.proyectospider.util.AnimationDepartment;
 import cr.ac.una.proyectospider.util.AppContext;
 import cr.ac.una.proyectospider.util.FlowController;
 import cr.ac.una.proyectospider.util.MazoGenerator;
+import cr.ac.una.proyectospider.util.SoundDepartment;
 
 import javafx.animation.*;
 import javafx.application.Platform;
@@ -705,10 +706,9 @@ public class GameController extends Controller implements Initializable {
                         cartasSeleccionadas.clear();
                         List<CartasPartidaDto> grupo = obtenerGrupoDesde(carta);
                         cartasSeleccionadas.addAll(grupo);
-
-                        // AUTÓMOVE: buscar destino y mover
                         int destino = buscarMejorDestinoAutoMove(grupo);
                         if (destino != -1) {
+                            SoundDepartment.playFlip();
                             int colAnterior = carta.getColumna();
                             int ordenAnterior = carta.getOrden();
                             moverCartasSeleccionadas(destino);
@@ -721,6 +721,7 @@ public class GameController extends Controller implements Initializable {
                             dibujarColumnasYCargarCartasEnTablero();
                             actualizarVistaDelMazoYPilas();
                         } else {
+                            SoundDepartment.playError();
                             for (CartasPartidaDto c2 : cartaToImageView.keySet()) {
                                 // Si no hay destino válido: shake grupo
                             }
@@ -739,7 +740,7 @@ public class GameController extends Controller implements Initializable {
                         cartasSeleccionadas.addAll(obtenerGrupoDesde(carta));
                         cartasArrastradas.clear();
                         cartasArrastradas.addAll(cartasSeleccionadas);
-
+                        SoundDepartment.playFlip();
                         Dragboard db = img.startDragAndDrop(TransferMode.MOVE);
                         ClipboardContent content = new ClipboardContent();
                         content.putString(carta.getIdCartaPartida().toString());
