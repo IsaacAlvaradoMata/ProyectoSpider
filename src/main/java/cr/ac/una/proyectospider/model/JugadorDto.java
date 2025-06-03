@@ -76,6 +76,9 @@ public class JugadorDto {
     public Long getIdJugador() {
         return idJugador.get();
     }
+    public String getNombreUsuario() {
+        return nombreUsuario.get();
+    }
 
     @Override
     public boolean equals(Object o) {

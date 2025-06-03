@@ -1,6 +1,7 @@
 package cr.ac.una.proyectospider.controller;
 
 import cr.ac.una.proyectospider.model.CartasPartidaDto;
+import cr.ac.una.proyectospider.model.JugadorDto;
 import cr.ac.una.proyectospider.model.PartidaDto;
 import cr.ac.una.proyectospider.service.PartidaService;
 import cr.ac.una.proyectospider.util.AnimationDepartment;
@@ -86,7 +87,6 @@ public class GameController extends Controller implements Initializable {
     private ImageView btnUndo;
     @FXML
     private ImageView btnRendirse;
-
 
     private List<CartasPartidaDto> cartasEnJuego;
     private List<CartasPartidaDto> cartasSeleccionadas = new ArrayList<>();
@@ -204,12 +204,13 @@ public class GameController extends Controller implements Initializable {
 
         // 🧠 Agregar puntos y tiempo actual antes de guardar
         partidaDto.setPuntos(puntaje);
-        partidaDto.setTiempoJugado(segundosTranscurridos / 60); // En minutos
+        partidaDto.setTiempoJugado(segundosTranscurridos);
 
         System.out.println("🕒 [DEBUG] Estado de la partida: " + partidaDto.getEstado());
         System.out.println("🕒 [DEBUG] Fecha fin de partida: " + partidaDto.getFechaFin());
         System.out.println("🎯 [DEBUG] Puntaje final: " + partidaDto.getPuntos());
-        System.out.println("⏱️ [DEBUG] Tiempo jugado (min): " + partidaDto.getTiempoJugado());
+        System.out.println("⏱️ [DEBUG] Tiempo jugado (min:seg): " +
+                String.format("%02d:%02d", segundosTranscurridos / 60, segundosTranscurridos % 60));
 
         PartidaService partidaService = new PartidaService();
 
@@ -248,6 +249,17 @@ public class GameController extends Controller implements Initializable {
         });
     }
 
+    private void mostrarNombreJugador() {
+        JugadorDto jugador = (JugadorDto) AppContext.getInstance().get("jugador");
+        if (jugador != null && jugador.getNombreUsuario() != null) {
+            lblNombreJugador.setText("NOMBRE DE JUGADOR: " + jugador.getNombreUsuario().toUpperCase());
+            System.out.println("✅ Jugador mostrado en pantalla: " + jugador.getNombreUsuario());
+        } else {
+            lblNombreJugador.setText("NOMBRE DE JUGADOR: INVÁLIDO");
+            System.err.println("⚠️ [ERROR] Jugador no encontrado o sin nombre.");
+        }
+    }
+
     @FXML
     void oMouseClickedbtnPista(MouseEvent event) {
         SoundDepartment.playHint();
@@ -266,6 +278,12 @@ public class GameController extends Controller implements Initializable {
         this.partidaDto = partidaDto;
         ResetGameView();
 
+        // ⚡ Forzar set del jugador en AppContext si viene desde la partida
+        if (partidaDto.getJugador() != null) {
+            AppContext.getInstance().set("jugador", partidaDto.getJugador());
+        }
+
+        mostrarNombreJugador();
         // — Fondo general “GameBackground.gif” —
         if (!spGamebackground.getChildren().contains(imgBackgroundGame)) {
             spGamebackground.getChildren().add(0, imgBackgroundGame);
