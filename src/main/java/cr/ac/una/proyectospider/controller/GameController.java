@@ -13,6 +13,8 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
@@ -1493,22 +1495,38 @@ public class GameController extends Controller implements Initializable {
 
     @FXML
     void onMouseClickedbtnRendirse(MouseEvent event) {
+        // Deshabilitamos el botón para evitar múltiples clics mientras aparece el diálogo
         btnRendirse.setDisable(true);
-        AnimationDepartment.stopAllAnimations();
-        detenerTemporizador();
-        primerIngreso = true;
-        cartasEnJuego = null;
-        cartaToImageView.clear();
-        movimientos = 0;
-        puntaje = 500;
-        tiempoIniciado = false;
 
-        AnimationDepartment.glitchFadeOut(spGamebackground, Duration.seconds(1.1), () -> {
-            FlowController.getInstance().goView("MenuView");
-            MenuController controller = (MenuController) FlowController.getInstance().getController("MenuView");
-            controller.RunMenuView();
-            Platform.runLater(() -> btnRendirse.setDisable(false));
+        // Creamos un Alert de confirmación
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
+        confirm.setTitle("Confirmar Rendirse");
+        confirm.setHeaderText("¿Estás seguro de que deseas rendirte?");
+        confirm.setContentText("Si te rindes, la partida se descartará y volverás al menú.");
 
-        });
+        // Mostramos el diálogo y esperamos la respuesta
+        Optional<ButtonType> respuesta = confirm.showAndWait();
+        if (respuesta.isPresent() && respuesta.get() == ButtonType.OK) {
+            // El usuario confirmó. Ejecutamos el flujo de "rendirse" tal cual:
+            AnimationDepartment.stopAllAnimations();
+            detenerTemporizador();
+            primerIngreso = true;
+            cartasEnJuego = null;
+            cartaToImageView.clear();
+            movimientos = 0;
+            puntaje = 500;
+            tiempoIniciado = false;
+
+            AnimationDepartment.glitchFadeOut(spGamebackground, Duration.seconds(1.1), () -> {
+                FlowController.getInstance().goView("MenuView");
+                MenuController controller = (MenuController) FlowController.getInstance().getController("MenuView");
+                controller.RunMenuView();
+                Platform.runLater(() -> btnRendirse.setDisable(false));
+            });
+        } else {
+            // El usuario canceló; simplemente re‐habilitamos el botón y no hacemos nada más.
+            btnRendirse.setDisable(false);
+        }
     }
+
 }
