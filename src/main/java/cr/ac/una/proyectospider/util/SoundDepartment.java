@@ -7,6 +7,8 @@ public class SoundDepartment {
     private static MediaPlayer flipPlayer;
     private static MediaPlayer errorPlayer;
     private static MediaPlayer hintPlayer;
+    private static MediaPlayer undoPlayer;
+        private static MediaPlayer undoAllPlayer;
 
     public static void playFlip() {
         try {
@@ -59,6 +61,42 @@ public class SoundDepartment {
             hintPlayer.play();
         } catch (Exception e) {
             System.err.println("[SoundDepartment] Could not play hint sound: " + e.getMessage());
+        }
+    }
+
+    public static void playUndo() {
+        try {
+            var url = SoundDepartment.class.getResource("/cr/ac/una/proyectospider/resources/undo.mp3");
+            if (url == null) {
+                System.err.println("[SoundDepartment] undo.mp3 not found in resources. No undo sound will be played.");
+                return;
+            }
+            if (undoPlayer != null) {
+                undoPlayer.stop();
+            }
+            Media sound = new Media(url.toExternalForm());
+            undoPlayer = new MediaPlayer(sound);
+            undoPlayer.play();
+        } catch (Exception e) {
+            System.err.println("[SoundDepartment] Could not play undo sound: " + e.getMessage());
+        }
+    }
+
+    public static void playUndoAll() {
+        try {
+            var url = SoundDepartment.class.getResource("/cr/ac/una/proyectospider/resources/undoall.mp3");
+            if (url == null) {
+                System.err.println("[SoundDepartment] undoall.mp3 not found in resources. No undoall sound will be played.");
+                return;
+            }
+            if (undoAllPlayer != null) {
+                undoAllPlayer.stop();
+            }
+            Media sound = new Media(url.toExternalForm());
+            undoAllPlayer = new MediaPlayer(sound);
+            undoAllPlayer.play();
+        } catch (Exception e) {
+            System.err.println("[SoundDepartment] Could not play undoall sound: " + e.getMessage());
         }
     }
 }

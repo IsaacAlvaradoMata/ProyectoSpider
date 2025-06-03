@@ -121,6 +121,41 @@ public class GameController extends Controller implements Initializable {
     private PartidaDto partidaDto;
     public boolean primerIngreso = true;
 
+    private Deque<Movimiento> historialMovimientos = new ArrayDeque<>();
+
+    private static class Movimiento {
+        enum Tipo { MOVER, REPARTIR }
+        Tipo tipo;
+        List<CartasPartidaDto> cartasMovidas;
+        List<Integer> columnasOrigen;
+        List<Integer> ordenesOrigen;
+        List<Boolean> bocasArribaOrigen;
+        List<Integer> columnasDestino;
+        List<Integer> ordenesDestino;
+        List<Boolean> bocasArribaDestino;
+        // Para repartir
+        List<CartasPartidaDto> cartasRepartidas;
+        List<Integer> columnasRepartidas;
+        List<Integer> ordenesRepartidas;
+        // Para carta volteada debajo
+        CartasPartidaDto cartaDebajoVolteada;
+        Boolean cartaDebajoVolteadaEstadoAnterior;
+        Movimiento(Tipo tipo) {
+            this.tipo = tipo;
+            cartasMovidas = new ArrayList<>();
+            columnasOrigen = new ArrayList<>();
+            ordenesOrigen = new ArrayList<>();
+            bocasArribaOrigen = new ArrayList<>();
+            columnasDestino = new ArrayList<>();
+            ordenesDestino = new ArrayList<>();
+            bocasArribaDestino = new ArrayList<>();
+            cartasRepartidas = new ArrayList<>();
+            columnasRepartidas = new ArrayList<>();
+            ordenesRepartidas = new ArrayList<>();
+            cartaDebajoVolteada = null;
+            cartaDebajoVolteadaEstadoAnterior = null;
+        }
+    }
 
     private static class MovimientoSugerido {
         List<CartasPartidaDto> grupo;
@@ -550,6 +585,7 @@ public class GameController extends Controller implements Initializable {
         }
 
         // Repartir una carta a cada columna
+        List<CartasPartidaDto> cartasRepartidas = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
             final int cIndex = i;  // index “efectivamente final” para usar en lambda
             int nuevoOrden = cartasEnJuego.stream()
@@ -563,7 +599,10 @@ public class GameController extends Controller implements Initializable {
             carta.setColumna(cIndex);
             carta.setOrden(nuevoOrden);
             carta.setBocaArriba(true);
+            cartasRepartidas.add(carta);
         }
+
+        guardarMovimientoRepartir(cartasRepartidas);
 
         // Verificar si se completa alguna secuencia tras repartir
         verificarSecuenciaCompleta();
@@ -900,6 +939,7 @@ public class GameController extends Controller implements Initializable {
     }
 
     private void moverCartasSeleccionadas(int nuevaColumna) {
+        guardarMovimientoMover(new ArrayList<>(cartasSeleccionadas), nuevaColumna);
         iniciarTemporizadorSiEsNecesario();
         movimientos++;
         puntaje = Math.max(0, puntaje - 1);
@@ -948,6 +988,17 @@ public class GameController extends Controller implements Initializable {
                     carta.getColumna(), carta.getOrden());
         }
 
+        // Voltear carta debajo en la columna origen, si existe
+        CartasPartidaDto cartaOrigen = cartasSeleccionadas.get(0);
+        int colAnterior = cartaOrigen.getColumna();
+        int ordenAnterior = cartaOrigen.getOrden();
+        CartasPartidaDto cartaDebajo = cartasEnJuego.stream()
+                .filter(c -> c.getColumna() == colAnterior && c.getOrden() == ordenAnterior - 1)
+                .findFirst().orElse(null);
+        if (cartaDebajo != null) {
+            cartaDebajo.setBocaArriba(true);
+        }
+
         lblMovimientos.setText("" + movimientos);
         lblPuntaje.setText("" + puntaje);
 
@@ -955,6 +1006,95 @@ public class GameController extends Controller implements Initializable {
 
         // Verificar si se ha completado una secuencia después del movimiento
         verificarSecuenciaCompleta();
+    }
+
+    private void guardarMovimientoMover(List<CartasPartidaDto> cartas, int columnaDestino) {
+        Movimiento mov = new Movimiento(Movimiento.Tipo.MOVER);
+        for (CartasPartidaDto carta : cartas) {
+            mov.cartasMovidas.add(carta);
+            mov.columnasOrigen.add(carta.getColumna());
+            mov.ordenesOrigen.add(carta.getOrden());
+            mov.bocasArribaOrigen.add(carta.getBocaArriba());
+        }
+        int nuevoOrden = cartasEnJuego.stream()
+                .filter(c -> c.getColumna() == columnaDestino)
+                .mapToInt(CartasPartidaDto::getOrden)
+                .max().orElse(-1) + 1;
+        for (int i = 0; i < cartas.size(); i++) {
+            mov.columnasDestino.add(columnaDestino);
+            mov.ordenesDestino.add(nuevoOrden + i);
+            mov.bocasArribaDestino.add(true);
+        }
+        // Guardar carta debajo que podría voltearse
+        CartasPartidaDto cartaOrigen = cartas.get(0);
+        int colAnterior = cartaOrigen.getColumna();
+        int ordenAnterior = cartaOrigen.getOrden();
+        CartasPartidaDto cartaDebajo = cartasEnJuego.stream()
+                .filter(c -> c.getColumna() == colAnterior && c.getOrden() == ordenAnterior - 1)
+                .findFirst().orElse(null);
+        if (cartaDebajo != null) {
+            mov.cartaDebajoVolteada = cartaDebajo;
+            mov.cartaDebajoVolteadaEstadoAnterior = cartaDebajo.getBocaArriba();
+        }
+        historialMovimientos.push(mov);
+    }
+
+    private void guardarMovimientoRepartir(List<CartasPartidaDto> cartas) {
+        Movimiento mov = new Movimiento(Movimiento.Tipo.REPARTIR);
+        for (CartasPartidaDto carta : cartas) {
+            mov.cartasRepartidas.add(carta);
+            mov.columnasRepartidas.add(carta.getColumna());
+            mov.ordenesRepartidas.add(carta.getOrden());
+        }
+        historialMovimientos.push(mov);
+    }
+
+    private void deshacerUltimoMovimiento() {
+        if (historialMovimientos.isEmpty()) return;
+        Movimiento mov = historialMovimientos.pop();
+        if (mov.tipo == Movimiento.Tipo.MOVER) {
+            for (int i = 0; i < mov.cartasMovidas.size(); i++) {
+                CartasPartidaDto carta = mov.cartasMovidas.get(i);
+                carta.setColumna(mov.columnasOrigen.get(i));
+                carta.setOrden(mov.ordenesOrigen.get(i));
+                carta.setBocaArriba(mov.bocasArribaOrigen.get(i));
+            }
+            // Restaurar carta debajo si fue volteada
+            if (mov.cartaDebajoVolteada != null && mov.cartaDebajoVolteadaEstadoAnterior != null) {
+                mov.cartaDebajoVolteada.setBocaArriba(mov.cartaDebajoVolteadaEstadoAnterior);
+            }
+            movimientos = Math.max(0, movimientos - 1);
+            puntaje = Math.max(0, puntaje - 1); // Resta 1 punto por undo
+        } else if (mov.tipo == Movimiento.Tipo.REPARTIR) {
+            for (int i = 0; i < mov.cartasRepartidas.size(); i++) {
+                CartasPartidaDto carta = mov.cartasRepartidas.get(i);
+                carta.setEnMazo(true);
+                carta.setColumna(-1);
+                carta.setOrden(-1);
+                carta.setBocaArriba(false);
+            }
+            movimientos = Math.max(0, movimientos - 1);
+            puntaje = Math.max(0, puntaje - 1); // Resta 1 punto por undo
+        }
+        lblMovimientos.setText("" + movimientos);
+        lblPuntaje.setText("" + puntaje);
+        dibujarColumnasYCargarCartasEnTablero();
+        actualizarVistaDelMazoYPilas();
+    }
+
+    @FXML
+    private void onMouseClickedbtnUndoAll(MouseEvent event) {
+        SoundDepartment.playUndoAll();
+        while (!historialMovimientos.isEmpty()) {
+            deshacerUltimoMovimiento();
+        }
+        // No ajustar puntaje extra aquí, ya se resta correctamente en deshacerUltimoMovimiento()
+    }
+
+    @FXML
+    private void onMouseClickedbtnUndo(MouseEvent event) {
+        SoundDepartment.playUndo();
+        deshacerUltimoMovimiento();
     }
 
     private boolean esGrupoValido(List<CartasPartidaDto> grupo) {
@@ -1364,14 +1504,6 @@ public class GameController extends Controller implements Initializable {
                 .forEach(cartasActuales::add);
 
         return cartasActuales;
-    }
-
-    @FXML
-    private void onMouseClickedbtnUndoAll(MouseEvent event) {
-    }
-
-    @FXML
-    private void onMouseClickedbtnUndo(MouseEvent event) {
     }
 }
 
