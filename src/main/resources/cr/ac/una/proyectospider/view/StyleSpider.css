@@ -502,6 +502,10 @@
     -fx-image: url('../resources/btnUndoAll.png');
 }
 
+#btnRendirse {
+    -fx-image: url('../resources/btnRendirse.png');
+}
+
 
 
 

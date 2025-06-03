@@ -30,6 +30,11 @@
                               <Label fx:id="lblMovimientos1" layoutX="50.0" layoutY="41.0" prefHeight="23.0" prefWidth="178.0" styleClass="label-subtitle-menu" text="MOVIMIENTOS:" />
                               <Label fx:id="lblMovimientos" layoutX="454.0" layoutY="38.0" styleClass="label-subtitle-game" text="MOVIMIENTOS:" />
                               <Pane maxHeight="-Infinity" maxWidth="1.7976931348623157E308" prefHeight="70.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
+                              <ImageView fx:id="btnRendirse" fitHeight="50.0" fitWidth="50.0" layoutX="1173.0" layoutY="24.0" onMouseClicked="#onMouseClickedbtnRendirse" pickOnBounds="true" preserveRatio="true" styleClass="neon-image-button">
+                                 <HBox.margin>
+                                    <Insets right="35.0" />
+                                 </HBox.margin>
+                              </ImageView>
                               <ImageView fx:id="btnUndoAll" fitHeight="50.0" fitWidth="50.0" layoutX="1421.0" layoutY="24.0" onMouseClicked="#onMouseClickedbtnUndoAll" pickOnBounds="true" preserveRatio="true" styleClass="neon-image-button">
                                  <HBox.margin>
                                     <Insets right="35.0" />

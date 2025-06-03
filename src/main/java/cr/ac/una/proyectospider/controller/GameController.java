@@ -82,6 +82,9 @@ public class GameController extends Controller implements Initializable {
     private ImageView btnUndoAll;
     @FXML
     private ImageView btnUndo;
+    @FXML
+    private ImageView btnRendirse;
+
 
     private List<CartasPartidaDto> cartasEnJuego;
     private List<CartasPartidaDto> cartasSeleccionadas = new ArrayList<>();
@@ -395,6 +398,9 @@ public class GameController extends Controller implements Initializable {
             AnimationDepartment.animateNeonGlow(btnPista);
             AnimationDepartment.animateNeonGlow(btnUndoAll);
             AnimationDepartment.animateNeonGlow(btnUndo);
+            AnimationDepartment.slideFromRight(btnRendirse, Duration.ZERO);
+            AnimationDepartment.animateNeonGlow(btnRendirse);
+
 
         });
         t4.play();
@@ -498,6 +504,9 @@ public class GameController extends Controller implements Initializable {
 
         btnGuardarySalir.setOpacity(0);
         btnGuardarySalir.setTranslateY(0);
+
+        btnRendirse.setOpacity(0);
+        btnRendirse.setTranslateY(0);
 
         imgSpider1.setOpacity(0);
         imgSpider1.setTranslateX(0);
@@ -1476,5 +1485,11 @@ public class GameController extends Controller implements Initializable {
                 .filter(c -> c.getEnPila())
                 .forEach(cartasActuales::add);
         return cartasActuales;
+    }
+
+
+    @FXML
+    void onMouseClickedbtnRendirse(MouseEvent event) {
+
     }
 }
