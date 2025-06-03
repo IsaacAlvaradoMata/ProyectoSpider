@@ -101,6 +101,10 @@ public class GameController extends Controller implements Initializable {
     private ImageView imgSpider1;
     @FXML
     private ImageView imgSpider2;
+    @FXML
+    private ImageView btnUndoAll;
+    @FXML
+    private ImageView btnUndo;
 
     private List<CartasPartidaDto> cartasEnJuego;
     private List<CartasPartidaDto> cartasSeleccionadas = new ArrayList<>();
@@ -116,7 +120,6 @@ public class GameController extends Controller implements Initializable {
     private int lastHintIndex = -1; // Para rotar entre pistas
     private PartidaDto partidaDto;
     public boolean primerIngreso = true;
-
 
 
     private static class MovimientoSugerido {
@@ -324,7 +327,6 @@ public class GameController extends Controller implements Initializable {
         root.requestFocus();
         root.setVisible(true);
         root.setOpacity(1); // 🔓 Forzar visibilidad total
-
         root.applyCss();
         root.layout(); // ⬅️ Refresca el layout completamente
 
@@ -372,7 +374,11 @@ public class GameController extends Controller implements Initializable {
             AnimationDepartment.slideFromLeft(lblMovimientos1, Duration.ZERO);
             AnimationDepartment.glitchTextWithFlicker(lblMovimientos1);
             AnimationDepartment.slideFromRight(btnPista, Duration.ZERO);
+            AnimationDepartment.slideFromRight(btnUndoAll, Duration.ZERO);
+            AnimationDepartment.slideFromRight(btnUndo, Duration.ZERO);
             AnimationDepartment.animateNeonGlow(btnPista);
+            AnimationDepartment.animateNeonGlow(btnUndoAll);
+            AnimationDepartment.animateNeonGlow(btnUndo);
 
         });
         t4.play();
@@ -471,6 +477,12 @@ public class GameController extends Controller implements Initializable {
 
         btnPista.setOpacity(0);
         btnPista.setTranslateY(0);
+
+        btnUndo.setOpacity(0);
+        btnUndo.setTranslateY(0);
+
+        btnUndoAll.setOpacity(0);
+        btnUndoAll.setTranslateY(0);
 
         btnGuardarySalir.setOpacity(0);
         btnGuardarySalir.setTranslateY(0);
@@ -1352,6 +1364,14 @@ public class GameController extends Controller implements Initializable {
                 .forEach(cartasActuales::add);
 
         return cartasActuales;
+    }
+
+    @FXML
+    private void onMouseClickedbtnUndoAll(MouseEvent event) {
+    }
+
+    @FXML
+    private void onMouseClickedbtnUndo(MouseEvent event) {
     }
 }
 

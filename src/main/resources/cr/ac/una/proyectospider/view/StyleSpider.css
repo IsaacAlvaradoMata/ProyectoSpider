@@ -494,6 +494,14 @@
     -fx-image: url('../resources/SpiderIconGame.png');
 }
 
+#btnUndo {
+    -fx-image: url('../resources/btnUndo.png');
+}
+
+#btnUndoAll {
+    -fx-image: url('../resources/btnUndoAll.png');
+}
+
 
 
 
