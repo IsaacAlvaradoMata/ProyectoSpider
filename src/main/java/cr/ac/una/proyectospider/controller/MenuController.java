@@ -237,12 +237,8 @@ public class MenuController extends Controller implements Initializable {
                 AnimationDepartment.slideFromRight(spFondoActual, Duration.ZERO);
                 AnimationDepartment.slideFromRight(spCartasActual, Duration.ZERO);
                 AnimationDepartment.slideFromRight(hboxDificultades, Duration.ZERO);
-
-
-
             });
             t4.play();
-
 
             PauseTransition t5 = new PauseTransition(Duration.seconds(4));
             t5.setOnFinished(e -> {
@@ -270,12 +266,8 @@ public class MenuController extends Controller implements Initializable {
                 ));
             }
             tblviewPartidasPausadas.setItems(partidas);
-
-
         });
-
     }
-
 
     public void ResetMenuView() {
         System.out.println("🔁 Reset Menu View");
@@ -332,17 +324,12 @@ public class MenuController extends Controller implements Initializable {
         spBackgroundMenu.setEffect(null);
         spBackgroundMenu.setOpacity(1);
         spBackgroundMenu.setVisible(true);
-
-
-
     }
-
 
     @FXML
     private void onMouseClickedbtnNuevaPartida(MouseEvent event) {
         btnNuevaPartida.setDisable(true);
         AnimationDepartment.stopAllAnimations();
-
         AnimationDepartment.glitchFadeOut(spBackgroundMenu, Duration.seconds(1.1), () -> {
             // 1) Leer la dificultad seleccionada
             String dif;
@@ -375,10 +362,6 @@ public class MenuController extends Controller implements Initializable {
             Platform.runLater(() -> btnNuevaPartida.setDisable(false));
         });
     }
-
-
-
-
 
     @FXML
     private void onMouseClickedbtnContinuarPartida(MouseEvent event) {
@@ -450,7 +433,6 @@ public class MenuController extends Controller implements Initializable {
         colPuntaje.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getPuntaje()));
         applyCustomCellStyleMenu(colPuntaje);
 
-
         TableColumn<PartidaMock, String> colTiempo = new TableColumn<>("Tiempo Jugado");
         colTiempo.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getTiempo()));
         applyCustomCellStyleMenu(colTiempo);
@@ -506,7 +488,4 @@ public class MenuController extends Controller implements Initializable {
             }
         });
     }
-
-
-
 }

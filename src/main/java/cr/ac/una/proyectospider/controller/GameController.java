@@ -8,7 +8,6 @@ import cr.ac.una.proyectospider.util.AppContext;
 import cr.ac.una.proyectospider.util.FlowController;
 import cr.ac.una.proyectospider.util.MazoGenerator;
 import cr.ac.una.proyectospider.util.SoundDepartment;
-
 import javafx.animation.*;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -28,7 +27,6 @@ import javafx.scene.SnapshotParameters;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
-
 import java.net.URL;
 import java.util.*;
 
@@ -36,67 +34,46 @@ public class GameController extends Controller implements Initializable {
 
     @FXML
     private ImageView btnGuardarySalir;
-
     @FXML
     private ImageView btnPista;
-
     @FXML
     private HBox hboxPilas;
-
     @FXML
     private HBox hboxTablero;
-
     @FXML
     private HBox hboxTableroSuperior;
-
     @FXML
     private ImageView imgBackgroundGame;
-
     @FXML
     private ImageView imgBackgroundTablero;
-
     @FXML
     private ImageView imgMazo;
-
     @FXML
     private Label lblMovimientos;
-
     @FXML
     private Label lblNombreJugador;
-
     @FXML
     private Label lblPuntaje;
-
     @FXML
     private Label lblTitulo;
-
     @FXML
     private Label lblTiempo;
-
     @FXML
     private Label lblMovimientos1;
-
     @FXML
     private Label lblPuntaje1;
-
     @FXML
     private Label lblTiempo1;
-
     @FXML
     private BorderPane root;
-
     @FXML
     private StackPane spGamebackground;
-
     @FXML
     private StackPane spTableroBackground;
-
     @FXML
     private Label lblDificultad;
-
     @FXML
     private Label lblDificultad1;
-
     @FXML
     private ImageView imgSpider1;
     @FXML
@@ -216,8 +193,15 @@ public class GameController extends Controller implements Initializable {
 
         partidaDto.setEstado("PAUSADA");
         partidaDto.setFechaFin(new Date());
+
+        // 🧠 Agregar puntos y tiempo actual antes de guardar
+        partidaDto.setPuntos(puntaje);
+        partidaDto.setTiempoJugado(segundosTranscurridos / 60); // En minutos
+
         System.out.println("🕒 [DEBUG] Estado de la partida: " + partidaDto.getEstado());
         System.out.println("🕒 [DEBUG] Fecha fin de partida: " + partidaDto.getFechaFin());
+        System.out.println("🎯 [DEBUG] Puntaje final: " + partidaDto.getPuntos());
+        System.out.println("⏱️ [DEBUG] Tiempo jugado (min): " + partidaDto.getTiempoJugado());
 
         PartidaService partidaService = new PartidaService();
 
@@ -264,12 +248,10 @@ public class GameController extends Controller implements Initializable {
 
     @Override
     public void initialize() {
-
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-
     }
 
     public void RunGameView(PartidaDto partidaDto) {
@@ -357,7 +339,6 @@ public class GameController extends Controller implements Initializable {
         }
     }
 
-
     private void aplicarAnimacionesDeEntrada(){
         root.requestFocus();
         root.setVisible(true);
@@ -429,10 +410,6 @@ public class GameController extends Controller implements Initializable {
 
         });
         t5.play();
-
-
-
-
     }
 
     public void ResetGameView() {
@@ -712,7 +689,6 @@ public class GameController extends Controller implements Initializable {
                 event.setDropCompleted(success);
                 event.consume();
             });
-
             hboxTablero.getChildren().add(columna);
         }
 
@@ -844,7 +820,6 @@ public class GameController extends Controller implements Initializable {
         }
     }
 
-
     private void actualizarVistaDelMazoYPilas() {
         hboxTableroSuperior.getChildren().clear();
 
@@ -921,7 +896,6 @@ public class GameController extends Controller implements Initializable {
         // 6) Verificar si hay victoria (y pop‐up si corresponde):
         verificarVictoria();
     }
-
 
     private CartasPartidaDto obtenerUltimaCartaVisible(int columna) {
         return cartasEnJuego.stream()
@@ -1494,7 +1468,6 @@ public class GameController extends Controller implements Initializable {
                 }
             }
         }
-
         cartasEnJuego.stream()
                 .filter(c -> c.getEnMazo())
                 .forEach(cartasActuales::add);
@@ -1502,8 +1475,6 @@ public class GameController extends Controller implements Initializable {
         cartasEnJuego.stream()
                 .filter(c -> c.getEnPila())
                 .forEach(cartasActuales::add);
-
         return cartasActuales;
     }
 }
-
