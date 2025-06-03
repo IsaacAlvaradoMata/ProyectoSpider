@@ -104,7 +104,8 @@ public class GameController extends Controller implements Initializable {
     private Deque<Movimiento> historialMovimientos = new ArrayDeque<>();
 
     private static class Movimiento {
-        enum Tipo { MOVER, REPARTIR }
+        enum Tipo {MOVER, REPARTIR}
+
         Tipo tipo;
         List<CartasPartidaDto> cartasMovidas;
         List<Integer> columnasOrigen;
@@ -120,6 +121,7 @@ public class GameController extends Controller implements Initializable {
         // Para carta volteada debajo
         CartasPartidaDto cartaDebajoVolteada;
         Boolean cartaDebajoVolteadaEstadoAnterior;
+
         Movimiento(Tipo tipo) {
             this.tipo = tipo;
             cartasMovidas = new ArrayList<>();
@@ -160,7 +162,8 @@ public class GameController extends Controller implements Initializable {
      * usando espaciado vertical dinámico para que todas quepan en el Pane de 600px.
      * Si hay 7 cartas o menos, el espaciado es 22px. Si hay 30 o más, es 8px.
      * Para cantidades intermedias, interpola entre 22 y 8.
-     * @param orden El índice de la carta en la columna (0 para la primera carta)
+     *
+     * @param orden       El índice de la carta en la columna (0 para la primera carta)
      * @param totalCartas El número total de cartas en la columna
      * @return El valor de layoutY para la carta
      */
@@ -342,7 +345,7 @@ public class GameController extends Controller implements Initializable {
         }
     }
 
-    private void aplicarAnimacionesDeEntrada(){
+    private void aplicarAnimacionesDeEntrada() {
         root.requestFocus();
         root.setVisible(true);
         root.setOpacity(1); // 🔓 Forzar visibilidad total
@@ -1264,9 +1267,9 @@ public class GameController extends Controller implements Initializable {
         if (cartasEnColDest > 0) {
             // Buscar la última carta visible en la columna destino
             CartasPartidaDto ultima = cartasEnJuego.stream()
-                .filter(c -> c.getColumna() == columnaDestino)
-                .max(Comparator.comparingInt(CartasPartidaDto::getOrden))
-                .orElse(null);
+                    .filter(c -> c.getColumna() == columnaDestino)
+                    .max(Comparator.comparingInt(CartasPartidaDto::getOrden))
+                    .orElse(null);
             if (ultima != null) {
                 ImageView ivUltima = cartaToImageView.get(ultima);
                 if (ivUltima != null) {
@@ -1490,6 +1493,22 @@ public class GameController extends Controller implements Initializable {
 
     @FXML
     void onMouseClickedbtnRendirse(MouseEvent event) {
+        btnRendirse.setDisable(true);
+        AnimationDepartment.stopAllAnimations();
+        detenerTemporizador();
+        primerIngreso = true;
+        cartasEnJuego = null;
+        cartaToImageView.clear();
+        movimientos = 0;
+        puntaje = 500;
+        tiempoIniciado = false;
 
+        AnimationDepartment.glitchFadeOut(spGamebackground, Duration.seconds(1.1), () -> {
+            FlowController.getInstance().goView("MenuView");
+            MenuController controller = (MenuController) FlowController.getInstance().getController("MenuView");
+            controller.RunMenuView();
+            Platform.runLater(() -> btnRendirse.setDisable(false));
+
+        });
     }
 }
