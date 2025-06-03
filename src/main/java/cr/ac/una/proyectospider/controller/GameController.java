@@ -220,6 +220,7 @@ public class GameController extends Controller implements Initializable {
 
     @FXML
     void oMouseClickedbtnPista(MouseEvent event) {
+        SoundDepartment.playHint();
         darPista();
     }
 
@@ -633,6 +634,7 @@ public class GameController extends Controller implements Initializable {
                     }
 
                     if (puedeMover) {
+                        SoundDepartment.playFlip();
                         // 1) Actualizar modelo
                         moverCartasSeleccionadas(colIndex);
                         // 2) Voltear carta debajo en la columna origen, si existe
@@ -647,6 +649,7 @@ public class GameController extends Controller implements Initializable {
                         actualizarVistaDelMazoYPilas();
                         success = true;
                     } else {
+                        SoundDepartment.playError();
                         // Si drop inválido: shake en las cartas seleccionadas
                         for (CartasPartidaDto c : cartasSeleccionadas) {
                             ImageView iv = cartaToImageView.get(c);
