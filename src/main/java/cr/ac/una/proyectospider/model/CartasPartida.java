@@ -16,7 +16,8 @@ import java.io.Serializable;
         @NamedQuery(name = "CartasPartida.findByBocaArriba", query = "SELECT c FROM CartasPartida c WHERE c.bocaArriba = :bocaArriba"),
         @NamedQuery(name = "CartasPartida.findByEnMazo", query = "SELECT c FROM CartasPartida c WHERE c.enMazo = :enMazo"),
         @NamedQuery(name = "CartasPartida.findByEnPila", query = "SELECT c FROM CartasPartida c WHERE c.enPila = :enPila"),
-        @NamedQuery(name = "CartasPartida.findByRetirada", query = "SELECT c FROM CartasPartida c WHERE c.retirada = :retirada")
+        @NamedQuery(name = "CartasPartida.findByRetirada", query = "SELECT c FROM CartasPartida c WHERE c.retirada = :retirada"),
+        @NamedQuery(name = "CartasPartida.findByNombreCarta", query = "SELECT c FROM CartasPartida c WHERE c.nombreCarta = :nombreCarta")
 })
 public class CartasPartida implements Serializable {
 
@@ -56,6 +57,9 @@ public class CartasPartida implements Serializable {
     @Column(name = "RETIRADA", nullable = false)
     private Boolean retirada;
 
+    @Column(name = "NOMBRE_CARTA")
+    private String nombreCarta;
+
     @Version
     @Column(name = "VERSION")
     private Long version;
@@ -68,19 +72,20 @@ public class CartasPartida implements Serializable {
     public CartasPartida() {}
 
     public CartasPartida(CartasPartidaDto dto) {
-        this.idCartaPartida = dto.idCartaPartidaProperty().get();
+        this.idCartaPartida = dto.getIdCartaPartida();
         actualizar(dto);
     }
 
     public void actualizar(CartasPartidaDto dto) {
-        this.palo = dto.paloProperty().get();
-        this.valor = dto.valorProperty().get();
-        this.columna = dto.columnaProperty().get();
-        this.orden = dto.ordenProperty().get();
-        this.bocaArriba = dto.bocaArribaProperty().get();
-        this.enMazo = dto.enMazoProperty().get();
-        this.enPila = dto.enPilaProperty().get();
-        this.retirada = dto.retiradaProperty().get();
+        this.palo = dto.getPalo();
+        this.valor = dto.getValor();
+        this.columna = dto.getColumna();
+        this.orden = dto.getOrden();
+        this.bocaArriba = dto.getBocaArriba();
+        this.enMazo = dto.getEnMazo();
+        this.enPila = dto.getEnPila();
+        this.retirada = dto.getRetirada();
+        this.nombreCarta = dto.getNombreCarta();
         this.version = dto.getVersion();
     }
 
@@ -112,11 +117,14 @@ public class CartasPartida implements Serializable {
     public Boolean getRetirada() { return retirada; }
     public void setRetirada(Boolean retirada) { this.retirada = retirada; }
 
-    public Partida getPartida() { return partida; }
-    public void setPartida(Partida partida) { this.partida = partida; }
+    public String getNombreCarta() { return nombreCarta; }
+    public void setNombreCarta(String nombreCarta) { this.nombreCarta = nombreCarta; }
 
     public Long getVersion() { return version; }
     public void setVersion(Long version) { this.version = version; }
+
+    public Partida getPartida() { return partida; }
+    public void setPartida(Partida partida) { this.partida = partida; }
 
     // --- Equals & hashCode ---
     @Override
