@@ -14,13 +14,14 @@ import java.util.List;
         @NamedQuery(name = "Partida.findByFechaFin", query = "SELECT p FROM Partida p WHERE p.fechaFin = :fechaFin"),
         @NamedQuery(name = "Partida.findByPuntos", query = "SELECT p FROM Partida p WHERE p.puntos = :puntos"),
         @NamedQuery(name = "Partida.findByTiempoJugado", query = "SELECT p FROM Partida p WHERE p.tiempoJugado = :tiempoJugado"),
+        @NamedQuery(name = "Partida.findByMovimientos", query = "SELECT p FROM Partida p WHERE p.movimientos = :movimientos"), // 🔥
         @NamedQuery(name = "Partida.findByEstado", query = "SELECT p FROM Partida p WHERE p.estado = :estado"),
         @NamedQuery(name = "Partida.findByDificultad", query = "SELECT p FROM Partida p WHERE p.dificultad = :dificultad")
 })
 public class Partida implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "PARTIDA_SEQ")
     @SequenceGenerator(name = "PARTIDA_SEQ", sequenceName = "SPIDER.SEQ_PARTIDA", allocationSize = 1)
@@ -40,6 +41,9 @@ public class Partida implements Serializable {
 
     @Column(name = "TIEMPO_JUGADO")
     private Integer tiempoJugado;
+
+    @Column(name = "MOVIMIENTOS") // 💾 NUEVO CAMPO
+    private Integer movimientos;
 
     @Basic(optional = false)
     @Column(name = "ESTADO")
@@ -72,10 +76,10 @@ public class Partida implements Serializable {
         this.fechaFin = dto.getFechaFin();
         this.puntos = dto.getPuntos();
         this.tiempoJugado = dto.getTiempoJugado();
+        this.movimientos = dto.getMovimientos();
         this.estado = dto.getEstado();
         this.dificultad = dto.getDificultad();
         this.version = dto.getVersion();
-        // jugador y cartas se asignan externamente
     }
 
     public void actualizar(PartidaDto dto) {
@@ -83,6 +87,7 @@ public class Partida implements Serializable {
         this.fechaFin = dto.getFechaFin();
         this.puntos = dto.getPuntos();
         this.tiempoJugado = dto.getTiempoJugado();
+        this.movimientos = dto.getMovimientos();
         this.estado = dto.getEstado();
         this.dificultad = dto.getDificultad();
         this.version = dto.getVersion();
@@ -127,6 +132,14 @@ public class Partida implements Serializable {
 
     public void setTiempoJugado(Integer tiempoJugado) {
         this.tiempoJugado = tiempoJugado;
+    }
+
+    public Integer getMovimientos() {
+        return movimientos;
+    }
+
+    public void setMovimientos(Integer movimientos) {
+        this.movimientos = movimientos;
     }
 
     public String getEstado() {

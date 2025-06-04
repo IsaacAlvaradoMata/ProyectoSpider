@@ -43,12 +43,15 @@ public class PartidaService {
             Jugador jugadorRef = em.getReference(Jugador.class, partidaDto.getJugador().getIdJugador());
             partida.setJugador(jugadorRef);
 
+            // ⏱️ Guardar movimientos
+            partida.setMovimientos(partidaDto.getMovimientos());
+
             Partida managed;
 
             if (partidaDto.getIdPartida() == null) {
                 em.persist(partida);
-                em.flush(); // 🔥 Sincroniza con DB y obtiene el ID real
-                partidaDto.setIdPartida(partidaDto.getIdPartida());
+                em.flush(); // 🔥 sincroniza con DB y obtiene el ID real
+                partidaDto.setIdPartida(partida.getIdPartida());
                 System.out.println("🎯 [DEBUG] Partida NUEVA persistida con ID real: " + partidaDto.getIdPartida());
                 managed = partida;
             } else {
@@ -125,6 +128,7 @@ public class PartidaService {
             partida.setEstado(partidaDto.getEstado());
             partida.setPuntos(partidaDto.getPuntos());
             partida.setTiempoJugado(partidaDto.getTiempoJugado());
+            partida.setMovimientos(partidaDto.getMovimientos()); // 🟢 Actualizamos movimientos también
             partida.setDificultad(partidaDto.getDificultad());
             partida.setVersion(partidaDto.getVersion());
 
