@@ -2,6 +2,7 @@ package cr.ac.una.proyectospider.controller;
 
 import cr.ac.una.proyectospider.model.CartasPartidaDto;
 import cr.ac.una.proyectospider.model.JugadorDto;
+import cr.ac.una.proyectospider.model.PartidaCompletaDto;
 import cr.ac.una.proyectospider.model.PartidaDto;
 import cr.ac.una.proyectospider.service.PartidaService;
 import cr.ac.una.proyectospider.util.AnimationDepartment;
@@ -274,6 +275,11 @@ public class GameController extends Controller implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
     }
 
+    public void RunGameView(PartidaCompletaDto partidaCompletaDto) {
+        this.cartasEnJuego = partidaCompletaDto.getCartas(); // 👈 Inyecta cartas guardadas
+        this.RunGameView(partidaCompletaDto.getPartida());
+    }
+
     public void RunGameView(PartidaDto partidaDto) {
         this.partidaDto = partidaDto;
         ResetGameView();
@@ -330,7 +336,7 @@ public class GameController extends Controller implements Initializable {
         lblDificultad.setText(" " + dificultad);
 
         // — Generar mazo (solo la primera vez) —
-        if (cartasEnJuego == null) {
+        if (cartasEnJuego == null || cartasEnJuego.isEmpty()) {
             cartasEnJuego = MazoGenerator.generarMazoPorDificultad(dificultad, usarEstiloClasico);
         }
 

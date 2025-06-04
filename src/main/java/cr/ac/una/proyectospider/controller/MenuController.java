@@ -5,16 +5,17 @@
 package cr.ac.una.proyectospider.controller;
 
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.ResourceBundle;
 
-import cr.ac.una.proyectospider.model.JugadorDto;
-import cr.ac.una.proyectospider.model.JugadorRankingMock;
-import cr.ac.una.proyectospider.model.PartidaDto;
-import cr.ac.una.proyectospider.model.PartidaMock;
+import cr.ac.una.proyectospider.model.*;
+import cr.ac.una.proyectospider.service.PartidaService;
 import cr.ac.una.proyectospider.util.AnimationDepartment;
 import cr.ac.una.proyectospider.util.AppContext;
 import cr.ac.una.proyectospider.util.FlowController;
+import cr.ac.una.proyectospider.util.Mensaje;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
@@ -89,7 +90,7 @@ public class MenuController extends Controller implements Initializable {
     @FXML
     private Label lblPartidasPausadas;
     @FXML
-    private TableView<PartidaMock> tblviewPartidasPausadas;
+    private TableView<PartidaDto> tblviewPartidasPausadas;
     @FXML
     private Label lblDificultad;
     @FXML
@@ -257,15 +258,6 @@ public class MenuController extends Controller implements Initializable {
             });
             t5.play();
 
-            ObservableList<PartidaMock> partidas = FXCollections.observableArrayList();
-            for (int i = 1; i <= 15; i++) {
-                partidas.add(new PartidaMock(
-                        "2025-05-" + (i < 10 ? "0" + i : i),
-                        ((int) (Math.random() * 9000 + 1000)) + "", // Genera un número entero entre 1000 y 10000
-                        (10 + i) + " min"
-                ));
-            }
-            tblviewPartidasPausadas.setItems(partidas);
         });
     }
 
@@ -365,6 +357,23 @@ public class MenuController extends Controller implements Initializable {
 
     @FXML
     private void onMouseClickedbtnContinuarPartida(MouseEvent event) {
+        PartidaDto seleccionada = tblviewPartidasPausadas.getSelectionModel().getSelectedItem();
+
+        if (seleccionada == null) {
+            new Mensaje().show(Alert.AlertType.INFORMATION, "Información", "Debe seleccionar una partida para continuar.");
+            return;
+        }
+
+        PartidaCompletaDto partidaCompleta = new PartidaService().cargarPartidaCompletaDto(seleccionada.getIdPartida());
+        if (partidaCompleta == null) {
+            new Mensaje().show(Alert.AlertType.ERROR, "Error", "No se pudo cargar la partida desde la base de datos.");
+            return;
+        }
+
+        FlowController.getInstance().goView("GameView");
+        GameController gameCtrl = (GameController) FlowController.getInstance().getController("GameView");
+        gameCtrl.primerIngreso = false;
+        gameCtrl.RunGameView(partidaCompleta);
     }
 
     @FXML
@@ -424,24 +433,42 @@ public class MenuController extends Controller implements Initializable {
         });
     }
 
-    private void populateTableView(){
-        TableColumn<PartidaMock, String> colFecha = new TableColumn<>("Fecha");
-        colFecha.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getFecha()));
+    private void populateTableView() {
+        TableColumn<PartidaDto, String> colFecha = new TableColumn<>("Fecha");
+        colFecha.setCellValueFactory(data -> {
+            Date fecha = data.getValue().getFechaInicio();
+            if (fecha != null) {
+                String formateada = new SimpleDateFormat("dd/MM/yyyy").format(fecha);
+                return new SimpleStringProperty(formateada);
+            } else {
+                return new SimpleStringProperty("N/A");
+            }
+        });
+
+        TableColumn<PartidaDto, String> colPuntaje = new TableColumn<>("Puntaje");
+        colPuntaje.setCellValueFactory(data ->
+                new SimpleStringProperty(String.valueOf(data.getValue().getPuntos()))
+        );
+
+        TableColumn<PartidaDto, String> colTiempo = new TableColumn<>("Tiempo Jugado");
+        colTiempo.setCellValueFactory(data ->
+                new SimpleStringProperty(data.getValue().getTiempoJugado() + " seg")
+        );
+
         applyCustomCellStyleMenu(colFecha);
-
-        TableColumn<PartidaMock, String> colPuntaje = new TableColumn<>("Puntaje");
-        colPuntaje.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getPuntaje()));
         applyCustomCellStyleMenu(colPuntaje);
-
-        TableColumn<PartidaMock, String> colTiempo = new TableColumn<>("Tiempo Jugado");
-        colTiempo.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getTiempo()));
         applyCustomCellStyleMenu(colTiempo);
 
-// Aplica estilos opcionales si tienes CSS
         tblviewPartidasPausadas.getColumns().setAll(colFecha, colPuntaje, colTiempo);
+
+        JugadorDto jugador = (JugadorDto) AppContext.getInstance().get("jugadorActivo");
+        if (jugador != null && jugador.getIdJugador() != null) {
+            List<PartidaDto> pausadas = new PartidaService().listarPausadasPorJugador(jugador.getIdJugador());
+            tblviewPartidasPausadas.setItems(FXCollections.observableArrayList(pausadas));
+        }
     }
 
-    private void applyCustomCellStyleMenu(TableColumn<PartidaMock, String> column) {
+    private void applyCustomCellStyleMenu(TableColumn<PartidaDto, String> column) {
         column.setCellFactory(col -> new TableCell<>() {
             @Override
             protected void updateItem(String item, boolean empty) {
