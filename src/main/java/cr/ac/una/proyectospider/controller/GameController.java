@@ -272,8 +272,47 @@ public class GameController extends Controller implements Initializable {
     }
 
     public void RunGameView(PartidaCompletaDto partidaCompletaDto) {
+        System.out.println("[DEBUG] RunGameView(PartidaCompletaDto) llamado");
+        if (partidaCompletaDto == null) {
+            System.out.println("[DEBUG] partidaCompletaDto es null");
+            return;
+        }
+        if (partidaCompletaDto.getPartida() == null) {
+            System.out.println("[DEBUG] partidaCompletaDto.getPartida() es null");
+        }
+        if (partidaCompletaDto.getCartas() == null) {
+            System.out.println("[DEBUG] partidaCompletaDto.getCartas() es null");
+        } else {
+            System.out.println("[DEBUG] Cartas recuperadas: " + partidaCompletaDto.getCartas().size());
+        }
         this.cartasEnJuego = partidaCompletaDto.getCartas(); // 👈 Inyecta cartas guardadas
-        this.RunGameView(partidaCompletaDto.getPartida());
+        this.partidaDto = partidaCompletaDto.getPartida();
+
+        // Restaurar puntaje, movimientos y tiempo
+        if (partidaDto != null) {
+            this.puntaje = partidaDto.getPuntos() != null ? partidaDto.getPuntos() : 500;
+            this.movimientos = partidaDto.getMovimientos() != null ? partidaDto.getMovimientos() : 0;
+            this.segundosTranscurridos = partidaDto.getTiempoJugado() != null ? partidaDto.getTiempoJugado() : 0;
+            System.out.println("[DEBUG] Puntaje restaurado: " + puntaje);
+            System.out.println("[DEBUG] Movimientos restaurados: " + movimientos);
+            System.out.println("[DEBUG] Tiempo restaurado: " + segundosTranscurridos);
+        } else {
+            System.out.println("[DEBUG] partidaDto es null, se usan valores por defecto");
+            this.puntaje = 500;
+            this.movimientos = 0;
+            this.segundosTranscurridos = 0;
+        }
+
+        // Actualizar labels si existen
+        if (lblPuntaje != null) lblPuntaje.setText("" + puntaje);
+        if (lblMovimientos != null) lblMovimientos.setText("" + movimientos);
+        if (lblTiempo != null) actualizarLabelTiempo();
+
+        // Forzar animaciones de entrada al cargar partida guardada
+        this.primerIngreso = true;
+
+        // Llama a la reconstrucción visual
+        this.RunGameView(partidaDto);
     }
 
     public void RunGameView(PartidaDto partidaDto) {
@@ -1616,6 +1655,4 @@ public class GameController extends Controller implements Initializable {
 
 
 }
-
-
 
