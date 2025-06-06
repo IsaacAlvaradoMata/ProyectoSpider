@@ -216,7 +216,7 @@ public class GameController extends Controller implements Initializable {
         PartidaService partidaService = new PartidaService();
 
         if (partidaDto.getIdPartida() == null) {
-            System.out.println("🆕 [DEBUG] Partida sin ID, se procederá a crearla...");
+            System.out.println("������� [DEBUG] Partida sin ID, se procederá a crearla...");
             PartidaDto nuevaPartida = partidaService.crearPartida(partidaDto);
             if (nuevaPartida == null) {
                 System.err.println("❌ No se pudo crear la partida.");
@@ -704,16 +704,28 @@ public class GameController extends Controller implements Initializable {
                         // 1) Actualizar modelo
                         moverCartasSeleccionadas(colIndex);
                         // 2) Voltear carta debajo en la columna origen, si existe
-                        cartasEnJuego.stream()
-                                .filter(c -> c.getColumna() == colAnterior
-                                        && c.getOrden() == ordenAnterior - 1)
-                                .findFirst()
-                                .ifPresent(c -> c.setBocaArriba(true));
-                        // 3) Redibujar SOLO las columnas + cartas
+                        Optional<CartasPartidaDto> cartaDebajoOpt = cartasEnJuego.stream()
+                                .filter(c -> c.getColumna() == colAnterior && c.getOrden() == ordenAnterior - 1)
+                                .findFirst();
+                        // Redibuja primero
                         dibujarColumnasYCargarCartasEnTablero();
-                        // 4) Actualizar mazo/pilas en caso de que se haya completado secuencia
                         actualizarVistaDelMazoYPilas();
+                        if (cartaDebajoOpt.isPresent() && !cartaDebajoOpt.get().getBocaArriba()) {
+                            CartasPartidaDto cartaDebajo = cartaDebajoOpt.get();
+                            cartaDebajo.setBocaArriba(true); // Actualiza modelo
+                            ImageView iv = cartaToImageView.get(cartaDebajo);
+                            if (iv != null) {
+                                // Obtener imagen boca arriba
+                                String imgArchivoFlip = cartaDebajo.getImagenNombre();
+                                Image imgBocaArriba = new Image(getClass().getResourceAsStream("/cr/ac/una/proyectospider/resources/" + imgArchivoFlip));
+                                AnimationDepartment.flipCardAnimation(iv, imgBocaArriba, null);
+                            }
+                        }
                         success = true;
+                        cartasSeleccionadas.clear();
+                        event.setDropCompleted(success);
+                        event.consume();
+                        return;
                     } else {
                         SoundDepartment.playError();
                         // Si drop inválido: shake en las cartas seleccionadas
@@ -780,14 +792,24 @@ public class GameController extends Controller implements Initializable {
                             int colAnterior = carta.getColumna();
                             int ordenAnterior = carta.getOrden();
                             moverCartasSeleccionadas(destino);
-                            cartasEnJuego.stream()
-                                    .filter(c2 -> c2.getColumna() == colAnterior
-                                            && c2.getOrden() == ordenAnterior - 1)
-                                    .findFirst()
-                                    .ifPresent(c2 -> c2.setBocaArriba(true));
-                            cartasSeleccionadas.clear();
+                            // Redibuja primero
                             dibujarColumnasYCargarCartasEnTablero();
                             actualizarVistaDelMazoYPilas();
+                            Optional<CartasPartidaDto> cartaDebajoOpt = cartasEnJuego.stream()
+                                    .filter(c2 -> c2.getColumna() == colAnterior && c2.getOrden() == ordenAnterior - 1)
+                                    .findFirst();
+                            if (cartaDebajoOpt.isPresent() && !cartaDebajoOpt.get().getBocaArriba()) {
+                                CartasPartidaDto cartaDebajo = cartaDebajoOpt.get();
+                                cartaDebajo.setBocaArriba(true);
+                                ImageView iv = cartaToImageView.get(cartaDebajo);
+                                if (iv != null) {
+                                    String imgArchivoFlip = cartaDebajo.getImagenNombre();
+                                    Image imgBocaArriba = new Image(getClass().getResourceAsStream("/cr/ac/una/proyectospider/resources/" + imgArchivoFlip));
+                                    AnimationDepartment.flipCardAnimation(iv, imgBocaArriba, null);
+                                }
+                            }
+                            cartasSeleccionadas.clear();
+                            return;
                         } else {
                             SoundDepartment.playError();
                             for (CartasPartidaDto c2 : cartaToImageView.keySet()) {
@@ -920,7 +942,7 @@ public class GameController extends Controller implements Initializable {
                             "/cr/ac/una/proyectospider/resources/1C.png")));
                 }
             } else {
-                // Pila vacía: mostrar “white.png” o “whites.png” según estilo
+                // Pila vacía: mostrar “white.png” o “whites.png�� según estilo
                 String whiteImg = usarEstiloClasico ? "white.png" : "whites.png";
                 pila = new ImageView(new Image(getClass().getResourceAsStream(
                         "/cr/ac/una/proyectospider/resources/" + whiteImg)));
@@ -1554,3 +1576,4 @@ public class GameController extends Controller implements Initializable {
     }
 
 }
+

@@ -1135,10 +1135,32 @@ public class AnimationDepartment {
     }
 
 
+    // Animación de flip para cartas (volteo tipo Spider)
+    public static void flipCardAnimation(ImageView cardView, Image imagenBocaArriba, Runnable onFinished) {
+        // Asegura que la rotación sea sobre el eje Y (efecto 3D)
+        cardView.setRotationAxis(javafx.geometry.Point3D.ZERO.add(0, 1, 0));
 
+        RotateTransition flip1 = new RotateTransition(Duration.millis(180), cardView);
+        flip1.setFromAngle(0);
+        flip1.setToAngle(90);
+        flip1.setInterpolator(Interpolator.EASE_IN);
 
+        RotateTransition flip2 = new RotateTransition(Duration.millis(180), cardView);
+        flip2.setFromAngle(270); // 90 + 180 para evitar efecto espejo
+        flip2.setToAngle(360);
+        flip2.setInterpolator(Interpolator.EASE_OUT);
 
+        flip1.setOnFinished(e -> {
+            // Cambia la imagen a boca arriba justo en el medio del flip
+            cardView.setImage(imagenBocaArriba);
+            cardView.setRotate(270); // Salta a 270° para continuar el giro natural
+            flip2.play();
+        });
+        flip2.setOnFinished(e -> {
+            cardView.setRotate(0); // Restablece la rotación
+            if (onFinished != null) onFinished.run();
+        });
+        flip1.play();
+    }
 
 }
-
-
