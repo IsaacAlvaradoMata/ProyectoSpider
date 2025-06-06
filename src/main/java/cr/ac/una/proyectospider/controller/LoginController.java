@@ -209,10 +209,10 @@ public class LoginController extends Controller implements Initializable {
 
         if (nombre == null || nombre.trim().isEmpty()) {
             CustomAlert.showInfo(
-                    spBackgroundLogin, // StackPane padre, en tu caso puedes usar el BorderPane root o un StackPane principal
+                    spBackgroundLogin,
                     "Campo vacío",
                     "Por favor ingrese un nombre de usuario.",
-                    () -> BtnIniciarSesion.setDisable(false) // Runnable que se ejecuta al cerrar el diálogo
+                    () -> BtnIniciarSesion.setDisable(false)
             );
             return;
         }
@@ -221,31 +221,31 @@ public class LoginController extends Controller implements Initializable {
         JugadorDto jugador = jugadorService.buscarJugadorPorNombre(nombre.trim());
 
         if (jugador == null) {
-            Alert noExiste = new Alert(Alert.AlertType.ERROR);
-            noExiste.setTitle("Jugador no encontrado");
-            noExiste.setHeaderText(null);
-            noExiste.setContentText("Jugador no encontrado. Regístrate primero.");
-            noExiste.showAndWait();
-            BtnIniciarSesion.setDisable(false);
+            CustomAlert.showInfo(
+                    spBackgroundLogin,
+                    "Jugador no encontrado",
+                    "Jugador no encontrado. Regístrate primero.",
+                    () -> BtnIniciarSesion.setDisable(false)
+            );
             return;
         }
 
         // Si existe, redirigir
-        Alert exito = new Alert(Alert.AlertType.INFORMATION);
-        exito.setTitle("Bienvenido");
-        exito.setHeaderText(null);
-        exito.setContentText("¡Bienvenido, " + jugador.nombreUsuarioProperty().get() + "!");
-
-        exito.showAndWait().ifPresent(response -> {
-            AnimationDepartment.stopAllAnimations();
-            AnimationDepartment.glitchFadeOut(spBackgroundLogin, Duration.seconds(1.1), () -> {
-                AppContext.getInstance().set("jugadorActivo", jugador);
-                FlowController.getInstance().goView("MenuView");
-                MenuController controller = (MenuController) FlowController.getInstance().getController("MenuView");
-                controller.RunMenuView();
-                Platform.runLater(() -> BtnIniciarSesion.setDisable(false));
-            });
-        });
+        CustomAlert.showInfo(
+                spBackgroundLogin,
+                "Bienvenido",
+                "¡Bienvenido, " + jugador.nombreUsuarioProperty().get() + "!",
+                () -> {
+                    AnimationDepartment.stopAllAnimations();
+                    AnimationDepartment.glitchFadeOut(spBackgroundLogin, Duration.seconds(1.1), () -> {
+                        AppContext.getInstance().set("jugadorActivo", jugador);
+                        FlowController.getInstance().goView("MenuView");
+                        MenuController controller = (MenuController) FlowController.getInstance().getController("MenuView");
+                        controller.RunMenuView();
+                        Platform.runLater(() -> BtnIniciarSesion.setDisable(false));
+                    });
+                }
+        );
     }
 
     @FXML
