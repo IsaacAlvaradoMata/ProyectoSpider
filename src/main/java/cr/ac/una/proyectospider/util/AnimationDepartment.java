@@ -1180,11 +1180,12 @@ public class AnimationDepartment {
      * @param cartasEnJuego Lista de cartas en juego
      * @param calcularEspaciadoVertical Función para calcular el espaciado vertical
      * @param onFinished Runnable opcional para ejecutar al terminar
+     * @param cartaDebajoEstabaBocaAbajo true si la carta debajo estaba boca abajo antes del movimiento
      */
     public static void animarUndoVisual(List<?> grupo, int columnaOrigen, Pane spGamebackground,
                                         java.util.Map<?, ImageView> cartaToImageView, javafx.scene.layout.HBox hboxTablero,
                                         List<?> cartasEnJuego, java.util.function.IntFunction<Double> calcularEspaciadoVertical,
-                                        Object cartaDebajo, Runnable onFinished) {
+                                        Object cartaDebajo, Boolean cartaDebajoEstabaBocaAbajo, Runnable onFinished) {
         if (grupo == null || grupo.isEmpty()) {
             if (onFinished != null) onFinished.run();
             return;
@@ -1295,10 +1296,10 @@ public class AnimationDepartment {
             seq.play();
         };
 
-        if (cartaDebajo != null) {
+        // Solo hacer flip si la carta debajo existía y estaba boca abajo antes del movimiento
+        if (cartaDebajo != null && Boolean.TRUE.equals(cartaDebajoEstabaBocaAbajo)) {
             ImageView ivDebajo = cartaToImageView.get(cartaDebajo);
             if (ivDebajo != null) {
-                // Determinar imagen trasera según el estilo de cartas
                 boolean usarEstiloClasico = false;
                 Object estiloEnContext = cr.ac.una.proyectospider.util.AppContext.getInstance().get(cr.ac.una.proyectospider.util.AppContext.KEY_ESTILO_CARTAS);
                 if (estiloEnContext instanceof String) {

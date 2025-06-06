@@ -1143,6 +1143,7 @@ public class GameController extends Controller implements Initializable {
             List<CartasPartidaDto> cartasAMover = new ArrayList<>(mov.cartasMovidas);
             int columnaOrigen = mov.columnasOrigen.get(0); // Todas vuelven a la misma columna origen
             Object cartaDebajo = mov.cartaDebajoVolteada; // Puede ser null
+            Boolean cartaDebajoEstabaBocaAbajo = (mov.cartaDebajoVolteadaEstadoAnterior != null) ? !mov.cartaDebajoVolteadaEstadoAnterior : null;
             AnimationDepartment.animarUndoVisual(
                 cartasAMover,
                 columnaOrigen,
@@ -1152,6 +1153,7 @@ public class GameController extends Controller implements Initializable {
                 cartasEnJuego,
                 (n) -> calcularEspaciadoVertical(n),
                 cartaDebajo,
+                cartaDebajoEstabaBocaAbajo,
                 () -> {
                     for (int i = 0; i < mov.cartasMovidas.size(); i++) {
                         CartasPartidaDto carta = mov.cartasMovidas.get(i);
