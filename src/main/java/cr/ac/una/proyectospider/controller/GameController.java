@@ -102,6 +102,9 @@ public class GameController extends Controller implements Initializable {
 
     private Deque<Movimiento> historialMovimientos = new ArrayDeque<>();
 
+    // Flag para evitar repartir mientras la animación está en curso
+    private boolean repartiendo = false;
+
     private static class Movimiento {
         enum Tipo {MOVER, REPARTIR}
 
@@ -600,6 +603,12 @@ public class GameController extends Controller implements Initializable {
     }
 
     private void repartirCartasDelMazo() {
+        if (repartiendo) {
+            // Si ya se está repartiendo, ignorar la acción
+            return;
+        }
+        repartiendo = true;
+
         iniciarTemporizadorSiEsNecesario();
         movimientos++;
         puntaje = Math.max(0, puntaje - 1);
@@ -610,7 +619,7 @@ public class GameController extends Controller implements Initializable {
         // Verificar si todas las columnas tienen al menos una carta
         boolean todasColumnasConCartas = true;
         for (int colIndex = 0; colIndex < 10; colIndex++) {
-            final int cIndex = colIndex;  // <— cIndex es “efectivamente final”
+            final int cIndex = colIndex;
             boolean columnaConCartas = cartasEnJuego.stream()
                     .anyMatch(c -> c.getColumna() == cIndex);
             if (!columnaConCartas) {
@@ -621,6 +630,7 @@ public class GameController extends Controller implements Initializable {
 
         if (!todasColumnasConCartas) {
             System.out.println("No se pueden repartir cartas: algunas columnas están vacías");
+            repartiendo = false; // Liberar el flag si no se puede repartir
             return;
         }
 
@@ -631,36 +641,53 @@ public class GameController extends Controller implements Initializable {
 
         if (cartasEnMazo.size() < 10) {
             System.out.println("No hay suficientes cartas en el mazo para repartir");
+            repartiendo = false; // Liberar el flag si no se puede repartir
             return;
         }
 
-        // Repartir una carta a cada columna
+        // Repartir una carta a cada columna (solo en modelo temporal para animación)
         List<CartasPartidaDto> cartasRepartidas = new ArrayList<>();
+        List<Integer> ordenesDestino = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
-            final int cIndex = i;  // index “efectivamente final” para usar en lambda
+            final int cIndex = i;
             int nuevoOrden = cartasEnJuego.stream()
-                    .filter(c -> c.getColumna() == cIndex)   // aquí usamos cIndex
+                    .filter(c -> c.getColumna() == cIndex)
                     .mapToInt(CartasPartidaDto::getOrden)
                     .max()
                     .orElse(-1) + 1;
-
             CartasPartidaDto carta = cartasEnMazo.get(cIndex);
-            carta.setEnMazo(false);
+            // No modificar el modelo aún, solo calcular destino
             carta.setColumna(cIndex);
             carta.setOrden(nuevoOrden);
-            carta.setBocaArriba(true);
             cartasRepartidas.add(carta);
+            ordenesDestino.add(nuevoOrden);
         }
 
-        guardarMovimientoRepartir(cartasRepartidas);
-
-        // Verificar si se completa alguna secuencia tras repartir
-        verificarSecuenciaCompleta();
-
-        // *** EN LUGAR DE RunGameView(partidaDto) ***
-        // simplemente redibujamos columnas y mazo/pilas:
-        dibujarColumnasYCargarCartasEnTablero();
-        actualizarVistaDelMazoYPilas();
+        // Animar reparto visual
+        AnimationDepartment.animarRepartoCartasVisual(
+            cartasRepartidas,
+            spGamebackground,
+            cartaToImageView,
+            hboxTablero,
+            imgMazo,
+            (n) -> calcularEspaciadoVertical(n),
+            cartasEnJuego,
+            () -> {
+                // Al terminar la animación, actualizar el modelo real
+                for (int i = 0; i < 10; i++) {
+                    CartasPartidaDto carta = cartasRepartidas.get(i);
+                    carta.setEnMazo(false);
+                    carta.setColumna(i);
+                    carta.setOrden(ordenesDestino.get(i));
+                    carta.setBocaArriba(true);
+                }
+                guardarMovimientoRepartir(cartasRepartidas);
+                verificarSecuenciaCompleta();
+                dibujarColumnasYCargarCartasEnTablero();
+                actualizarVistaDelMazoYPilas();
+                repartiendo = false; // Liberar el flag al terminar la animación
+            }
+        );
     }
 
     private double calcularEspaciadoVertical(int cantidadCartas) {

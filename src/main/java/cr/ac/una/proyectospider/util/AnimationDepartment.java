@@ -1318,4 +1318,130 @@ public class AnimationDepartment {
         }
         doMove.run();
     }
+
+    /**
+     * Animación visual de reparto de cartas desde el mazo a las columnas.
+     * @param cartasRepartidas Lista de cartas a repartir (en orden de columna)
+     * @param spGamebackground Pane principal de fondo
+     * @param cartaToImageView Mapa de cartas a sus ImageView (solo cartas en mazo)
+     * @param hboxTablero HBox del tablero
+     * @param imgMazo ImageView del mazo
+     * @param calcularEspaciadoVertical Función para calcular el espaciado vertical
+     * @param cartasEnJuego Lista de cartas en juego
+     * @param onFinished Runnable opcional para ejecutar al terminar
+     */
+    public static void animarRepartoCartasVisual(
+            List<?> cartasRepartidas,
+            Pane spGamebackground,
+            java.util.Map<?, ImageView> cartaToImageView,
+            javafx.scene.layout.HBox hboxTablero,
+            ImageView imgMazo,
+            java.util.function.IntFunction<Double> calcularEspaciadoVertical,
+            List<?> cartasEnJuego,
+            Runnable onFinished
+    ) {
+        if (cartasRepartidas == null || cartasRepartidas.isEmpty() || imgMazo == null) {
+            if (onFinished != null) onFinished.run();
+            return;
+        }
+        Pane animPane = new Pane();
+        animPane.setPickOnBounds(false);
+        spGamebackground.getChildren().add(animPane);
+
+        List<ImageView> clones = new ArrayList<>();
+        List<Double> origX = new ArrayList<>();
+        List<Double> origY = new ArrayList<>();
+        List<Integer> columnasDestino = new ArrayList<>();
+        List<Integer> ordenesDestino = new ArrayList<>();
+
+        // Obtener posición del mazo en pantalla
+        javafx.geometry.Bounds mazoBounds = imgMazo.localToScene(imgMazo.getBoundsInLocal());
+        javafx.geometry.Bounds mazoParentBounds = spGamebackground.sceneToLocal(mazoBounds);
+        double mazoX = mazoParentBounds.getMinX();
+        double mazoY = mazoParentBounds.getMinY();
+
+        // Crear clones en la posición del mazo
+        for (int i = 0; i < cartasRepartidas.size(); i++) {
+            Object carta = cartasRepartidas.get(i);
+            ImageView clone;
+            // Mostrar siempre la carta boca arriba (frontal) en la animación
+            try {
+                java.lang.reflect.Method getImagenNombre = carta.getClass().getMethod("getImagenNombre");
+                String imgNombre = (String) getImagenNombre.invoke(carta);
+                Image imgFrontal = new Image(AnimationDepartment.class.getResourceAsStream("/cr/ac/una/proyectospider/resources/" + imgNombre));
+                clone = new ImageView(imgFrontal);
+                // Si el original existe, igualar tamaño
+                ImageView original = cartaToImageView.get(carta);
+                if (original != null) {
+                    clone.setFitWidth(original.getFitWidth());
+                } else if (imgMazo != null) {
+                    clone.setFitWidth(imgMazo.getFitWidth());
+                }
+            } catch (Exception ex) {
+                // fallback: usar trasera
+                clone = new ImageView(imgMazo.getImage());
+                clone.setFitWidth(imgMazo.getFitWidth());
+            }
+            clone.setPreserveRatio(true);
+            clone.setSmooth(true);
+            clone.setLayoutX(mazoX);
+            clone.setLayoutY(mazoY);
+            clones.add(clone);
+            origX.add(mazoX);
+            origY.add(mazoY);
+            animPane.getChildren().add(clone);
+
+            // Obtener columna y orden destino
+            try {
+                java.lang.reflect.Method getColumna = carta.getClass().getMethod("getColumna");
+                java.lang.reflect.Method getOrden = carta.getClass().getMethod("getOrden");
+                columnasDestino.add((Integer) getColumna.invoke(carta));
+                ordenesDestino.add((Integer) getOrden.invoke(carta));
+            } catch (Exception e) {
+                columnasDestino.add(i);
+                ordenesDestino.add(0);
+            }
+        }
+
+        // Calcular destino de cada carta
+        List<Double> destX = new ArrayList<>();
+        List<Double> destY = new ArrayList<>();
+        for (int i = 0; i < clones.size(); i++) {
+            int col = columnasDestino.get(i);
+            int orden = ordenesDestino.get(i);
+            Pane columnaPane = (Pane) hboxTablero.getChildren().get(col);
+            javafx.geometry.Bounds colBounds = columnaPane.localToScene(columnaPane.getBoundsInLocal());
+            javafx.geometry.Bounds colParentBounds = spGamebackground.sceneToLocal(colBounds);
+            double x = colParentBounds.getMinX();
+            // Calcular cuántas cartas habrá en la columna después del reparto
+            int totalCartas = (int) cartasEnJuego.stream().filter(c -> {
+                try {
+                    java.lang.reflect.Method getColumna = c.getClass().getMethod("getColumna");
+                    return (int) getColumna.invoke(c) == col;
+                } catch (Exception e) { return false; }
+            }).count();
+            double spacing = calcularEspaciadoVertical.apply(totalCartas);
+            double y = colParentBounds.getMinY() + orden * spacing;
+            destX.add(x);
+            destY.add(y);
+        }
+
+        // Animar cada clon desde el mazo a su destino
+        javafx.animation.ParallelTransition toDest = new javafx.animation.ParallelTransition();
+        for (int i = 0; i < clones.size(); i++) {
+            ImageView clone = clones.get(i);
+            double targetX = destX.get(i);
+            double targetY = destY.get(i);
+            javafx.animation.TranslateTransition go = new javafx.animation.TranslateTransition(javafx.util.Duration.millis(500 + i * 60), clone);
+            go.setToX(targetX - origX.get(i));
+            go.setToY(targetY - origY.get(i));
+            toDest.getChildren().add(go);
+        }
+
+        toDest.setOnFinished(e -> {
+            spGamebackground.getChildren().remove(animPane);
+            if (onFinished != null) onFinished.run();
+        });
+        toDest.play();
+    }
 }
