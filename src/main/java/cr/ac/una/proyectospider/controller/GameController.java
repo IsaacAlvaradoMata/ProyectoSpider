@@ -216,7 +216,7 @@ public class GameController extends Controller implements Initializable {
         PartidaService partidaService = new PartidaService();
 
         if (partidaDto.getIdPartida() == null) {
-            System.out.println("������� [DEBUG] Partida sin ID, se procederá a crearla...");
+            System.out.println("�������� [DEBUG] Partida sin ID, se procederá a crearla...");
             PartidaDto nuevaPartida = partidaService.crearPartida(partidaDto);
             if (nuevaPartida == null) {
                 System.err.println("❌ No se pudo crear la partida.");
@@ -718,8 +718,17 @@ public class GameController extends Controller implements Initializable {
                                 // Obtener imagen boca arriba
                                 String imgArchivoFlip = cartaDebajo.getImagenNombre();
                                 Image imgBocaArriba = new Image(getClass().getResourceAsStream("/cr/ac/una/proyectospider/resources/" + imgArchivoFlip));
-                                AnimationDepartment.flipCardAnimation(iv, imgBocaArriba, null);
+                                AnimationDepartment.flipCardAnimation(iv, imgBocaArriba, () -> {
+                                    dibujarColumnasYCargarCartasEnTablero();
+                                    actualizarVistaDelMazoYPilas();
+                                });
+                            } else {
+                                dibujarColumnasYCargarCartasEnTablero();
+                                actualizarVistaDelMazoYPilas();
                             }
+                        } else {
+                            dibujarColumnasYCargarCartasEnTablero();
+                            actualizarVistaDelMazoYPilas();
                         }
                         success = true;
                         cartasSeleccionadas.clear();
@@ -805,8 +814,17 @@ public class GameController extends Controller implements Initializable {
                                 if (iv != null) {
                                     String imgArchivoFlip = cartaDebajo.getImagenNombre();
                                     Image imgBocaArriba = new Image(getClass().getResourceAsStream("/cr/ac/una/proyectospider/resources/" + imgArchivoFlip));
-                                    AnimationDepartment.flipCardAnimation(iv, imgBocaArriba, null);
+                                    AnimationDepartment.flipCardAnimation(iv, imgBocaArriba, () -> {
+                                        dibujarColumnasYCargarCartasEnTablero();
+                                        actualizarVistaDelMazoYPilas();
+                                    });
+                                } else {
+                                    dibujarColumnasYCargarCartasEnTablero();
+                                    actualizarVistaDelMazoYPilas();
                                 }
+                            } else {
+                                dibujarColumnasYCargarCartasEnTablero();
+                                actualizarVistaDelMazoYPilas();
                             }
                             cartasSeleccionadas.clear();
                             return;
