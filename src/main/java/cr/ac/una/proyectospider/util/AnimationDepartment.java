@@ -1163,4 +1163,151 @@ public class AnimationDepartment {
         flip1.play();
     }
 
+    /**
+     * Animación visual de undo, igual a la de pista pero en reversa.
+     * @param grupo Cartas a mover visualmente de regreso
+     * @param columnaOrigen Columna a la que deben regresar
+     * @param spGamebackground Pane principal de fondo
+     * @param cartaToImageView Mapa de cartas a sus ImageView
+     * @param hboxTablero HBox del tablero
+     * @param cartasEnJuego Lista de cartas en juego
+     * @param calcularEspaciadoVertical Función para calcular el espaciado vertical
+     * @param onFinished Runnable opcional para ejecutar al terminar
+     */
+    public static void animarUndoVisual(List<?> grupo, int columnaOrigen, Pane spGamebackground,
+                                        java.util.Map<?, ImageView> cartaToImageView, javafx.scene.layout.HBox hboxTablero,
+                                        List<?> cartasEnJuego, java.util.function.IntFunction<Double> calcularEspaciadoVertical,
+                                        Object cartaDebajo, Runnable onFinished) {
+        if (grupo == null || grupo.isEmpty()) {
+            if (onFinished != null) onFinished.run();
+            return;
+        }
+        Pane animPane = new Pane();
+        animPane.setPickOnBounds(false);
+        spGamebackground.getChildren().add(animPane);
+
+        List<ImageView> clones = new ArrayList<>();
+        List<Double> origX = new ArrayList<>();
+        List<Double> origY = new ArrayList<>();
+        List<ImageView> originales = new ArrayList<>();
+
+        for (Object carta : grupo) {
+            ImageView original = cartaToImageView.get(carta);
+            if (original == null) continue;
+            originales.add(original);
+            javafx.geometry.Bounds bounds = original.localToScene(original.getBoundsInLocal());
+            javafx.geometry.Bounds parentBounds = spGamebackground.sceneToLocal(bounds);
+            ImageView clone = new ImageView(original.getImage());
+            clone.setFitWidth(original.getFitWidth());
+            clone.setPreserveRatio(true);
+            clone.setSmooth(true);
+            clone.setLayoutX(parentBounds.getMinX());
+            clone.setLayoutY(parentBounds.getMinY());
+            clones.add(clone);
+            origX.add(parentBounds.getMinX());
+            origY.add(parentBounds.getMinY());
+            animPane.getChildren().add(clone);
+            original.setVisible(false);
+        }
+
+        Pane columnaOrigenPane = (Pane) hboxTablero.getChildren().get(columnaOrigen);
+        double destX = 0, destY = 0;
+        javafx.geometry.Bounds destBounds = columnaOrigenPane.localToScene(columnaOrigenPane.getBoundsInLocal());
+        javafx.geometry.Bounds destParentBounds = spGamebackground.sceneToLocal(destBounds);
+        destX = destParentBounds.getMinX();
+        int cartasEnColOrig = (int) cartasEnJuego.stream()
+                .filter(c -> {
+                    try {
+                        java.lang.reflect.Method getColumna = c.getClass().getMethod("getColumna");
+                        return (int) getColumna.invoke(c) == columnaOrigen;
+                    } catch (Exception e) { return false; }
+                })
+                .count();
+        int totalCartasDespues = cartasEnColOrig + grupo.size();
+        double spacing = calcularEspaciadoVertical.apply(totalCartasDespues);
+
+        // Calcular la posición Y real del primer clon: justo después de la última carta visible
+        double baseY;
+        if (cartasEnColOrig > 0) {
+            // Buscar la última carta visible en la columna origen
+            Object ultima = cartasEnJuego.stream()
+                    .filter(c -> {
+                        try {
+                            java.lang.reflect.Method getColumna = c.getClass().getMethod("getColumna");
+                            return (int) getColumna.invoke(c) == columnaOrigen;
+                        } catch (Exception e) { return false; }
+                    })
+                    .max((a, b) -> {
+                        try {
+                            java.lang.reflect.Method getOrden = a.getClass().getMethod("getOrden");
+                            int ordenA = (int) getOrden.invoke(a);
+                            int ordenB = (int) getOrden.invoke(b);
+                            return Integer.compare(ordenA, ordenB);
+                        } catch (Exception e) { return 0; }
+                    })
+                    .orElse(null);
+            if (ultima != null) {
+                ImageView ivUltima = cartaToImageView.get(ultima);
+                if (ivUltima != null) {
+                    javafx.geometry.Bounds b = ivUltima.localToScene(ivUltima.getBoundsInLocal());
+                    javafx.geometry.Bounds pb = spGamebackground.sceneToLocal(b);
+                    baseY = pb.getMinY() + spacing;
+                } else {
+                    baseY = destParentBounds.getMinY() + cartasEnColOrig * spacing;
+                }
+            } else {
+                baseY = destParentBounds.getMinY() + cartasEnColOrig * spacing;
+            }
+        } else {
+            baseY = destParentBounds.getMinY();
+        }
+
+        javafx.animation.ParallelTransition toOrig = new javafx.animation.ParallelTransition();
+        for (int i = 0; i < clones.size(); i++) {
+            ImageView clone = clones.get(i);
+            double targetX = destX;
+            double targetY = baseY + i * spacing;
+            javafx.animation.TranslateTransition back = new javafx.animation.TranslateTransition(javafx.util.Duration.millis(400), clone);
+            back.setToX(targetX - origX.get(i));
+            back.setToY(targetY - origY.get(i));
+            toOrig.getChildren().add(back);
+        }
+
+        Runnable doMove = () -> {
+            javafx.animation.SequentialTransition seq = new javafx.animation.SequentialTransition(
+                    toOrig,
+                    new javafx.animation.PauseTransition(javafx.util.Duration.millis(350))
+            );
+            seq.setOnFinished(e -> {
+                spGamebackground.getChildren().remove(animPane);
+                for (ImageView original : originales) {
+                    original.setVisible(true);
+                }
+                if (onFinished != null) onFinished.run();
+            });
+            seq.play();
+        };
+
+        if (cartaDebajo != null) {
+            ImageView ivDebajo = cartaToImageView.get(cartaDebajo);
+            if (ivDebajo != null) {
+                // Determinar imagen trasera según el estilo de cartas
+                boolean usarEstiloClasico = false;
+                Object estiloEnContext = cr.ac.una.proyectospider.util.AppContext.getInstance().get(cr.ac.una.proyectospider.util.AppContext.KEY_ESTILO_CARTAS);
+                if (estiloEnContext instanceof String) {
+                    String rutaEstilo = (String) estiloEnContext;
+                    usarEstiloClasico = rutaEstilo.equals(cr.ac.una.proyectospider.util.AppContext.RUTA_CARTAS_CLASICAS);
+                }
+                String imgTrasera = usarEstiloClasico ? "rear.png" : "rearS.png";
+                javafx.scene.image.Image imgTraseraObj = new javafx.scene.image.Image(
+                    AnimationDepartment.class.getResourceAsStream("/cr/ac/una/proyectospider/resources/" + imgTrasera)
+                );
+                AnimationDepartment.flipCardAnimation(ivDebajo, imgTraseraObj, () -> {
+                    doMove.run();
+                });
+                return;
+            }
+        }
+        doMove.run();
+    }
 }

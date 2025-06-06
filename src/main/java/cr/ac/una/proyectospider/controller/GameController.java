@@ -697,37 +697,37 @@ public class GameController extends Controller implements Initializable {
 
                     if (puedeMover) {
                         SoundDepartment.playFlip();
-                        // 1) Actualizar modelo
-                        moverCartasSeleccionadas(colIndex);
-                        // 2) Voltear carta debajo en la columna origen, si existe
+                        // 1) Verificar si hay carta debajo que debe voltearse
                         Optional<CartasPartidaDto> cartaDebajoOpt = cartasEnJuego.stream()
                                 .filter(c -> c.getColumna() == colAnterior && c.getOrden() == ordenAnterior - 1)
                                 .findFirst();
-                        // Redibuja primero
-                        dibujarColumnasYCargarCartasEnTablero();
-                        actualizarVistaDelMazoYPilas();
                         if (cartaDebajoOpt.isPresent() && !cartaDebajoOpt.get().getBocaArriba()) {
                             CartasPartidaDto cartaDebajo = cartaDebajoOpt.get();
-                            cartaDebajo.setBocaArriba(true); // Actualiza modelo
                             ImageView iv = cartaToImageView.get(cartaDebajo);
+                            cartaDebajo.setBocaArriba(true); // Actualiza modelo
                             if (iv != null) {
-                                // Obtener imagen boca arriba
                                 String imgArchivoFlip = cartaDebajo.getImagenNombre();
                                 Image imgBocaArriba = new Image(getClass().getResourceAsStream("/cr/ac/una/proyectospider/resources/" + imgArchivoFlip));
                                 AnimationDepartment.flipCardAnimation(iv, imgBocaArriba, () -> {
+                                    // Ahora sí, mover las cartas y redibujar
+                                    moverCartasSeleccionadas(colIndex);
                                     dibujarColumnasYCargarCartasEnTablero();
                                     actualizarVistaDelMazoYPilas();
+                                    cartasSeleccionadas.clear();
                                 });
                             } else {
+                                moverCartasSeleccionadas(colIndex);
                                 dibujarColumnasYCargarCartasEnTablero();
                                 actualizarVistaDelMazoYPilas();
+                                cartasSeleccionadas.clear();
                             }
                         } else {
+                            moverCartasSeleccionadas(colIndex);
                             dibujarColumnasYCargarCartasEnTablero();
                             actualizarVistaDelMazoYPilas();
+                            cartasSeleccionadas.clear();
                         }
                         success = true;
-                        cartasSeleccionadas.clear();
                         event.setDropCompleted(success);
                         event.consume();
                         return;
@@ -1101,18 +1101,37 @@ public class GameController extends Controller implements Initializable {
         if (historialMovimientos.isEmpty()) return;
         Movimiento mov = historialMovimientos.pop();
         if (mov.tipo == Movimiento.Tipo.MOVER) {
-            for (int i = 0; i < mov.cartasMovidas.size(); i++) {
-                CartasPartidaDto carta = mov.cartasMovidas.get(i);
-                carta.setColumna(mov.columnasOrigen.get(i));
-                carta.setOrden(mov.ordenesOrigen.get(i));
-                carta.setBocaArriba(mov.bocasArribaOrigen.get(i));
-            }
-            // Restaurar carta debajo si fue volteada
-            if (mov.cartaDebajoVolteada != null && mov.cartaDebajoVolteadaEstadoAnterior != null) {
-                mov.cartaDebajoVolteada.setBocaArriba(mov.cartaDebajoVolteadaEstadoAnterior);
-            }
-            movimientos = Math.max(0, movimientos - 1);
-            puntaje = Math.max(0, puntaje - 1); // Resta 1 punto por undo
+            List<CartasPartidaDto> cartasAMover = new ArrayList<>(mov.cartasMovidas);
+            int columnaOrigen = mov.columnasOrigen.get(0); // Todas vuelven a la misma columna origen
+            Object cartaDebajo = mov.cartaDebajoVolteada; // Puede ser null
+            AnimationDepartment.animarUndoVisual(
+                cartasAMover,
+                columnaOrigen,
+                spGamebackground,
+                cartaToImageView,
+                hboxTablero,
+                cartasEnJuego,
+                (n) -> calcularEspaciadoVertical(n),
+                cartaDebajo,
+                () -> {
+                    for (int i = 0; i < mov.cartasMovidas.size(); i++) {
+                        CartasPartidaDto carta = mov.cartasMovidas.get(i);
+                        carta.setColumna(mov.columnasOrigen.get(i));
+                        carta.setOrden(mov.ordenesOrigen.get(i));
+                        carta.setBocaArriba(mov.bocasArribaOrigen.get(i));
+                    }
+                    if (mov.cartaDebajoVolteada != null && mov.cartaDebajoVolteadaEstadoAnterior != null) {
+                        mov.cartaDebajoVolteada.setBocaArriba(mov.cartaDebajoVolteadaEstadoAnterior);
+                    }
+                    movimientos = Math.max(0, movimientos - 1);
+                    puntaje = Math.max(0, puntaje - 1);
+                    lblMovimientos.setText("" + movimientos);
+                    lblPuntaje.setText("" + puntaje);
+                    dibujarColumnasYCargarCartasEnTablero();
+                    actualizarVistaDelMazoYPilas();
+                }
+            );
+            return;
         } else if (mov.tipo == Movimiento.Tipo.REPARTIR) {
             for (int i = 0; i < mov.cartasRepartidas.size(); i++) {
                 CartasPartidaDto carta = mov.cartasRepartidas.get(i);
@@ -1122,7 +1141,7 @@ public class GameController extends Controller implements Initializable {
                 carta.setBocaArriba(false);
             }
             movimientos = Math.max(0, movimientos - 1);
-            puntaje = Math.max(0, puntaje - 1); // Resta 1 punto por undo
+            puntaje = Math.max(0, puntaje - 1);
         }
         lblMovimientos.setText("" + movimientos);
         lblPuntaje.setText("" + puntaje);
@@ -1597,5 +1616,6 @@ public class GameController extends Controller implements Initializable {
 
 
 }
+
 
 
