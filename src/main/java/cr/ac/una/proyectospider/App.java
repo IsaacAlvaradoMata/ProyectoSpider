@@ -32,7 +32,6 @@ public class App extends Application {
         stage.setTitle("Solitario Spider");
         stage.getIcons().add(new Image(getClass().getResourceAsStream("/cr/ac/una/proyectospider/resources/LogoSpiderIcon.png")));
 
-        // Música de fondo
         if (mediaPlayer == null) {
             String musicPath = getClass().getResource("/cr/ac/una/proyectospider/resources/Night Drive.mp3").toExternalForm();
             Media media = new Media(musicPath);
@@ -59,7 +58,6 @@ public class App extends Application {
             if (scene == null) return;
             Pane rootPane = (Pane) scene.getRoot();
 
-            // Cambia la extensión a .gif y revisa la ruta
             String cursorGifPath = "/cr/ac/una/proyectospider/resources/CustomSpider.gif";
             java.net.URL gifUrl = getClass().getResource(cursorGifPath);
             if (gifUrl == null) {
@@ -72,24 +70,19 @@ public class App extends Application {
             ivCursor.setFitHeight(95);
             Pane cursorPane = new Pane(ivCursor);
 
-            // Mostrar el cursor nativo solo cuando el mouse está sobre la ventana
             scene.addEventFilter(javafx.scene.input.MouseEvent.MOUSE_ENTERED, e -> {
                 scene.setCursor(javafx.scene.Cursor.NONE);
             });
             scene.addEventFilter(javafx.scene.input.MouseEvent.MOUSE_EXITED, e -> {
                 scene.setCursor(javafx.scene.Cursor.DEFAULT);
             });
-            // Inicialmente, ocultar el cursor nativo
             scene.setCursor(javafx.scene.Cursor.NONE);
 
             new CustomCursor(scene, rootPane, cursorPane, 40, 36);
         });
     }
 
-    /**
-     * Recorre recursivamente los nodos y agrega listeners para restaurar el cursor custom
-     * al salir de TextField y PasswordField (hover y focus).
-     */
+
     private void addCursorListenersToTextInputs(Node node, ImageCursor customCursor, Scene escena) {
         if (node instanceof TextField || node instanceof PasswordField) {
             ChangeListener<Boolean> hoverListener = (obs, oldVal, newVal) -> {

@@ -799,7 +799,6 @@ public class AnimationDepartment {
             TranslateTransition bajar = new TranslateTransition(Duration.seconds(2), arana);
             bajar.setToY(95);
             bajar.play();
-            activeAnimations.add(bajar);
         });
 
         PauseTransition delayBeforeRise = new PauseTransition(Duration.seconds(3.5));
@@ -826,10 +825,8 @@ public class AnimationDepartment {
                 });
 
                 hideWeb.play();
-                activeAnimations.add(hideWeb);
             });
             subir.play();
-            activeAnimations.add(subir);
         });
 
         SequentialTransition ciclo = new SequentialTransition(revealWeb, delayBeforeDrop, delayBeforeRise);
@@ -873,6 +870,7 @@ public class AnimationDepartment {
             startVictoryEffects(celebrationLayer, parent, usarEstiloClasico, onFinished);
         });
         fadeInLayer.play();
+        activeAnimations.add(fadeInLayer);
     }
 
     private static void startVictoryEffects(
@@ -912,6 +910,7 @@ public class AnimationDepartment {
             tt.setInterpolator(Interpolator.LINEAR);
             tt.setOnFinished(e2 -> celebrationLayer.getChildren().remove(cartaIV));
             tt.play();
+            activeAnimations.add(tt);
 
             // Rotación infinita
             RotateTransition rot = new RotateTransition(Duration.seconds(1 + rnd.nextDouble()), cartaIV);
@@ -919,6 +918,7 @@ public class AnimationDepartment {
             rot.setCycleCount(Animation.INDEFINITE);
             rot.setInterpolator(Interpolator.LINEAR);
             rot.play();
+            activeAnimations.add(rot);
 
             // “Sway” horizontal infinito
             TranslateTransition sway = new TranslateTransition(Duration.seconds(1 + rnd.nextDouble()), cartaIV);
@@ -926,9 +926,11 @@ public class AnimationDepartment {
             sway.setAutoReverse(true);
             sway.setCycleCount(Animation.INDEFINITE);
             sway.play();
+            activeAnimations.add(sway);
         }));
         cartasSpawner.setCycleCount(Animation.INDEFINITE);
         cartasSpawner.play();
+        activeAnimations.add(cartasSpawner);
 
         // 4) Lluvia infinita de confeti
         Color[] paleta = new Color[]{
@@ -953,6 +955,7 @@ public class AnimationDepartment {
             ttConf.setInterpolator(Interpolator.LINEAR);
             ttConf.setOnFinished(e2 -> celebrationLayer.getChildren().remove(confetti));
             ttConf.play();
+            activeAnimations.add(ttConf);
 
             // Giro infinito
             RotateTransition rotConf = new RotateTransition(
@@ -961,9 +964,11 @@ public class AnimationDepartment {
             rotConf.setCycleCount(Animation.INDEFINITE);
             rotConf.setInterpolator(Interpolator.LINEAR);
             rotConf.play();
+            activeAnimations.add(rotConf);
         }));
         confettiSpawner.setCycleCount(Animation.INDEFINITE);
         confettiSpawner.play();
+        activeAnimations.add(confettiSpawner);
 
         // 5) Telarañas y arañas: 4 ciclos distribuidos horizontalmente
         Image spiderImg = new Image(
@@ -1073,6 +1078,7 @@ public class AnimationDepartment {
                                 }
                             });
                             fadeOutLayer.play();
+                            activeAnimations.add(fadeOutLayer);
                         }
                     });
                     hideWeb.play();
@@ -1087,6 +1093,7 @@ public class AnimationDepartment {
                     delayBeforeRise
             );
             ciclo.play();
+            activeAnimations.add(ciclo);
         }
 
         // 7) Label “¡VICTORIA!” en el centro, encima de todo lo demás
