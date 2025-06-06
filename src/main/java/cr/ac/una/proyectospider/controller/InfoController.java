@@ -2,6 +2,7 @@ package cr.ac.una.proyectospider.controller;
 
 import cr.ac.una.proyectospider.util.AnimationDepartment;
 import cr.ac.una.proyectospider.util.FlowController;
+import cr.ac.una.proyectospider.util.SoundDepartment;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -300,6 +301,7 @@ public class InfoController extends Controller implements Initializable {
 
     @FXML
     private void onMouseClickedbtnVolver(MouseEvent event) {
+        SoundDepartment.playClick();
         AnimationDepartment.stopAllAnimations();
         btnVolver.setDisable(true);
 

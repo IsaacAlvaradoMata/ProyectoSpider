@@ -381,6 +381,7 @@ public class AnimationDepartment {
 
     //    GLITCH DE SALIDA
     public static void glitchFadeOut(Node targetNode, Duration totalDuration, Runnable onFinished) {
+        SoundDepartment.playTransition();
         DropShadow dropShadow = new DropShadow(20, Color.web("#ff00ff"));
 
         Timeline glitchFadeEffect = new Timeline(
@@ -454,6 +455,7 @@ public class AnimationDepartment {
 
     //    GLITCH DE ENTRADA
     public static void glitchFadeIn(Node targetNode, Duration totalDuration) {
+        SoundDepartment.playTransition2();
         DropShadow magentaShadow = new DropShadow(20, Color.web("#ff00ff"));
         DropShadow cyanShadow = new DropShadow(20, Color.web("#00ffff"));
         DropShadow greenShadow = new DropShadow(20, Color.web("#39ff14"));

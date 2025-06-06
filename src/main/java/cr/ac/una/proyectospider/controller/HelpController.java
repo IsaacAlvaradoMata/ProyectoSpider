@@ -9,6 +9,7 @@ import java.util.ResourceBundle;
 
 import cr.ac.una.proyectospider.util.AnimationDepartment;
 import cr.ac.una.proyectospider.util.FlowController;
+import cr.ac.una.proyectospider.util.SoundDepartment;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -393,30 +394,35 @@ public class HelpController extends Controller implements Initializable {
 
     @FXML
     private void OnMouseClickedBtnControles(MouseEvent event) {
+        SoundDepartment.playClick();
         tabpaneCentroDeInfo.getSelectionModel().select(tabControles);
         seleccionarOpcionCompleta(spControles, btnControles, lblControles);
     }
 
     @FXML
     private void OnMouseClickedBtnObjetivo(MouseEvent event) {
+        SoundDepartment.playClick();
         tabpaneCentroDeInfo.getSelectionModel().select(tabOjetivoJuego);
         seleccionarOpcionCompleta(spObjetivo, btnObjetivo, lblIObjetivo);
     }
 
     @FXML
     private void OnMouseClickedBtnDificultades(MouseEvent event) {
+        SoundDepartment.playClick();
         tabpaneCentroDeInfo.getSelectionModel().select(tabDificultades);
         seleccionarOpcionCompleta(spDificultades, btnDificultades, lblDificultades);
     }
 
     @FXML
     private void OnMouseClickedBtnCondiciones(MouseEvent event) {
+        SoundDepartment.playClick();
         tabpaneCentroDeInfo.getSelectionModel().select(tabCondiciones);
         seleccionarOpcionCompleta(spCondiciones, btnCondiciones, lblCondiciones);
     }
 
     @FXML
     private void OnMouseClickedBtnExplicacion(MouseEvent event) {
+        SoundDepartment.playClick();
         tabpaneCentroDeInfo.getSelectionModel().select(tabExplicacion);
         seleccionarOpcionCompleta(spExplicacion, btnExplicacion, lblExplicacion);
     }
@@ -424,6 +430,7 @@ public class HelpController extends Controller implements Initializable {
 
     @FXML
     private void OnMouseClickedBtnBolver(MouseEvent event) {
+        SoundDepartment.playClick();
         AnimationDepartment.stopAllAnimations();
         btnVolver.setDisable(true);
 

@@ -17,6 +17,7 @@ import java.util.function.Consumer;
 public class CustomAlert {
 
     public static void showInfo(StackPane parent, String titulo, String mensaje, Runnable onClose) {
+        SoundDepartment.playAlert();
         Pane overlay = new Pane();
         overlay.setStyle("-fx-background-color: rgba(0,0,0,0.5);");
         overlay.prefWidthProperty().bind(parent.widthProperty());
@@ -91,6 +92,7 @@ public class CustomAlert {
 
 
     public static void showConfirmation(StackPane parent, String titulo, String mensaje, Consumer<Boolean> callback) {
+        SoundDepartment.playAlert();
         Pane overlay = new Pane();
         overlay.setStyle("-fx-background-color: rgba(0,0,0,0.5);");
         overlay.prefWidthProperty().bind(parent.widthProperty());

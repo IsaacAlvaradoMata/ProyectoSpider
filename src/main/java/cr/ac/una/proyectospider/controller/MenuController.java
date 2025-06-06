@@ -317,6 +317,7 @@ public class MenuController extends Controller implements Initializable {
 
     @FXML
     private void onMouseClickedbtnNuevaPartida(MouseEvent event) {
+        SoundDepartment.playClick();
         btnNuevaPartida.setDisable(true);
         AnimationDepartment.stopAllAnimations();
         AnimationDepartment.glitchFadeOut(spBackgroundMenu, Duration.seconds(1.1), () -> {
@@ -354,6 +355,7 @@ public class MenuController extends Controller implements Initializable {
 
     @FXML
     private void onMouseClickedbtnContinuarPartida(MouseEvent event) {
+        SoundDepartment.playClick();
         PartidaDto seleccionada = tblviewPartidasPausadas.getSelectionModel().getSelectedItem();
 
         if (seleccionada == null) {
@@ -379,6 +381,7 @@ public class MenuController extends Controller implements Initializable {
 
     @FXML
     private void onMouseClickedbtnPersonalizacion(MouseEvent event) {
+        SoundDepartment.playClick();
         btnPersonalizacion.setDisable(true);
         AnimationDepartment.stopAllAnimations();
 
@@ -393,6 +396,7 @@ public class MenuController extends Controller implements Initializable {
 
     @FXML
     private void onMouseClickedbtnVerPuntajes(MouseEvent event) {
+        SoundDepartment.playClick();
 
         btnVerPuntajes.setDisable(true);
         AnimationDepartment.stopAllAnimations();
@@ -408,6 +412,7 @@ public class MenuController extends Controller implements Initializable {
 
     @FXML
     private void onMouseClickedbtnAyuda(MouseEvent event) {
+        SoundDepartment.playClick();
         btnAyuda.setDisable(true);
         AnimationDepartment.stopAllAnimations();
 
@@ -422,6 +427,7 @@ public class MenuController extends Controller implements Initializable {
 
     @FXML
     private void onMouseClickedbtnCerrarSesion(MouseEvent event) {
+        SoundDepartment.playClick();
         btnCerrarSesion.setDisable(true);
         AnimationDepartment.stopAllAnimations();
 

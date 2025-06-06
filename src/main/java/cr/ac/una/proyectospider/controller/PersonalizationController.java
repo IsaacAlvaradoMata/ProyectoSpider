@@ -297,6 +297,7 @@ public class PersonalizationController extends Controller implements Initializab
 
     @FXML
     private void onMouseClickedbtnGuardarCambios(MouseEvent event) {
+        SoundDepartment.playClick();
         // 1. Guardar el fondo seleccionado
         Image fondoSeleccionado = imgPrevistaFondo.getImage();
         AppContext.getInstance().set(AppContext.KEY_FONDO_SELECCIONADO, fondoSeleccionado);
@@ -324,18 +325,21 @@ public class PersonalizationController extends Controller implements Initializab
 
     @FXML
     private void OnMouseClickedbtnFlechaIzquierda(MouseEvent event) {
+        SoundDepartment.playClick();
         currentIndex = (currentIndex - 1 + fondosPredeterminados.size()) % fondosPredeterminados.size();
         mostrarFondoPreview();
     }
 
     @FXML
     private void OnMouseClickedbtnFlechaDerecha(MouseEvent event) {
+        SoundDepartment.playClick();
         currentIndex = (currentIndex + 1) % fondosPredeterminados.size();
         mostrarFondoPreview();
     }
 
     @FXML
     private void onMouseClickedbtnAgregarOtro(MouseEvent event) {
+        SoundDepartment.playClick();
         Window ventanaActual = root.getScene().getWindow();
 
         FileChooser fileChooser = new FileChooser();
@@ -369,6 +373,7 @@ public class PersonalizationController extends Controller implements Initializab
 
     @FXML
     private void onMouseClickedbtnVolver(MouseEvent event) {
+        SoundDepartment.playClick();
         AnimationDepartment.stopAllAnimations();
         btnVolver.setDisable(true);
 

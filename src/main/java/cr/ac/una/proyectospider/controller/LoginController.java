@@ -2,10 +2,7 @@ package cr.ac.una.proyectospider.controller;
 
 import cr.ac.una.proyectospider.model.JugadorDto;
 import cr.ac.una.proyectospider.service.JugadorService;
-import cr.ac.una.proyectospider.util.AnimationDepartment;
-import cr.ac.una.proyectospider.util.AppContext;
-import cr.ac.una.proyectospider.util.CustomAlert;
-import cr.ac.una.proyectospider.util.FlowController;
+import cr.ac.una.proyectospider.util.*;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -164,6 +161,7 @@ public class LoginController extends Controller implements Initializable {
 
     @FXML
     private void onMouseClickedbtnRegistrarJugador(MouseEvent event) {
+        SoundDepartment.playClick();
 //        String nombre = txtfildLogin.getText();
 //
 //        if (nombre == null || nombre.trim().isEmpty()) {
@@ -204,6 +202,7 @@ public class LoginController extends Controller implements Initializable {
 
     @FXML
     private void onMouseClickedbtnIniciarSesion(MouseEvent event) {
+        SoundDepartment.playClick();
         BtnIniciarSesion.setDisable(true);
         String nombre = txtfildLogin.getText();
 
@@ -250,6 +249,7 @@ public class LoginController extends Controller implements Initializable {
 
     @FXML
     private void onMouseClickedbtnAcercaDe(MouseEvent event) {
+        SoundDepartment.playClick();
         btnAcercaDe.setDisable(true);
         AnimationDepartment.stopAllAnimations();
         AnimationDepartment.glitchFadeOut(spBackgroundLogin, Duration.seconds(1.1), () -> {

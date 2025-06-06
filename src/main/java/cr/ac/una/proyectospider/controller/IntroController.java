@@ -5,6 +5,7 @@ import java.util.ResourceBundle;
 
 import cr.ac.una.proyectospider.util.AnimationDepartment;
 import cr.ac.una.proyectospider.util.FlowController;
+import cr.ac.una.proyectospider.util.SoundDepartment;
 import javafx.animation.*;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -84,6 +85,7 @@ public class IntroController extends Controller implements Initializable {
 
     @FXML
     private void onMouseClickedButtonComenzar(MouseEvent event) {
+        SoundDepartment.playClick();
         imgButtonComenzar.setDisable(true);
         AnimationDepartment.stopAllAnimations();
         AnimationDepartment.glitchFadeOut(spBackground, Duration.seconds(1.1), () -> {

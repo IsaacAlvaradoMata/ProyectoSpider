@@ -10,6 +10,7 @@ import java.util.ResourceBundle;
 import cr.ac.una.proyectospider.model.JugadorRankingMock;
 import cr.ac.una.proyectospider.util.AnimationDepartment;
 import cr.ac.una.proyectospider.util.FlowController;
+import cr.ac.una.proyectospider.util.SoundDepartment;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
@@ -74,7 +75,7 @@ public class PointsController extends Controller implements Initializable {
 
     @FXML
     private void OnMouseClickedBtnBolver(MouseEvent event) {
-
+        SoundDepartment.playClick();
         AnimationDepartment.stopAllAnimations();
         btnVolver.setDisable(true);
 
@@ -302,6 +303,7 @@ public class PointsController extends Controller implements Initializable {
 
     @FXML
     private void onMouseClickedbtnBuscar(MouseEvent event) {
+        SoundDepartment.playClick();
     }
 
 
