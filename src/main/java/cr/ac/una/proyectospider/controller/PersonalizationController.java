@@ -10,10 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
-import cr.ac.una.proyectospider.util.AnimationDepartment;
-import cr.ac.una.proyectospider.util.AppContext;
-import cr.ac.una.proyectospider.util.FlowController;
-import cr.ac.una.proyectospider.util.Mensaje;
+import cr.ac.una.proyectospider.util.*;
 import javafx.animation.FadeTransition;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -313,13 +310,14 @@ public class PersonalizationController extends Controller implements Initializab
         }
         AppContext.getInstance().set(AppContext.KEY_ESTILO_CARTAS, claveEstilo);
 
-        // 3. Feedback al usuario
-        new Mensaje().showModal(
-                javafx.scene.control.Alert.AlertType.INFORMATION,
-                "Configuración guardada",
-                getStage(),
-                "El fondo y el estilo de cartas han sido guardados correctamente."
+        CustomAlert.showInfo(
+                spBackgroundPersonalization,                 // El StackPane padre donde “dibuja” la alerta
+                "Configuración guardada",                    // Título del diálogo
+                "El fondo y el estilo de cartas han sido guardados correctamente.",
+                null                                         // Runnable que se ejecuta cuando cierre la alerta (aquí no necesitamos nada más)
         );
+        // 3. Feedback al usuario
+
     }
 
 
@@ -358,11 +356,11 @@ public class PersonalizationController extends Controller implements Initializab
 
 
             } catch (Exception ex) {
-                new Mensaje().showModal(
-                        javafx.scene.control.Alert.AlertType.ERROR,
-                        "Error al cargar imagen",
-                        getStage(),
-                        "No se pudo cargar la imagen seleccionada:\n" + ex.getMessage()
+                CustomAlert.showInfo(
+                        spBackgroundPersonalization,                 // El StackPane padre donde “dibuja” la alerta
+                        "Error al cargar imagen",                    // Título del diálogo
+                        "No se pudo cargar la imagen seleccionada:\n" + ex.getMessage(),
+                        null                                         // Runnable que se ejecuta cuando cierre la alerta (aquí no necesitamos nada más)
                 );
             }
         }

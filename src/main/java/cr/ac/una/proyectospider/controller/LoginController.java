@@ -4,6 +4,7 @@ import cr.ac.una.proyectospider.model.JugadorDto;
 import cr.ac.una.proyectospider.service.JugadorService;
 import cr.ac.una.proyectospider.util.AnimationDepartment;
 import cr.ac.una.proyectospider.util.AppContext;
+import cr.ac.una.proyectospider.util.CustomAlert;
 import cr.ac.una.proyectospider.util.FlowController;
 
 import java.net.URL;
@@ -163,42 +164,42 @@ public class LoginController extends Controller implements Initializable {
 
     @FXML
     private void onMouseClickedbtnRegistrarJugador(MouseEvent event) {
- /*       String nombre = txtfildLogin.getText();
+//        String nombre = txtfildLogin.getText();
+//
+//        if (nombre == null || nombre.trim().isEmpty()) {
+//            CustomAlert.showInfo(
+//                spBackgroundLogin,
+//                "Campo vacío",
+//                "Por favor ingrese un nombre de usuario.",
+//                null
+//            );
+//            return;
+//        }
+//
+//        JugadorService jugadorService = new JugadorService();
+//        JugadorDto jugador = jugadorService.registrarJugador(nombre.trim());
+//
+//        if (jugador == null) {
+//            CustomAlert.showInfo(
+//                spBackgroundLogin,
+//                "Usuario existente",
+//                "Ya existe un jugador con ese nombre. Usa el botón de iniciar sesión.",
+//                null
+//            );
+//            return;
+//        }
 
-        if (nombre == null || nombre.trim().isEmpty()) {
-            Alert alerta = new Alert(Alert.AlertType.WARNING);
-            alerta.setTitle("Campo vacío");
-            alerta.setHeaderText(null);
-            alerta.setContentText("Por favor ingrese un nombre de usuario.");
-            alerta.showAndWait();
-            return;
-        }
-
-        JugadorService jugadorService = new JugadorService();
-        JugadorDto jugador = jugadorService.registrarJugador(nombre.trim());
-
-        if (jugador == null) {
-            // Ya existe jugador
-            Alert existe = new Alert(Alert.AlertType.WARNING);
-            existe.setTitle("Usuario existente");
-            existe.setHeaderText(null);
-            existe.setContentText("Ya existe un jugador con ese nombre. Usa el botón de iniciar sesión.");
-            existe.showAndWait();
-            return;
-        }
-
-        // Registro exitoso
-        Alert exito = new Alert(Alert.AlertType.INFORMATION);
-        exito.setTitle("Registro exitoso");
-        exito.setHeaderText(null);
-        exito.setContentText("¡Jugador registrado exitosamente!");*/
-
-//        exito.showAndWait().ifPresent(response -> {
-//            AppContext.getInstance().set("jugadorActivo", jugador);
-            FlowController.getInstance().goView("MenuView");
-            MenuController controller = (MenuController) FlowController.getInstance().getController("MenuView");
-            controller.RunMenuView();
-//        });
+//        CustomAlert.showInfo(
+//            spBackgroundLogin,
+//            "Registro exitoso",
+//            "¡Jugador registrado exitosamente!",
+//            () -> {
+//                AppContext.getInstance().set("jugadorActivo", jugador);
+                FlowController.getInstance().goView("MenuView");
+                MenuController controller = (MenuController) FlowController.getInstance().getController("MenuView");
+                controller.RunMenuView();
+//            }
+//        );
     }
 
     @FXML
@@ -207,12 +208,12 @@ public class LoginController extends Controller implements Initializable {
         String nombre = txtfildLogin.getText();
 
         if (nombre == null || nombre.trim().isEmpty()) {
-            Alert alerta = new Alert(Alert.AlertType.WARNING);
-            alerta.setTitle("Campo vacío");
-            alerta.setHeaderText(null);
-            alerta.setContentText("Por favor ingrese un nombre de usuario.");
-            alerta.showAndWait();
-            BtnIniciarSesion.setDisable(false);
+            CustomAlert.showInfo(
+                    spBackgroundLogin, // StackPane padre, en tu caso puedes usar el BorderPane root o un StackPane principal
+                    "Campo vacío",
+                    "Por favor ingrese un nombre de usuario.",
+                    () -> BtnIniciarSesion.setDisable(false) // Runnable que se ejecuta al cerrar el diálogo
+            );
             return;
         }
 

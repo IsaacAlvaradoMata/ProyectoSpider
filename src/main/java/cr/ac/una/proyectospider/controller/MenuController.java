@@ -12,10 +12,7 @@ import java.util.ResourceBundle;
 
 import cr.ac.una.proyectospider.model.*;
 import cr.ac.una.proyectospider.service.PartidaService;
-import cr.ac.una.proyectospider.util.AnimationDepartment;
-import cr.ac.una.proyectospider.util.AppContext;
-import cr.ac.una.proyectospider.util.FlowController;
-import cr.ac.una.proyectospider.util.Mensaje;
+import cr.ac.una.proyectospider.util.*;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
@@ -360,13 +357,13 @@ public class MenuController extends Controller implements Initializable {
         PartidaDto seleccionada = tblviewPartidasPausadas.getSelectionModel().getSelectedItem();
 
         if (seleccionada == null) {
-            new Mensaje().show(Alert.AlertType.INFORMATION, "Información", "Debe seleccionar una partida para continuar.");
+            CustomAlert.showInfo(spBackgroundMenu, "Información", "Debe seleccionar una partida para continuar.", null);
             return;
         }
 
         PartidaCompletaDto partidaCompleta = new PartidaService().cargarPartidaCompletaDto(seleccionada.getIdPartida());
         if (partidaCompleta == null) {
-            new Mensaje().show(Alert.AlertType.ERROR, "Error", "No se pudo cargar la partida desde la base de datos.");
+            CustomAlert.showInfo(spBackgroundMenu, "Error", "No se pudo cargar la partida desde la base de datos.", null);
             return;
         }
 
@@ -516,3 +513,5 @@ public class MenuController extends Controller implements Initializable {
         });
     }
 }
+
+

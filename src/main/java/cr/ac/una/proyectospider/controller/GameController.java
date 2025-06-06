@@ -5,11 +5,7 @@ import cr.ac.una.proyectospider.model.JugadorDto;
 import cr.ac.una.proyectospider.model.PartidaCompletaDto;
 import cr.ac.una.proyectospider.model.PartidaDto;
 import cr.ac.una.proyectospider.service.PartidaService;
-import cr.ac.una.proyectospider.util.AnimationDepartment;
-import cr.ac.una.proyectospider.util.AppContext;
-import cr.ac.una.proyectospider.util.FlowController;
-import cr.ac.una.proyectospider.util.MazoGenerator;
-import cr.ac.una.proyectospider.util.SoundDepartment;
+import cr.ac.una.proyectospider.util.*;
 import javafx.animation.*;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -1559,39 +1555,47 @@ public class GameController extends Controller implements Initializable {
 
     @FXML
     void onMouseClickedbtnRendirse(MouseEvent event) {
-        // Deshabilitamos el botón para evitar múltiples clics mientras aparece el diálogo
+        // 1) Deshabilitamos el botón para evitar clics múltiples mientras aparece la alerta
         btnRendirse.setDisable(true);
 
-        // Creamos un Alert de confirmación
-        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
-        confirm.setTitle("Confirmar Rendirse");
-        confirm.setHeaderText("¿Estás seguro de que deseas rendirte?");
-        confirm.setContentText("Si te rindes, la partida se descartará y volverás al menú.");
+        // 2) Llamamos a nuestra CustomAlert
+        CustomAlert.showConfirmation(
+                spGamebackground,                                 // El StackPane padre donde se pintará la capa semi‐transparente
+                "Confirmar Rendirse",                             // Título que aparecerá en la cabecera del diálogo
+                "¿Estás seguro de que deseas rendirte?\n" +
+                        "Si te rindes, la partida se descartará y volverás al menú.",
+                (Boolean usuarioDijoSi) -> {
+                    // Este callback se ejecuta después de que el usuario cierre la alerta.
+                    // 'usuarioDijoSi' es true si pinchó “Sí”, false si pinchó “No”.
 
-        // Mostramos el diálogo y esperamos la respuesta
-        Optional<ButtonType> respuesta = confirm.showAndWait();
-        if (respuesta.isPresent() && respuesta.get() == ButtonType.OK) {
-            // El usuario confirmó. Ejecutamos el flujo de "rendirse" tal cual:
-            AnimationDepartment.stopAllAnimations();
-            detenerTemporizador();
-            primerIngreso = true;
-            cartasEnJuego = null;
-            cartaToImageView.clear();
-            movimientos = 0;
-            puntaje = 500;
-            tiempoIniciado = false;
+                    if (usuarioDijoSi) {
+                        // → El usuario pinchó "Sí", así que ejecutamos el flujo de "rendirse":
+                        AnimationDepartment.stopAllAnimations();
+                        detenerTemporizador();
+                        primerIngreso = true;
+                        cartasEnJuego = null;
+                        cartaToImageView.clear();
+                        movimientos = 0;
+                        puntaje = 500;
+                        tiempoIniciado = false;
 
-            AnimationDepartment.glitchFadeOut(spGamebackground, Duration.seconds(1.1), () -> {
-                FlowController.getInstance().goView("MenuView");
-                MenuController controller = (MenuController) FlowController.getInstance().getController("MenuView");
-                controller.RunMenuView();
-                Platform.runLater(() -> btnRendirse.setDisable(false));
-            });
-        } else {
-            // El usuario canceló; simplemente re‐habilitamos el botón y no hacemos nada más.
-            btnRendirse.setDisable(false);
-        }
+                        // Una vez cancelada la partida, hacemos el glitchFadeOut y cambiamos a menú:
+                        AnimationDepartment.glitchFadeOut(spGamebackground, Duration.seconds(1.1), () -> {
+                            FlowController.getInstance().goView("MenuView");
+                            MenuController controller =
+                                    (MenuController) FlowController.getInstance().getController("MenuView");
+                            controller.RunMenuView();
+                            Platform.runLater(() -> btnRendirse.setDisable(false));
+                        });
+                    } else {
+                        // → El usuario pinchó "No", así que solo re‐habilitamos el botón
+                        btnRendirse.setDisable(false);
+                    }
+                }
+        );
     }
 
+
 }
+
 
