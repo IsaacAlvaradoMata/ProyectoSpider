@@ -917,14 +917,19 @@ public class GameController extends Controller implements Initializable {
                         }
                     });
 
-                    // Cuando termina el drag: volver a mostrar las cartas
+                    // Cuando termina el drag: NO volver a mostrar las cartas aquí, la visibilidad se restaurará tras el redibujado
                     img.setOnDragDone(e -> {
                         e.consume();
-                        for (CartasPartidaDto c2 : cartasArrastradas) {
-                            ImageView iv = cartaToImageView.get(c2);
-                            if (iv != null) iv.setVisible(true);
+                        // Si el drop NO fue exitoso, restaurar visibilidad de las cartas arrastradas
+                        if (e.getTransferMode() == null) {
+                            for (CartasPartidaDto c2 : cartasArrastradas) {
+                                ImageView iv = cartaToImageView.get(c2);
+                                if (iv != null) iv.setVisible(true);
+                            }
                         }
                         cartasArrastradas.clear();
+                        // IMPORTANTE: No llamar a ninguna animación de movimiento aquí.
+                        // Solo restaurar visibilidad tras el redibujado si el drop fue exitoso.
                     });
                 }
 
@@ -1048,7 +1053,7 @@ public class GameController extends Controller implements Initializable {
             boolean yaEstanEnDestino = true;
             for (int i = 0; i < cartasSeleccionadas.size(); i++) {
                 CartasPartidaDto carta = cartasSeleccionadas.get(i);
-                if (!(carta.getColumna() == nuevaColumna && carta.getOrden() == nuevoOrden + i)) {
+                if (carta.getColumna() != nuevaColumna || carta.getOrden() != nuevoOrden + i) {
                     yaEstanEnDestino = false;
                     break;
                 }
