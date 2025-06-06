@@ -85,7 +85,7 @@ public class CartasPartida implements Serializable {
         this.enMazo = dto.getEnMazo();
         this.enPila = dto.getEnPila();
         this.retirada = dto.getRetirada();
-//        this.nombreCarta = dto.getNombreCarta();
+        this.nombreCarta = dto.getImagenNombre(); // <--- ahora sí se asigna correctamente
         this.version = dto.getVersion();
     }
 

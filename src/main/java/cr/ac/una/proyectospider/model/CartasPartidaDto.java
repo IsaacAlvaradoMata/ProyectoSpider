@@ -42,6 +42,7 @@ public class CartasPartidaDto {
         this.enPila.set(entity.getEnPila());
         this.retirada.set(entity.getRetirada());
         this.version = entity.getVersion();
+        this.imagenNombre = entity.getNombreCarta(); // <--- asignar nombre de imagen al DTO
         if (entity.getPartida() != null) {
             this.partida.set(new PartidaDto(entity.getPartida()));
         }
@@ -66,6 +67,7 @@ public class CartasPartidaDto {
         entity.setRetirada(this.retirada.get());
         entity.setVersion(this.version);
         entity.setPartida(partidaRef); // ⚠️ clave foránea segura
+        entity.setNombreCarta(this.imagenNombre); // <--- guardar nombre de imagen
         return entity;
     }
 
