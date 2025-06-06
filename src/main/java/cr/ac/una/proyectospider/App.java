@@ -59,13 +59,17 @@ public class App extends Application {
             if (scene == null) return;
             Pane rootPane = (Pane) scene.getRoot();
 
-            Image rawCursor = new Image(
-                    getClass().getResourceAsStream("/cr/ac/una/proyectospider/resources/CursorSpider.png"),
-                    32, 32, true, true
-            );
+            // Cambia la extensión a .gif y revisa la ruta
+            String cursorGifPath = "/cr/ac/una/proyectospider/resources/CustomSpider.gif";
+            java.net.URL gifUrl = getClass().getResource(cursorGifPath);
+            if (gifUrl == null) {
+                System.err.println("[ERROR] No se encontró el archivo de cursor GIF: " + cursorGifPath);
+                return;
+            }
+            Image rawCursor = new Image(gifUrl.toExternalForm(), 95, 95, true, true);
             ImageView ivCursor = new ImageView(rawCursor);
-            ivCursor.setFitWidth(32);
-            ivCursor.setFitHeight(32);
+            ivCursor.setFitWidth(95);
+            ivCursor.setFitHeight(95);
             Pane cursorPane = new Pane(ivCursor);
 
             // Mostrar el cursor nativo solo cuando el mouse está sobre la ventana
@@ -78,7 +82,7 @@ public class App extends Application {
             // Inicialmente, ocultar el cursor nativo
             scene.setCursor(javafx.scene.Cursor.NONE);
 
-            new CustomCursor(scene, rootPane, cursorPane, 10, 8);
+            new CustomCursor(scene, rootPane, cursorPane, 40, 36);
         });
     }
 
@@ -108,6 +112,4 @@ public class App extends Application {
         launch(args);
     }
 }
-
-
 
