@@ -361,6 +361,10 @@ public class MenuController extends Controller implements Initializable {
             return;
         }
 
+        // Cambiar estado a EN_JUEGO y actualizar en la base de datos
+        seleccionada.setEstado("EN_JUEGO");
+        new PartidaService().actualizarPartida(seleccionada);
+
         PartidaCompletaDto partidaCompleta = new PartidaService().cargarPartidaCompletaDto(seleccionada.getIdPartida());
         if (partidaCompleta == null) {
             CustomAlert.showInfo(spBackgroundMenu, "Error", "No se pudo cargar la partida desde la base de datos.", null);
@@ -513,5 +517,3 @@ public class MenuController extends Controller implements Initializable {
         });
     }
 }
-
-

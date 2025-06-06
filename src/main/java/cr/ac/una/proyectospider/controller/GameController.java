@@ -1652,7 +1652,4 @@ public class GameController extends Controller implements Initializable {
                 }
         );
     }
-
-
 }
-
