@@ -30,19 +30,15 @@ public class CustomAlert {
         dialog.setMinHeight(Region.USE_PREF_SIZE);
         dialog.setPrefHeight(Region.USE_COMPUTED_SIZE);
         dialog.setMaxHeight(300);
-        dialog.setStyle(
-                "-fx-background-color: #2d0062; " +
-                        "-fx-background-radius: 18; " +
-                        "-fx-border-radius: 18; " +
-                        "-fx-border-width: 4px; " +
-                        "-fx-border-color: #ff00ea; " +
-                        "-fx-padding: 20;"
-        );
+        dialog.getStyleClass().add("vbox-alerta");
+
 
         Label lblTitulo = new Label(titulo);
         lblTitulo.setTextFill(Color.web("#FFD700"));
         lblTitulo.setFont(Font.font("Cynatar", FontWeight.EXTRA_BOLD, 40));
         lblTitulo.setWrapText(true);
+        lblTitulo.getStyleClass().add("label-alerta");
+
 
         Label lblMensaje = new Label(mensaje);
         lblMensaje.setTextFill(Color.web("#00fff7"));
@@ -50,21 +46,13 @@ public class CustomAlert {
         lblMensaje.setWrapText(true);
         lblMensaje.setMaxWidth(450);
         lblMensaje.setAlignment(Pos.CENTER);
-        lblMensaje.setStyle("-fx-alignment: center;");
+        lblMensaje.getStyleClass().add("label-alerta");
 
         Button btnOk = new Button("Aceptar");
         btnOk.setPrefWidth(120);
         btnOk.setFont(Font.font("Cynatar", FontWeight.BOLD, 16));
-        btnOk.setStyle(
-                "-fx-background-color: #ff00ea; " +
-                        "-fx-text-fill: #FFD700; " +
-                        "-fx-font-size: 20; " +
-                        "-fx-font-family: 'Cynatar'; " +
-                        "-fx-background-radius: 8; " +
-                        "-fx-border-radius: 8; " +
-                        "-fx-border-width: 2px; " +
-                        "-fx-border-color: #ff00ea; "
-        );
+        btnOk.getStyleClass().add("botones-alerta");
+
         btnOk.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> btnOk.setEffect(
                 new DropShadow(15, Color.web("#ff65ff"))
         ));
@@ -116,19 +104,13 @@ public class CustomAlert {
         dialog.setMinHeight(Region.USE_PREF_SIZE);
         dialog.setPrefHeight(Region.USE_COMPUTED_SIZE);
         dialog.setMaxHeight(300);
-        dialog.setStyle(
-                "-fx-background-color: #2d0062; " +
-                        "-fx-background-radius: 18; " +
-                        "-fx-border-radius: 18; " +
-                        "-fx-border-width: 4px; " +
-                        "-fx-border-color: #ff00ea; " +
-                        "-fx-padding: 20;"
-        );
+        dialog.getStyleClass().add("vbox-alerta");
 
         Label lblTitulo = new Label(titulo);
         lblTitulo.setTextFill(Color.web("#FFD700"));
         lblTitulo.setFont(Font.font("Cynatar", FontWeight.EXTRA_BOLD, 40));
         lblTitulo.setWrapText(true);
+        lblTitulo.getStyleClass().add("label-alerta");
 
         Label lblMensaje = new Label(mensaje);
         lblMensaje.setTextFill(Color.web("#00fff7"));
@@ -136,21 +118,12 @@ public class CustomAlert {
         lblMensaje.setWrapText(true);
         lblMensaje.setMaxWidth(450);
         lblMensaje.setAlignment(Pos.CENTER);
-        lblMensaje.setStyle("-fx-alignment: center;");
+        lblMensaje.getStyleClass().add("label-alerta");
 
         Button btnSi = new Button("Sí");
         btnSi.setPrefWidth(100);
         btnSi.setFont(Font.font("Cynatar", FontWeight.BOLD, 16));
-        btnSi.setStyle(
-                "-fx-background-color: #ff00ea; " +
-                        "-fx-text-fill: #FFD700; " +
-                        "-fx-font-size: 20; " +
-                        "-fx-font-family: 'Cynatar'; " +
-                        "-fx-background-radius: 8; " +
-                        "-fx-border-radius: 8; " +
-                        "-fx-border-width: 2px; " +
-                        "-fx-border-color: #ff00ea; "
-        );
+        btnSi.getStyleClass().add("botones-alerta");
         btnSi.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> btnSi.setEffect(
                 new DropShadow(15, Color.web("#ff65ff"))
         ));
@@ -159,16 +132,7 @@ public class CustomAlert {
         Button btnNo = new Button("No");
         btnNo.setPrefWidth(100);
         btnNo.setFont(Font.font("Cynatar", FontWeight.BOLD, 16));
-        btnNo.setStyle(
-                "-fx-background-color: #ff00ea; " +
-                        "-fx-text-fill: #FFD700; " +
-                        "-fx-font-size: 20; " +
-                        "-fx-font-family: 'Cynatar'; " +
-                        "-fx-background-radius: 8; " +
-                        "-fx-border-radius: 8; " +
-                        "-fx-border-width: 2px; " +
-                        "-fx-border-color: #ff00ea; "
-        );
+        btnNo.getStyleClass().add("botones-alerta");
         btnNo.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> btnNo.setEffect(
                 new DropShadow(15, Color.web("#ff65ff"))
         ));

@@ -243,17 +243,6 @@
     -fx-image: url('../resources/LogoSpiderIcon.png');
 }
 
-/*IMAGENES DE EJEMPLO PARA FONDO Y ESTILO DE CARTAS*/
-
-/*#imgFondoActual {*/
-/*    -fx-image: url('../resources/TableGame.png');*/
-/*}*/
-
-/*#imgCartasActual {*/
-/*    -fx-image: url('../resources/EstiloCartas1.png');*/
-/*}*/
-
-
 
 .label-title-menu {
     -fx-font-family: "Cynatar";
@@ -283,19 +272,18 @@
 }
 
 
-/*000000000000000000000000000000000000000000000000*/
-
 
 .table-view-menu {
     -fx-font-family: "Raster";
-    -fx-background-color: transparent;
+    -fx-background-color: rgba(1, 1, 1, 0.5);
     -fx-control-inner-background: transparent;
     -fx-table-cell-border-color: transparent;
     -fx-border-color: #ffc107;
     -fx-border-width: 3px;
-    -fx-border-radius: 6px;
-    -fx-effect: dropshadow(gaussian, #ff8f00, 15, 0.6, 0, 0); /* Glow reducido */
+    -fx-border-radius: 0px;
     -fx-padding: 10;
+    -fx-effect: dropshadow(gaussian, #ff8f00, 15, 0.6, 0, 0); /* Glow reducido */
+
 }
 
 .table-view-menu .column-header {
@@ -339,16 +327,6 @@
 .table-view-menu .column-header-background {
     -fx-background-color: #000000;
 }
-
-/*.table-view-menu .table-row-cell:selected {*/
-/*    -fx-background-color: #ffc107; !* Color dorado para la selección *!*/
-/*    -fx-text-fill: #2d0062; !* Texto en negro para mejor contraste *!*/
-/*}*/
-
-/*.table-view-menu .table-row-cell:selected .table-cell {*/
-/*    -fx-background-color: #ffc107; !* Mantiene coherencia con la fila *!*/
-/*    -fx-text-fill: #2d0062;*/
-/*}*/
 
 
 
@@ -686,3 +664,32 @@
     -fx-effect: dropshadow(gaussian, #00ffff, 20, 0.6, 0, 0);
 }
 
+
+/*ALERTAS PERSONALIZADAS*/
+
+.botones-alerta{
+    -fx-background-color: #ff00ea;
+    -fx-text-fill: #FFD700;
+    -fx-font-size: 20;
+    -fx-font-family: 'Cynatar';
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-border-width: 2px;
+    -fx-border-color: #ff00ea;
+}
+
+.label-alerta {
+    -fx-alignment: center;
+    -fx-effect: dropshadow(gaussian, #ff00ea, 15, 0.6, 0, 0);
+
+}
+
+.vbox-alerta {
+-fx-background-color: #2d0062;
+-fx-background-radius: 18;
+-fx-border-radius: 18;
+-fx-border-width: 4px;
+-fx-border-color: #ff00ea;
+-fx-padding: 20;
+
+}
