@@ -764,7 +764,7 @@ public class GameController extends Controller implements Initializable {
                     }
 
                     if (puedeMover) {
-                        SoundDepartment.playFlip();
+//                        SoundDepartment.playFlip();
                         // 1) Verificar si hay carta debajo que debe voltearse
                         Optional<CartasPartidaDto> cartaDebajoOpt = cartasEnJuego.stream()
                                 .filter(c -> c.getColumna() == colAnterior && c.getOrden() == ordenAnterior - 1)
@@ -779,18 +779,21 @@ public class GameController extends Controller implements Initializable {
                                 AnimationDepartment.flipCardAnimation(iv, imgBocaArriba, () -> {
                                     // Ahora sí, mover las cartas y redibujar
                                     moverCartasSeleccionadas(colIndex);
+                                    SoundDepartment.playPutCard();
                                     dibujarColumnasYCargarCartasEnTablero();
                                     actualizarVistaDelMazoYPilas();
                                     cartasSeleccionadas.clear();
                                 });
                             } else {
                                 moverCartasSeleccionadas(colIndex);
+                                SoundDepartment.playPutCard();
                                 dibujarColumnasYCargarCartasEnTablero();
                                 actualizarVistaDelMazoYPilas();
                                 cartasSeleccionadas.clear();
                             }
                         } else {
                             moverCartasSeleccionadas(colIndex);
+                            SoundDepartment.playPutCard();
                             dibujarColumnasYCargarCartasEnTablero();
                             actualizarVistaDelMazoYPilas();
                             cartasSeleccionadas.clear();
@@ -866,7 +869,7 @@ public class GameController extends Controller implements Initializable {
                         cartasSeleccionadas.addAll(grupo);
                         int destino = buscarMejorDestinoAutoMove(grupo);
                         if (destino != -1) {
-                            SoundDepartment.playFlip();
+                            SoundDepartment.playPutCard();
                             int colAnterior = carta.getColumna();
                             int ordenAnterior = carta.getOrden();
                             moverCartasSeleccionadas(destino);
@@ -917,7 +920,6 @@ public class GameController extends Controller implements Initializable {
                         cartasSeleccionadas.addAll(obtenerGrupoDesde(carta));
                         cartasArrastradas.clear();
                         cartasArrastradas.addAll(cartasSeleccionadas);
-                        SoundDepartment.playFlip();
                         Dragboard db = img.startDragAndDrop(TransferMode.MOVE);
                         ClipboardContent content = new ClipboardContent();
                         content.putString(carta.getIdCartaPartida().toString());

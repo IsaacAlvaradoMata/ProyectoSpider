@@ -277,9 +277,9 @@ public class SoundDepartment {
 
     public static void playPutCard() {
         try {
-            var url = SoundDepartment.class.getResource("/cr/ac/una/proyectospider/resources/EnterWin.mp3");
+            var url = SoundDepartment.class.getResource("/cr/ac/una/proyectospider/resources/card.mp3");
             if (url == null) {
-                System.err.println("[SoundDepartment] EnterWin.mp3 not found in resources. No undoall sound will be played.");
+                System.err.println("[SoundDepartment] card.mp3 not found in resources. No undoall sound will be played.");
                 return;
             }
             if (PutCard != null) {

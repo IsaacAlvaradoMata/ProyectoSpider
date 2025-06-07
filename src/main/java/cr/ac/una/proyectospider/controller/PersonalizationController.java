@@ -385,5 +385,17 @@ public class PersonalizationController extends Controller implements Initializab
 
         });
     }
+
+    @FXML
+    private void onMouseClickedCyberpunk(MouseEvent event) {
+        SoundDepartment.playRadioButton();
+
+    }
+
+    @FXML
+    private void onMouseClickedClasicas(MouseEvent event) {
+        SoundDepartment.playRadioButton();
+
+    }
     
 }

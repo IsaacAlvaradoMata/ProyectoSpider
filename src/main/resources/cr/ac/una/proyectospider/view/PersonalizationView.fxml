@@ -60,14 +60,14 @@
                                                          <children>
                                                             <ImageView fx:id="imgCartasCyberpunk" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
                                                             <Label fx:id="lblCyberpunk" styleClass="label-subtitle-menu" text="CYBERPUNK" />
-                                                            <RadioButton fx:id="rbtnCyberpunk" mnemonicParsing="false" />
+                                                            <RadioButton fx:id="rbtnCyberpunk" mnemonicParsing="false" onMouseClicked="#onMouseClickedCyberpunk" />
                                                          </children>
                                                       </VBox>
                                                       <VBox alignment="TOP_CENTER" layoutX="383.0" layoutY="10.0" prefHeight="200.0" prefWidth="100.0" spacing="15.0">
                                                          <children>
                                                             <ImageView fx:id="imgCartasClasicas" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
                                                             <Label fx:id="lblClasicas" styleClass="label-subtitle-menu" text="CLÁSICAS" />
-                                                            <RadioButton fx:id="rbtnClasicas" mnemonicParsing="false" />
+                                                            <RadioButton fx:id="rbtnClasicas" mnemonicParsing="false" onMouseClicked="#onMouseClickedClasicas" />
                                                          </children>
                                                       </VBox>
                                                    </children>

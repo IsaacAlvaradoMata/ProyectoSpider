@@ -1146,6 +1146,7 @@ public class AnimationDepartment {
 
     // Animación de flip para cartas (volteo tipo Spider)
     public static void flipCardAnimation(ImageView cardView, Image imagenBocaArriba, Runnable onFinished) {
+        SoundDepartment.playFlip();
         // Asegura que la rotación sea sobre el eje Y (efecto 3D)
         cardView.setRotationAxis(javafx.geometry.Point3D.ZERO.add(0, 1, 0));
 
