@@ -215,7 +215,7 @@ public class GameController extends Controller implements Initializable {
         PartidaService partidaService = new PartidaService();
 
         if (partidaDto.getIdPartida() == null) {
-            System.out.println("�������� [DEBUG] Partida sin ID, se procederá a crearla...");
+            System.out.println("         [DEBUG] Partida sin ID, se procederá a crearla...");
             PartidaDto nuevaPartida = partidaService.crearPartida(partidaDto);
             if (nuevaPartida == null) {
                 System.err.println("❌ No se pudo crear la partida.");
@@ -379,7 +379,7 @@ public class GameController extends Controller implements Initializable {
         }
 
         // — Reset temporizador si no se ha iniciado —
-        // ��� Reset temporizador si no se ha iniciado —
+        //     Reset temporizador si no se ha iniciado —
         if (!tiempoIniciado) {
             segundosTranscurridos = 0;
             actualizarLabelTiempo();
@@ -665,28 +665,28 @@ public class GameController extends Controller implements Initializable {
 
         // Animar reparto visual
         AnimationDepartment.animarRepartoCartasVisual(
-            cartasRepartidas,
-            spGamebackground,
-            cartaToImageView,
-            hboxTablero,
-            imgMazo,
-            (n) -> calcularEspaciadoVertical(n),
-            cartasEnJuego,
-            () -> {
-                // Al terminar la animación, actualizar el modelo real
-                for (int i = 0; i < 10; i++) {
-                    CartasPartidaDto carta = cartasRepartidas.get(i);
-                    carta.setEnMazo(false);
-                    carta.setColumna(i);
-                    carta.setOrden(ordenesDestino.get(i));
-                    carta.setBocaArriba(true);
+                cartasRepartidas,
+                spGamebackground,
+                cartaToImageView,
+                hboxTablero,
+                imgMazo,
+                (n) -> calcularEspaciadoVertical(n),
+                cartasEnJuego,
+                () -> {
+                    // Al terminar la animación, actualizar el modelo real
+                    for (int i = 0; i < 10; i++) {
+                        CartasPartidaDto carta = cartasRepartidas.get(i);
+                        carta.setEnMazo(false);
+                        carta.setColumna(i);
+                        carta.setOrden(ordenesDestino.get(i));
+                        carta.setBocaArriba(true);
+                    }
+                    guardarMovimientoRepartir(cartasRepartidas);
+                    verificarSecuenciaCompleta();
+                    dibujarColumnasYCargarCartasEnTablero();
+                    actualizarVistaDelMazoYPilas();
+                    repartiendo = false; // Liberar el flag al terminar la animación
                 }
-                guardarMovimientoRepartir(cartasRepartidas);
-                verificarSecuenciaCompleta();
-                dibujarColumnasYCargarCartasEnTablero();
-                actualizarVistaDelMazoYPilas();
-                repartiendo = false; // Liberar el flag al terminar la animación
-            }
         );
     }
 
@@ -803,6 +803,11 @@ public class GameController extends Controller implements Initializable {
                         for (CartasPartidaDto c : cartasSeleccionadas) {
                             ImageView iv = cartaToImageView.get(c);
                             if (iv != null) shakeNode(iv);
+                        }
+                        // Restaurar visibilidad de las cartas arrastradas si el movimiento es inválido
+                        for (CartasPartidaDto c : cartasArrastradas) {
+                            ImageView iv = cartaToImageView.get(c);
+                            if (iv != null) iv.setVisible(true);
                         }
                     }
                     cartasSeleccionadas.clear();
@@ -1027,7 +1032,7 @@ public class GameController extends Controller implements Initializable {
                             "/cr/ac/una/proyectospider/resources/1C.png")));
                 }
             } else {
-                // Pila vacía: mostrar “white.png” o “whites.png�� según estilo
+                // Pila vacía: mostrar “white.png” o “whites.png   según estilo
                 String whiteImg = usarEstiloClasico ? "white.png" : "whites.png";
                 pila = new ImageView(new Image(getClass().getResourceAsStream(
                         "/cr/ac/una/proyectospider/resources/" + whiteImg)));
@@ -1177,32 +1182,32 @@ public class GameController extends Controller implements Initializable {
             Object cartaDebajo = mov.cartaDebajoVolteada; // Puede ser null
             Boolean cartaDebajoEstabaBocaAbajo = (mov.cartaDebajoVolteadaEstadoAnterior != null) ? !mov.cartaDebajoVolteadaEstadoAnterior : null;
             AnimationDepartment.animarUndoVisual(
-                cartasAMover,
-                columnaOrigen,
-                spGamebackground,
-                cartaToImageView,
-                hboxTablero,
-                cartasEnJuego,
-                (n) -> calcularEspaciadoVertical(n),
-                cartaDebajo,
-                cartaDebajoEstabaBocaAbajo,
-                () -> {
-                    for (int i = 0; i < mov.cartasMovidas.size(); i++) {
-                        CartasPartidaDto carta = mov.cartasMovidas.get(i);
-                        carta.setColumna(mov.columnasOrigen.get(i));
-                        carta.setOrden(mov.ordenesOrigen.get(i));
-                        carta.setBocaArriba(mov.bocasArribaOrigen.get(i));
+                    cartasAMover,
+                    columnaOrigen,
+                    spGamebackground,
+                    cartaToImageView,
+                    hboxTablero,
+                    cartasEnJuego,
+                    (n) -> calcularEspaciadoVertical(n),
+                    cartaDebajo,
+                    cartaDebajoEstabaBocaAbajo,
+                    () -> {
+                        for (int i = 0; i < mov.cartasMovidas.size(); i++) {
+                            CartasPartidaDto carta = mov.cartasMovidas.get(i);
+                            carta.setColumna(mov.columnasOrigen.get(i));
+                            carta.setOrden(mov.ordenesOrigen.get(i));
+                            carta.setBocaArriba(mov.bocasArribaOrigen.get(i));
+                        }
+                        if (mov.cartaDebajoVolteada != null && mov.cartaDebajoVolteadaEstadoAnterior != null) {
+                            mov.cartaDebajoVolteada.setBocaArriba(mov.cartaDebajoVolteadaEstadoAnterior);
+                        }
+                        movimientos = Math.max(0, movimientos - 1);
+                        puntaje = Math.max(0, puntaje - 1);
+                        lblMovimientos.setText("" + movimientos);
+                        lblPuntaje.setText("" + puntaje);
+                        dibujarColumnasYCargarCartasEnTablero();
+                        actualizarVistaDelMazoYPilas();
                     }
-                    if (mov.cartaDebajoVolteada != null && mov.cartaDebajoVolteadaEstadoAnterior != null) {
-                        mov.cartaDebajoVolteada.setBocaArriba(mov.cartaDebajoVolteadaEstadoAnterior);
-                    }
-                    movimientos = Math.max(0, movimientos - 1);
-                    puntaje = Math.max(0, puntaje - 1);
-                    lblMovimientos.setText("" + movimientos);
-                    lblPuntaje.setText("" + puntaje);
-                    dibujarColumnasYCargarCartasEnTablero();
-                    actualizarVistaDelMazoYPilas();
-                }
             );
             return;
         } else if (mov.tipo == Movimiento.Tipo.REPARTIR) {
