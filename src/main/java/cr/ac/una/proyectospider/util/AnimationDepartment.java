@@ -37,6 +37,8 @@ public class AnimationDepartment {
 
     private static final List<Animation> activeAnimations = new ArrayList<>();
     private static final List<AnimationTimer> activeTimers = new ArrayList<>();
+    private static boolean victoryTriggered = false;
+    private static Pane activeCelebrationLayer = null;
 
     public static void stopAllAnimations() {
         for (Animation anim : activeAnimations) {
@@ -848,27 +850,27 @@ public class AnimationDepartment {
             boolean usarEstiloClasico,
             Runnable onFinished
     ) {
-        // 1) Crear la capa de celebración (Pane semi-transparente encima de toda la escena)
+        // 0) Limpia animaciones y capas previas
+        stopAllAnimations();
+        parent.getChildren().removeIf(n -> "celebrationLayer".equals(n.getId()));
+
+        // 1) Crear la capa de celebración
         Pane celebrationLayer = new Pane();
+        celebrationLayer.setId("celebrationLayer");             // marcamos la capa
         celebrationLayer.setPickOnBounds(false);
         celebrationLayer.setMouseTransparent(false);
-        celebrationLayer.setStyle("-fx-background-color: rgba(0, 0, 0, 0.5);"); // Capa oscura semitransparente
-
-        // Vincular el tamaño de la capa al tamaño del padre
+        celebrationLayer.setStyle("-fx-background-color: rgba(0, 0, 0, 0.5);");
         celebrationLayer.prefWidthProperty().bind(parent.widthProperty());
         celebrationLayer.prefHeightProperty().bind(parent.heightProperty());
-
-        // Al inicio, la capa está completamente transparente
         celebrationLayer.setOpacity(0);
         parent.getChildren().add(celebrationLayer);
 
-        // 2) Fade‐in de la capa completa (0 → 1) en 1 segundo
+        // 2) Fade‐in de la capa (0 → 1) en 1s
         FadeTransition fadeInLayer = new FadeTransition(Duration.seconds(1), celebrationLayer);
         fadeInLayer.setFromValue(0);
         fadeInLayer.setToValue(1);
         fadeInLayer.setInterpolator(Interpolator.EASE_IN);
         fadeInLayer.setOnFinished(e -> {
-            // Una vez concluido el fade‐in, arrancamos el resto de la animación:
             startVictoryEffects(celebrationLayer, parent, usarEstiloClasico, onFinished);
         });
         fadeInLayer.play();
@@ -1067,17 +1069,16 @@ public class AnimationDepartment {
                         if (idx == 3) {
                             cartasSpawner.stop();
                             confettiSpawner.stop();
-
+                            parent.getChildren().remove(activeCelebrationLayer);
                             // 6) Fade‐out de la capa entera (1 → 0) en 1 segundo
                             FadeTransition fadeOutLayer = new FadeTransition(Duration.seconds(1), celebrationLayer);
                             fadeOutLayer.setFromValue(1);
                             fadeOutLayer.setToValue(0);
                             fadeOutLayer.setInterpolator(Interpolator.EASE_OUT);
                             fadeOutLayer.setOnFinished(e4 -> {
-                                parent.getChildren().remove(celebrationLayer);
-                                if (onFinished != null) {
-                                    onFinished.run();
-                                }
+                                stopAllAnimations();                                  // para todo
+                                parent.getChildren().remove(celebrationLayer);        // quita la capa residual
+                                if (onFinished != null) onFinished.run();             // navega al menú
                             });
                             fadeOutLayer.play();
                             activeAnimations.add(fadeOutLayer);

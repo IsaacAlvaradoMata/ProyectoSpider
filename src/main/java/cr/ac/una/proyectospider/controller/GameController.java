@@ -322,7 +322,7 @@ public class GameController extends Controller implements Initializable {
     public void RunGameView(PartidaDto partidaDto) {
         this.partidaDto = partidaDto;
         ResetGameView();
-
+        victoryTriggered = false;
         // ⚡ Forzar set del jugador en AppContext si viene desde la partida
         if (partidaDto.getJugador() != null) {
             AppContext.getInstance().set("jugador", partidaDto.getJugador());
@@ -1569,38 +1569,42 @@ public class GameController extends Controller implements Initializable {
         }
     }
 
+    private boolean victoryTriggered = false;
+
     public boolean verificarVictoria() {
         long cartasEnPila = cartasEnJuego.stream()
                 .filter(CartasPartidaDto::getEnPila)
                 .count();
-        if (cartasEnPila == 104) {
+
+        if (cartasEnPila == 104 && !victoryTriggered) {
+            victoryTriggered = true;   // evita re-entradas durante esta victoria
+
             Platform.runLater(() -> {
-                // 1) Detenemos el temporizador
                 detenerTemporizador();
 
-                // 2) Invocamos la animación de victoria y le pasamos un callback
-                //    que se ejecutará únicamente cuando toda la animación haya terminado.
-                AnimationDepartment.playVictoryAnimation(spGamebackground, usarEstiloClasico, () -> {
-                    // 3) Este bloque se ejecuta después de que el fade‐out final de la capa de celebración haya concluido.
+                AnimationDepartment.playVictoryAnimation(
+                        spGamebackground,
+                        usarEstiloClasico,
+                        () -> {
+                            // --- Callback tras la animación completa ---
+                            primerIngreso = true;
+                            cartasEnJuego = null;
+                            cartaToImageView.clear();
+                            movimientos = 0;
+                            puntaje = 500;
+                            tiempoIniciado = false;
 
-                    // 3.1) Restablecemos banderas y datos para que, si el usuario inicia
-                    //      “Nueva Partida” en adelante, vuelvan a mostrarse las animaciones de entrada.
-                    primerIngreso = true;
-                    cartasEnJuego = null;
-                    cartaToImageView.clear();
-                    movimientos = 0;
-                    puntaje = 500;
-                    tiempoIniciado = false;
+                            // 1) Navegar al menú
+                            FlowController.getInstance().goView("MenuView");
+                            MenuController controller =
+                                    (MenuController)FlowController.getInstance()
+                                            .getController("MenuView");
+                            controller.RunMenuView();
 
-                    AnimationDepartment.stopAllAnimations();
-                    AnimationDepartment.glitchFadeOut(spGamebackground, Duration.seconds(1.1), () -> {
-                        FlowController.getInstance().goView("MenuView");
-                        MenuController controller = (MenuController) FlowController.getInstance().getController("MenuView");
-                        controller.RunMenuView();
-
-
-                    });
-                });
+                            // 2) Permitimos lanzar otra victoria en próximas partidas
+                            victoryTriggered = false;
+                        }
+                );
             });
             return true;
         }

@@ -19,6 +19,10 @@ public class SoundDepartment {
     private static MediaPlayer Surrender;
     private static MediaPlayer ExitnSave;
     private static MediaPlayer PutCard;
+    private static MediaPlayer Spider1;
+    private static MediaPlayer Spider2;
+    private static MediaPlayer Spider3;
+    private static MediaPlayer Spider4;
 
     public static void playFlip() {
         try {
@@ -275,6 +279,78 @@ public class SoundDepartment {
         }
     }
 
+    public static void playSpider1() {
+        try {
+            var url = SoundDepartment.class.getResource("/cr/ac/una/proyectospider/resources/Spider1.mp3");
+            if (url == null) {
+                System.err.println("[SoundDepartment] Spider1 not found in resources. No undoall sound will be played.");
+                return;
+            }
+            if (Spider1 != null) {
+                Spider1.stop();
+            }
+            Media sound = new Media(url.toExternalForm());
+            Spider1 = new MediaPlayer(sound);
+            Spider1.play();
+        } catch (Exception e) {
+            System.err.println("[SoundDepartment] Could not play undoall sound: " + e.getMessage());
+        }
+    }
+
+    public static void playSpider2() {
+        try {
+            var url = SoundDepartment.class.getResource("/cr/ac/una/proyectospider/resources/Spider2.mp3");
+            if (url == null) {
+                System.err.println("[SoundDepartment] Spider2 not found in resources. No undoall sound will be played.");
+                return;
+            }
+            if (Spider2 != null) {
+                Spider2.stop();
+            }
+            Media sound = new Media(url.toExternalForm());
+            Spider2 = new MediaPlayer(sound);
+            Spider2.play();
+        } catch (Exception e) {
+            System.err.println("[SoundDepartment] Could not play undoall sound: " + e.getMessage());
+        }
+    }
+
+    public static void playSpider3() {
+        try {
+            var url = SoundDepartment.class.getResource("/cr/ac/una/proyectospider/resources/Spider3.mp3");
+            if (url == null) {
+                System.err.println("[SoundDepartment] Spider3.mp3 not found in resources. No undoall sound will be played.");
+                return;
+            }
+            if (Spider3 != null) {
+                Spider3.stop();
+            }
+            Media sound = new Media(url.toExternalForm());
+            Spider3 = new MediaPlayer(sound);
+            Spider3.play();
+        } catch (Exception e) {
+            System.err.println("[SoundDepartment] Could not play undoall sound: " + e.getMessage());
+        }
+    }
+
+    public static void playSpider4() {
+        try {
+            var url = SoundDepartment.class.getResource("/cr/ac/una/proyectospider/resources/Spider4.mp3");
+            if (url == null) {
+                System.err.println("[SoundDepartment] Spider4.mp3 not found in resources. No undoall sound will be played.");
+                return;
+            }
+            if (Spider4 != null) {
+                Spider4.stop();
+            }
+            Media sound = new Media(url.toExternalForm());
+            Spider4 = new MediaPlayer(sound);
+            Spider4.play();
+        } catch (Exception e) {
+            System.err.println("[SoundDepartment] Could not play undoall sound: " + e.getMessage());
+        }
+    }
+
     public static void playPutCard() {
         try {
             var url = SoundDepartment.class.getResource("/cr/ac/una/proyectospider/resources/card.mp3");
@@ -292,6 +368,8 @@ public class SoundDepartment {
             System.err.println("[SoundDepartment] Could not play undoall sound: " + e.getMessage());
         }
     }
+
+
 
 
 
