@@ -522,4 +522,19 @@ public class MenuController extends Controller implements Initializable {
             }
         });
     }
+
+    @FXML
+    private void onMouseclickedFacil(MouseEvent event) {
+        SoundDepartment.playRadioButton();
+    }
+
+    @FXML
+    private void onMouseclickedMedia(MouseEvent event) {
+        SoundDepartment.playRadioButton();
+    }
+
+    @FXML
+    private void onMouseclickedDificil(MouseEvent event) {
+        SoundDepartment.playRadioButton();
+    }
 }

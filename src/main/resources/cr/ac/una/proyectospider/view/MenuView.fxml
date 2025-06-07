@@ -133,19 +133,19 @@
                                        <children>
                                           <VBox alignment="TOP_CENTER" spacing="10.0">
                                              <children>
-                                                <RadioButton fx:id="rbtnFacil" mnemonicParsing="false" />
+                                                <RadioButton fx:id="rbtnFacil" mnemonicParsing="false" onMouseClicked="#onMouseclickedFacil" />
                                                 <Label fx:id="lblFaciil" styleClass="label-subtitle-menu" text="FÁCIL" />
                                              </children>
                                           </VBox>
                                           <VBox alignment="TOP_CENTER" spacing="10.0">
                                              <children>
-                                                <RadioButton fx:id="rbtnMedio" mnemonicParsing="false" />
+                                                <RadioButton fx:id="rbtnMedio" mnemonicParsing="false" onMouseClicked="#onMouseclickedMedia" />
                                                 <Label fx:id="lblMedio" styleClass="label-subtitle-menu" text="MEDIA" />
                                              </children>
                                           </VBox>
                                           <VBox alignment="TOP_CENTER" spacing="10.0">
                                              <children>
-                                                <RadioButton fx:id="rbtnDificil" mnemonicParsing="false" />
+                                                <RadioButton fx:id="rbtnDificil" mnemonicParsing="false" onMouseClicked="#onMouseclickedDificil" />
                                                 <Label fx:id="lblDificl" styleClass="label-subtitle-menu" text="DIFÍCIL" />
                                              </children>
                                           </VBox>

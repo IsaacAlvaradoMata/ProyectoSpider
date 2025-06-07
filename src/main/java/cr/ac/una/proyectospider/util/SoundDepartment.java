@@ -13,6 +13,9 @@ public class SoundDepartment {
     private static MediaPlayer Click;
     private static MediaPlayer Transition;
     private static MediaPlayer Transition2;
+    private static MediaPlayer RadioButton;
+    private static MediaPlayer EnterWin;
+    private static MediaPlayer EndWin;
 
     public static void playFlip() {
         try {
@@ -52,7 +55,7 @@ public class SoundDepartment {
 
     public static void playHint() {
         try {
-            var url = SoundDepartment.class.getResource("/cr/ac/una/proyectospider/resources/hint.mp3");
+            var url = SoundDepartment.class.getResource("/cr/ac/una/proyectospider/resources/pista.wav");
             if (url == null) {
                 System.err.println("[SoundDepartment] hint.mp3 not found in resources. No hint sound will be played.");
                 return;
@@ -136,6 +139,7 @@ public class SoundDepartment {
             }
             Media sound = new Media(url.toExternalForm());
             Click = new MediaPlayer(sound);
+
             Click.play();
         } catch (Exception e) {
             System.err.println("[SoundDepartment] Could not play undoall sound: " + e.getMessage());
@@ -173,6 +177,60 @@ public class SoundDepartment {
             Media sound = new Media(url.toExternalForm());
             Transition2 = new MediaPlayer(sound);
             Transition2.play();
+        } catch (Exception e) {
+            System.err.println("[SoundDepartment] Could not play undoall sound: " + e.getMessage());
+        }
+    }
+
+    public static void playRadioButton() {
+        try {
+            var url = SoundDepartment.class.getResource("/cr/ac/una/proyectospider/resources/RadioButtons.mp3");
+            if (url == null) {
+                System.err.println("[SoundDepartment] RadioButtons.mp3 not found in resources. No undoall sound will be played.");
+                return;
+            }
+            if (RadioButton != null) {
+                RadioButton.stop();
+            }
+            Media sound = new Media(url.toExternalForm());
+            RadioButton = new MediaPlayer(sound);
+            RadioButton.play();
+        } catch (Exception e) {
+            System.err.println("[SoundDepartment] Could not play undoall sound: " + e.getMessage());
+        }
+    }
+
+    public static void playIntroWin() {
+        try {
+            var url = SoundDepartment.class.getResource("/cr/ac/una/proyectospider/resources/EnterWin.mp3");
+            if (url == null) {
+                System.err.println("[SoundDepartment] EnterWin.mp3 not found in resources. No undoall sound will be played.");
+                return;
+            }
+            if (EnterWin != null) {
+                EnterWin.stop();
+            }
+            Media sound = new Media(url.toExternalForm());
+            EnterWin = new MediaPlayer(sound);
+            EnterWin.play();
+        } catch (Exception e) {
+            System.err.println("[SoundDepartment] Could not play undoall sound: " + e.getMessage());
+        }
+    }
+
+    public static void playEndWin() {
+        try {
+            var url = SoundDepartment.class.getResource("/cr/ac/una/proyectospider/resources/EndWin.mp3");
+            if (url == null) {
+                System.err.println("[SoundDepartment] EndWin.mp3 not found in resources. No undoall sound will be played.");
+                return;
+            }
+            if (EndWin != null) {
+                EndWin.stop();
+            }
+            Media sound = new Media(url.toExternalForm());
+            EndWin = new MediaPlayer(sound);
+            EndWin.play();
         } catch (Exception e) {
             System.err.println("[SoundDepartment] Could not play undoall sound: " + e.getMessage());
         }
