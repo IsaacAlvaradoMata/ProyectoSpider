@@ -190,6 +190,7 @@ public class GameController extends Controller implements Initializable {
 
     @FXML
     void onMouseClickedbtnGuardarySalir(MouseEvent event) {
+        SoundDepartment.playExitnSave();
         System.out.println("🚨 [DEBUG] Iniciando proceso de Guardar y Salir...");
         btnGuardarySalir.setDisable(true);
         AnimationDepartment.stopAllAnimations();
@@ -664,6 +665,7 @@ public class GameController extends Controller implements Initializable {
         }
 
         // Animar reparto visual
+        SoundDepartment.playDeal();
         AnimationDepartment.animarRepartoCartasVisual(
                 cartasRepartidas,
                 spGamebackground,
@@ -1654,6 +1656,7 @@ public class GameController extends Controller implements Initializable {
     void onMouseClickedbtnRendirse(MouseEvent event) {
         // 1) Deshabilitamos el botón para evitar clics múltiples mientras aparece la alerta
         btnRendirse.setDisable(true);
+        SoundDepartment.playSurrender();
 
         // 2) Llamamos a nuestra CustomAlert
         CustomAlert.showConfirmation(
