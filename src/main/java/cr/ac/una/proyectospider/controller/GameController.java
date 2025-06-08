@@ -268,9 +268,15 @@ public class GameController extends Controller implements Initializable {
         } catch (Exception e) {
             fondoBytes = null;
         }
-        partidaDto.setFondoSeleccionado(fondoBytes);
-        if (reversoSeleccionado instanceof String) {
-            partidaDto.setReversoSeleccionado((String) reversoSeleccionado);
+        // Solo asignar fondo si la partida es nueva o no tiene fondo
+        if (partidaDto.getFondoSeleccionado() == null || partidaDto.getFondoSeleccionado().length == 0) {
+            partidaDto.setFondoSeleccionado(fondoBytes);
+        }
+        // Solo asignar reverso si la partida es nueva o no tiene reverso
+        if (partidaDto.getReversoSeleccionado() == null || partidaDto.getReversoSeleccionado().isEmpty()) {
+            if (reversoSeleccionado instanceof String) {
+                partidaDto.setReversoSeleccionado((String) reversoSeleccionado);
+            }
         }
 
         System.out.println("🕒 [DEBUG] Estado de la partida: " + partidaDto.getEstado());
@@ -423,18 +429,15 @@ public class GameController extends Controller implements Initializable {
         if (fondoBytes != null && fondoBytes.length > 0) {
             Image fondoImg = new Image(new ByteArrayInputStream(fondoBytes));
             imgBackgroundTablero.setImage(fondoImg);
-            AppContext.getInstance().set(AppContext.KEY_FONDO_SELECCIONADO, fondoImg);
         } else {
             Image fondoDefault = new Image(getClass().getResourceAsStream("/cr/ac/una/proyectospider/resources/DefaultBack3.png"));
             imgBackgroundTablero.setImage(fondoDefault);
-            AppContext.getInstance().set(AppContext.KEY_FONDO_SELECCIONADO, fondoDefault);
         }
         AnimationDepartment.animateNeonGlow2(spTableroBackground);
 
         // --- USAR REVERSO GUARDADO EN LA PARTIDA ---
         String reversoGuardado = partidaDto.getReversoSeleccionado();
         if (reversoGuardado != null && !reversoGuardado.isEmpty()) {
-            AppContext.getInstance().set(AppContext.KEY_ESTILO_CARTAS, reversoGuardado);
             usarEstiloClasico = reversoGuardado.equals(AppContext.RUTA_CARTAS_CLASICAS);
         } else {
             usarEstiloClasico = false;
