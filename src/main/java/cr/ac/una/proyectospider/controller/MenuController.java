@@ -8,6 +8,7 @@ import java.util.ResourceBundle;
 
 import cr.ac.una.proyectospider.model.*;
 import cr.ac.una.proyectospider.service.PartidaService;
+import cr.ac.una.proyectospider.service.JugadorService;
 import cr.ac.una.proyectospider.util.*;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
@@ -122,15 +123,15 @@ public class MenuController extends Controller implements Initializable {
         ResetMenuView();
         JugadorDto jugador = (JugadorDto) AppContext.getInstance().get("jugadorActivo");
         if (jugador != null) {
-            PartidaService partidaService = new PartidaService();
-            List<PartidaDto> partidasTerminadas = partidaService.listarTerminadasPorJugador(jugador.getIdJugador());
-            int partidasGanadas = partidasTerminadas.size();
-            int puntosAcumulados = partidasTerminadas.stream()
-                .mapToInt(p -> p.getPuntos() != null ? p.getPuntos() : 0)
-                .sum();
+            JugadorService jugadorService = new JugadorService();
+            jugadorService.actualizarEstadisticas(jugador.getIdJugador());
+
+            // Actualizar el DTO local con los valores de la base de datos
+            // (opcional: podrías recargar el jugador desde la base de datos si lo deseas)
+
             lblJugadorRegistradoDinamico.setText(jugador.nombreUsuarioProperty().get() != null ? jugador.nombreUsuarioProperty().get() : "-");
-            lblPuntajeAcomuladoDinamico.setText(String.valueOf(puntosAcumulados));
-            lblTotalPartidasGanadasDinamico.setText(String.valueOf(partidasGanadas));
+            lblPuntajeAcomuladoDinamico.setText(String.valueOf(jugador.puntosAcumuladosProperty().get()));
+            lblTotalPartidasGanadasDinamico.setText(String.valueOf(jugador.partidasGanadasProperty().get()));
         }
 
         Object fondoEnContext = AppContext.getInstance().get(AppContext.KEY_FONDO_SELECCIONADO);

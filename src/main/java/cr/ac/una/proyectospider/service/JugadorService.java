@@ -2,6 +2,7 @@ package cr.ac.una.proyectospider.service;
 
 import cr.ac.una.proyectospider.model.Jugador;
 import cr.ac.una.proyectospider.model.JugadorDto;
+import cr.ac.una.proyectospider.model.PartidaDto;
 import jakarta.persistence.*;
 
 public class JugadorService {
@@ -70,6 +71,32 @@ public class JugadorService {
         } catch (Exception e) {
             em.getTransaction().rollback();
             System.err.println("❌ Error al actualizar personalización: " + e.getMessage());
+        } finally {
+            em.close();
+        }
+    }
+
+    public void actualizarEstadisticas(Long idJugador) {
+        EntityManager em = emf.createEntityManager();
+        try {
+            em.getTransaction().begin();
+            Jugador jugador = em.find(Jugador.class, idJugador);
+            if (jugador != null) {
+                // Obtener partidas terminadas usando PartidaService
+                PartidaService partidaService = new PartidaService();
+                java.util.List<PartidaDto> partidasTerminadas = partidaService.listarTerminadasPorJugador(idJugador);
+                int partidasGanadas = partidasTerminadas.size();
+                int puntosAcumulados = partidasTerminadas.stream()
+                    .mapToInt(p -> p.getPuntos() != null ? p.getPuntos() : 0)
+                    .sum();
+                jugador.setPartidasGanadas(partidasGanadas);
+                jugador.setPuntosAcumulados(puntosAcumulados);
+                em.merge(jugador);
+            }
+            em.getTransaction().commit();
+        } catch (Exception e) {
+            if (em.getTransaction().isActive()) em.getTransaction().rollback();
+            System.err.println("❌ Error al actualizar estadísticas: " + e.getMessage());
         } finally {
             em.close();
         }
