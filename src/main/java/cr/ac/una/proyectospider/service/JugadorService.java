@@ -3,7 +3,10 @@ package cr.ac.una.proyectospider.service;
 import cr.ac.una.proyectospider.model.Jugador;
 import cr.ac.una.proyectospider.model.JugadorDto;
 import cr.ac.una.proyectospider.model.PartidaDto;
+import cr.ac.una.proyectospider.model.JugadorRankingDto;
 import jakarta.persistence.*;
+
+import java.util.List;
 
 public class JugadorService {
 
@@ -101,4 +104,20 @@ public class JugadorService {
             em.close();
         }
     }
+
+    public List<JugadorRankingDto> getRankingPorPuntaje() {
+        EntityManager em = emf.createEntityManager();
+        try {
+            return em.createQuery(
+                    "SELECT new cr.ac.una.proyectospider.model.JugadorRankingDto(" +
+                            "  j.nombreUsuario, j.partidasGanadas, j.puntosAcumulados) " +
+                            "FROM Jugador j " +
+                            "ORDER BY j.puntosAcumulados DESC",
+                    JugadorRankingDto.class
+            ).getResultList();
+        } finally {
+            em.close();
+        }
+    }
+
 }
