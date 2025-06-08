@@ -1449,5 +1449,14 @@ public class AnimationDepartment {
         activeAnimations.add(parallel);
     }
 
+    public static void shakeNode(Node node) {
+        TranslateTransition tt = new TranslateTransition(Duration.millis(60), node);
+        tt.setFromX(0);
+        tt.setByX(12);
+        tt.setCycleCount(6);
+        tt.setAutoReverse(true);
+        tt.setOnFinished(e -> node.setTranslateX(0));
+        tt.play();
+    }
 
 }

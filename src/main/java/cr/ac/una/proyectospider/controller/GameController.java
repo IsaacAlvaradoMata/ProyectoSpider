@@ -799,7 +799,7 @@ public class GameController extends Controller implements Initializable {
                         SoundDepartment.playError();
                         for (CartasPartidaDto c : cartasSeleccionadas) {
                             ImageView iv = cartaToImageView.get(c);
-                            if (iv != null) shakeNode(iv);
+                            if (iv != null) AnimationDepartment.shakeNode(iv);
                         }
                         for (CartasPartidaDto c : cartasArrastradas) {
                             ImageView iv = cartaToImageView.get(c);
@@ -891,7 +891,7 @@ public class GameController extends Controller implements Initializable {
                             }
                             for (CartasPartidaDto c2 : grupo) {
                                 ImageView iv = cartaToImageView.get(c2);
-                                if (iv != null) shakeNode(iv);
+                                if (iv != null) AnimationDepartment.shakeNode(iv);
                             }
                             cartasSeleccionadas.clear();
                         }
@@ -1727,16 +1727,6 @@ public class GameController extends Controller implements Initializable {
             return true;
         }
         return false;
-    }
-
-    private void shakeNode(Node node) {
-        TranslateTransition tt = new TranslateTransition(Duration.millis(60), node);    
-        tt.setFromX(0);
-        tt.setByX(12);
-        tt.setCycleCount(6);
-        tt.setAutoReverse(true);
-        tt.setOnFinished(e -> node.setTranslateX(0));
-        tt.play();
     }
 
     private List<CartasPartidaDto> obtenerEstadoDelTablero() {
