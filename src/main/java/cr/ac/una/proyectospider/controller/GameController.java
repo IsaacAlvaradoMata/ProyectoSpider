@@ -1157,7 +1157,8 @@ public class GameController extends Controller implements Initializable {
                         lblPuntaje.setText("" + puntaje);
                         dibujarColumnasYCargarCartasEnTablero();
                         actualizarVistaDelMazoYPilas();
-                    }
+                    },
+                    partidaDto != null ? partidaDto.getReversoSeleccionado() : AppContext.RUTA_CARTAS_CLASICAS
             );
             return;
         } else if (mov.tipo == Movimiento.Tipo.REPARTIR) {
@@ -1214,7 +1215,8 @@ public class GameController extends Controller implements Initializable {
                         if (!historialMovimientos.isEmpty()) {
                             Platform.runLater(() -> deshacerUltimoMovimiento());
                         }
-                    }
+                    },
+                    partidaDto != null ? partidaDto.getReversoSeleccionado() : AppContext.RUTA_CARTAS_CLASICAS
             );
             return;
         }
@@ -1277,7 +1279,8 @@ public class GameController extends Controller implements Initializable {
                         dibujarColumnasYCargarCartasEnTablero();
                         actualizarVistaDelMazoYPilas();
                         if (onFinished != null) onFinished.run();
-                    }
+                    },
+                    partidaDto != null ? partidaDto.getReversoSeleccionado() : AppContext.RUTA_CARTAS_CLASICAS
             );
             return;
         } else if (mov.tipo == Movimiento.Tipo.REPARTIR) {
@@ -1334,7 +1337,8 @@ public class GameController extends Controller implements Initializable {
                         if (!historialMovimientos.isEmpty()) {
                             Platform.runLater(() -> deshacerUltimoMovimiento());
                         }
-                    }
+                    },
+                    partidaDto != null ? partidaDto.getReversoSeleccionado() : AppContext.RUTA_CARTAS_CLASICAS
             );
             return;
         }

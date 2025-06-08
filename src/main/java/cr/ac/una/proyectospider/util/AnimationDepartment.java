@@ -1131,7 +1131,8 @@ public class AnimationDepartment {
     public static void animarUndoVisual(List<?> grupo, int columnaOrigen, Pane spGamebackground,
                                         java.util.Map<?, ImageView> cartaToImageView, javafx.scene.layout.HBox hboxTablero,
                                         List<?> cartasEnJuego, java.util.function.IntFunction<Double> calcularEspaciadoVertical,
-                                        Object cartaDebajo, Boolean cartaDebajoEstabaBocaAbajo, Runnable onFinished) {
+                                        Object cartaDebajo, Boolean cartaDebajoEstabaBocaAbajo, Runnable onFinished,
+                                        String reversoGuardado) {
         if (grupo == null || grupo.isEmpty()) {
             if (onFinished != null) onFinished.run();
             return;
@@ -1250,12 +1251,7 @@ public class AnimationDepartment {
         if (cartaDebajo != null && Boolean.TRUE.equals(cartaDebajoEstabaBocaAbajo)) {
             ImageView ivDebajo = cartaToImageView.get(cartaDebajo);
             if (ivDebajo != null) {
-                boolean usarEstiloClasico = false;
-                Object estiloEnContext = cr.ac.una.proyectospider.util.AppContext.getInstance().get(cr.ac.una.proyectospider.util.AppContext.KEY_ESTILO_CARTAS);
-                if (estiloEnContext instanceof String) {
-                    String rutaEstilo = (String) estiloEnContext;
-                    usarEstiloClasico = rutaEstilo.equals(cr.ac.una.proyectospider.util.AppContext.RUTA_CARTAS_CLASICAS);
-                }
+                boolean usarEstiloClasico = AppContext.RUTA_CARTAS_CLASICAS.equals(reversoGuardado);
                 String imgTrasera = usarEstiloClasico ? "rear.png" : "rearS.png";
                 javafx.scene.image.Image imgTraseraObj = new javafx.scene.image.Image(
                         AnimationDepartment.class.getResourceAsStream("/cr/ac/una/proyectospider/resources/" + imgTrasera)
