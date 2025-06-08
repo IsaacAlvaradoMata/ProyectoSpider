@@ -336,7 +336,7 @@
                                                             </Label>
                                                             <Label styleClass="help-label-subtitles" text="- CADA VEZ QUE REALIZAS UN MOVIMIENTO, PIERDES 1 PUNTO." />
                                                             <Label styleClass="help-label-subtitles" text="- ESTO INCENTIVA A PENSAR ANTES DE ACTUAR Y A JUGAR DE FORMA EFICIENTE." />
-                                                            <Label layoutX="201.0" layoutY="242.0" prefHeight="45.0" prefWidth="572.0" styleClass="help-label-subtitles" text="- SI UTILIZAS EL BOTON DE UNDO TE RESTARA 1 PUNTO Y SI UTILIZAS EL BOTON DE UNDOALL TE RESTARA 100 PUNTOS" wrapText="true" />
+                                                            <Label layoutX="201.0" layoutY="242.0" prefHeight="55.0" prefWidth="572.0" styleClass="help-label-subtitles" text="- SI UTILIZAS EL BOTON DE UNDO TE RESTARA 1 PUNTO Y SI UTILIZAS EL BOTON DE UNDOALL TE RESTARA LA CANTIDAD DE MOVIMINETOS PREVIOS." wrapText="true" />
                                                             <Label styleClass="help-label-subtitles2" text="BONIFICACIÓN POR ESCALERA COMPLETADA:">
                                                                <VBox.margin>
                                                                   <Insets top="15.0" />
