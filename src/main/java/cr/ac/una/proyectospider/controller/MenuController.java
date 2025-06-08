@@ -449,9 +449,13 @@ public class MenuController extends Controller implements Initializable {
         );
 
         TableColumn<PartidaDto, String> colTiempo = new TableColumn<>("Tiempo Jugado");
-        colTiempo.setCellValueFactory(data ->
-                new SimpleStringProperty(data.getValue().getTiempoJugado() + " seg")
-        );
+        colTiempo.setCellValueFactory(data -> {
+            int totalSegundos = data.getValue().getTiempoJugado() != null ? data.getValue().getTiempoJugado() : 0;
+            int minutos = totalSegundos / 60;
+            int segundos = totalSegundos % 60;
+            String tiempoFormateado = String.format("%02d:%02d min", minutos, segundos);
+            return new SimpleStringProperty(tiempoFormateado);
+        });
 
         applyCustomCellStyleMenu(colFecha);
         applyCustomCellStyleMenu(colPuntaje);
