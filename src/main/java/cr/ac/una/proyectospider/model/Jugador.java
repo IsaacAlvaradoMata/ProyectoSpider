@@ -10,7 +10,6 @@ import java.util.List;
         @NamedQuery(name = "Jugador.findAll", query = "SELECT j FROM Jugador j"),
         @NamedQuery(name = "Jugador.findByIdJugador", query = "SELECT j FROM Jugador j WHERE j.idJugador = :idJugador"),
         @NamedQuery(name = "Jugador.findByNombreUsuario", query = "SELECT j FROM Jugador j WHERE j.nombreUsuario = :nombreUsuario"),
-        @NamedQuery(name = "Jugador.findByPartidasJugadas", query = "SELECT j FROM Jugador j WHERE j.partidasJugadas = :partidasJugadas"),
         @NamedQuery(name = "Jugador.findByPartidasGanadas", query = "SELECT j FROM Jugador j WHERE j.partidasGanadas = :partidasGanadas"),
         @NamedQuery(name = "Jugador.findByPuntosAcumulados", query = "SELECT j FROM Jugador j WHERE j.puntosAcumulados = :puntosAcumulados"),
         @NamedQuery(name = "Jugador.findByEstiloCartas", query = "SELECT j FROM Jugador j WHERE j.estiloCartas = :estiloCartas")
@@ -30,9 +29,6 @@ public class Jugador implements Serializable {
     @Column(name = "NOMBRE_USUARIO", nullable = false, unique = true, length = 50)
     private String nombreUsuario;
 
-    @Column(name = "PARTIDAS_JUGADAS")
-    private Integer partidasJugadas;
-
     @Column(name = "PARTIDAS_GANADAS")
     private Integer partidasGanadas;
 
@@ -46,16 +42,6 @@ public class Jugador implements Serializable {
     @Basic(fetch = FetchType.LAZY)
     @Column(name = "IMAGEN_FONDO")
     private byte[] imagenFondo;
-
-    @Lob
-    @Basic (fetch = FetchType.LAZY)
-    @Column(name = "IMAGEN_REVERSO")
-    private byte[] imagenReverso;
-
-    @Lob
-    @Basic(fetch = FetchType.LAZY)
-    @Column(name = "IMAGEN_FRENTE")
-    private byte[] imagenFrente;
 
     @Version
     @Column(name = "VERSION")
@@ -77,13 +63,10 @@ public class Jugador implements Serializable {
 
     public void actualizar(JugadorDto dto) {
         this.nombreUsuario = dto.nombreUsuarioProperty().get();
-        this.partidasJugadas = dto.partidasJugadasProperty().get();
         this.partidasGanadas = dto.partidasGanadasProperty().get();
         this.puntosAcumulados = dto.puntosAcumuladosProperty().get();
         this.estiloCartas = dto.estiloCartasProperty().get();
         this.imagenFondo = dto.imagenFondoProperty().get();
-        this.imagenReverso = dto.imagenReversoProperty().get();
-        this.imagenFrente = dto.imagenFrenteProperty().get();
     }
 
     public Long getIdJugador() {
@@ -100,14 +83,6 @@ public class Jugador implements Serializable {
 
     public void setNombreUsuario(String nombreUsuario) {
         this.nombreUsuario = nombreUsuario;
-    }
-
-    public Integer getPartidasJugadas() {
-        return partidasJugadas;
-    }
-
-    public void setPartidasJugadas(Integer partidasJugadas) {
-        this.partidasJugadas = partidasJugadas;
     }
 
     public Integer getPartidasGanadas() {
@@ -140,21 +115,6 @@ public class Jugador implements Serializable {
 
     public void setImagenFondo(byte[] imagenFondo) {
         this.imagenFondo = imagenFondo;
-    }
-    public byte[] getImagenReverso() {
-        return imagenReverso;
-    }
-
-    public void setImagenReverso(byte[] imagenReverso) {
-        this.imagenReverso = imagenReverso;
-    }
-
-    public byte[] getImagenFrente() {
-        return imagenFrente;
-    }
-
-    public void setImagenFrente(byte[] imagenFrente) {
-        this.imagenFrente = imagenFrente;
     }
 
     public Long getVersion() {

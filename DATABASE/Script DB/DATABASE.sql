@@ -13,25 +13,19 @@ CREATE SEQUENCE SEQ_CARTASPARTIDA START WITH 1 INCREMENT BY 1 NOMAXVALUE NOMINVA
 CREATE TABLE Jugador (
                          Id_Jugador NUMBER CONSTRAINT PK_JUGADOR PRIMARY KEY,
                          Nombre_Usuario VARCHAR2(50) CONSTRAINT UK_JUGADOR_USUARIO UNIQUE NOT NULL,
-                         Partidas_Jugadas NUMBER,
                          Partidas_Ganadas NUMBER,
                          Puntos_Acumulados NUMBER,
                          Estilo_Cartas NUMBER,
                          Imagen_Fondo BLOB,
-                         Imagen_Reverso BLOB,
-                         Imagen_Frente BLOB,
                          Version NUMBER DEFAULT 0
 );
 
 COMMENT ON COLUMN Jugador.Id_Jugador IS 'Id asignado al jugador';
 COMMENT ON COLUMN Jugador.Nombre_Usuario IS 'Nombre del usuario';
-COMMENT ON COLUMN Jugador.Partidas_Jugadas IS 'Total de partidas jugadas';
 COMMENT ON COLUMN Jugador.Partidas_Ganadas IS 'Total de partidas ganadas';
 COMMENT ON COLUMN Jugador.Puntos_Acumulados IS 'Puntos totales acumulados en la partida';
 COMMENT ON COLUMN Jugador.Estilo_Cartas IS 'Estilo de cartas elegido por el jugador';
 COMMENT ON COLUMN Jugador.Imagen_Fondo IS 'Imagen de fondo elegida por el jugador';
-COMMENT ON COLUMN Jugador.Imagen_Reverso IS 'Imagen personalizada del reverso de las cartas (tipo BLOB)';
-COMMENT ON COLUMN Jugador.Imagen_Frente IS 'Imagen personalizada del frente de las cartas (tipo BLOB)';
 COMMENT ON COLUMN Jugador.Version IS 'Número de versión para control de concurrencia optimista';
 
 -- ================================

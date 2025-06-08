@@ -25,12 +25,9 @@ public class JugadorService {
             Jugador nuevo = new Jugador();
             nuevo.setNombreUsuario(nombreUsuario);
             nuevo.setPartidasGanadas(0);
-            nuevo.setPartidasJugadas(0);
             nuevo.setPuntosAcumulados(0);
             nuevo.setEstiloCartas(1);
             nuevo.setImagenFondo(null);
-            nuevo.setImagenReverso(null);
-            nuevo.setImagenFrente(null);
 
             em.getTransaction().begin();
             em.persist(nuevo);
@@ -67,8 +64,6 @@ public class JugadorService {
             Jugador jugador = em.find(Jugador.class, idJugador);
             if (jugador != null) {
                 jugador.setImagenFondo(imagenFondo);
-                jugador.setImagenReverso(imagenReverso);
-                jugador.setImagenFrente(imagenFrente);
                 em.merge(jugador);
             }
             em.getTransaction().commit();
