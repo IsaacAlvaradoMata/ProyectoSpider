@@ -36,8 +36,8 @@ public class App extends Application {
             String musicPath = getClass().getResource("/cr/ac/una/proyectospider/resources/Night Drive.mp3").toExternalForm();
             Media media = new Media(musicPath);
             mediaPlayer = new MediaPlayer(media);
-            mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE); // Loop
-            mediaPlayer.setVolume(0.08); // Volumen bajo
+            mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
+            mediaPlayer.setVolume(0.08); 
             mediaPlayer.play();
         }
 

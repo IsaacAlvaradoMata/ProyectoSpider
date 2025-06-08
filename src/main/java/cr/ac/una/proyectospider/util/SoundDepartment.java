@@ -153,7 +153,7 @@ public class SoundDepartment {
             }
             Media sound = new Media(url.toExternalForm());
             Click = new MediaPlayer(sound);
-            Click.setVolume(0.5);
+            Click.setVolume(0.3);
             Click.play();
         } catch (Exception e) {
             System.err.println("[SoundDepartment] Could not play undoall sound: " + e.getMessage());
