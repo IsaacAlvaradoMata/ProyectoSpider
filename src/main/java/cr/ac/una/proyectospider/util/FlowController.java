@@ -2,24 +2,25 @@ package cr.ac.una.proyectospider.util;
 
 import cr.ac.una.proyectospider.App;
 import cr.ac.una.proyectospider.controller.Controller;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.ResourceBundle;
-import java.util.logging.Level;
+import io.github.palexdev.materialfx.css.themes.MFXThemeManager;
+import io.github.palexdev.materialfx.css.themes.Themes;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import io.github.palexdev.materialfx.css.themes.MFXThemeManager;
-import io.github.palexdev.materialfx.css.themes.Themes;
-import javafx.geometry.Insets;
-import javafx.scene.layout.Priority;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.ResourceBundle;
+import java.util.logging.Level;
 
 public class FlowController {
 
@@ -46,6 +47,10 @@ public class FlowController {
             createInstance();
         }
         return INSTANCE;
+    }
+
+    public static void setIdioma(ResourceBundle idioma) {
+        FlowController.idioma = idioma;
     }
 
     @Override
@@ -78,13 +83,15 @@ public class FlowController {
         return loader;
     }
 
-    public void goMain() {
+    public void goMain(String viewName) {
         try {
-            this.mainStage.setScene(new Scene(FXMLLoader.load(App.class.getResource("view/PrincipalView.fxml"), this.idioma)));
+            this.mainStage.setScene(
+                    new Scene(FXMLLoader.load(App.class.getResource("view/" + viewName + ".fxml"), this.idioma)));
             MFXThemeManager.addOn(this.mainStage.getScene(), Themes.DEFAULT, Themes.LEGACY);
             this.mainStage.show();
         } catch (IOException ex) {
-            java.util.logging.Logger.getLogger(FlowController.class.getName()).log(Level.SEVERE, "Error inicializando la vista base.", ex);
+            java.util.logging.Logger.getLogger(FlowController.class.getName()).log(Level.SEVERE,
+                    "Error inicializando la vista base.", ex);
         }
     }
 
@@ -123,7 +130,7 @@ public class FlowController {
                 VBox.setVgrow(loadedView, Priority.ALWAYS);
 
                 // Agregar un margen de 20 píxeles al contenido cargado
-                VBox.setMargin(loadedView, new Insets(20));
+                VBox.setMargin(loadedView, new Insets(0));
 
                 // Agregar la vista cargada al VBox
                 vBox.getChildren().add(loadedView);
@@ -146,14 +153,13 @@ public class FlowController {
         }
     }
 
-
     public void goViewInStage(String viewName, Stage stage) {
         FXMLLoader loader = getLoader(viewName);
         Controller controller = loader.getController();
         controller.setStage(stage);
         stage.getScene().setRoot(loader.getRoot());
         MFXThemeManager.addOn(stage.getScene(), Themes.DEFAULT, Themes.LEGACY);
-        
+
     }
 
     public void goViewInWindow(String viewName) {
@@ -175,6 +181,10 @@ public class FlowController {
         stage.centerOnScreen();
         stage.show();
     }
+
+//    public void preloadViewsAsync() {
+//        new Thread(() -> {
+//            getLoader("LoginView");
 
     public void goViewInWindowModal(String viewName, Stage parentStage, Boolean resizable) {
         FXMLLoader loader = getLoader(viewName);
@@ -200,18 +210,23 @@ public class FlowController {
 
     }
 
+    /// /            getLoader("IntroView");
+    /// /            getLoader("PrincipalMenuView");
+    /// /            getLoader("PersonalizationView");
+    /// /            getLoader("PointsView");
+    /// /            getLoader("HelpView");
+//            // ... cualquier otra vista
+//            System.out.println("✅ Vistas precargadas correctamente.");
+//        }).start();
+//    }
     public Controller getController(String viewName) {
         return getLoader(viewName).getController();
     }
-    
-    public void limpiarLoader(String view){
+
+    public void limpiarLoader(String view) {
         this.loaders.remove(view);
     }
 
-    public static void setIdioma(ResourceBundle idioma) {
-        FlowController.idioma = idioma;
-    }
-    
     public void initialize() {
         this.loaders.clear();
     }

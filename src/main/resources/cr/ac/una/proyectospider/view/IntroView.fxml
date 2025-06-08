@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<BorderPane xmlns:fx="http://javafx.com/fxml/1" fx:id="Mainroot" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
+            prefHeight="800.0" styleClass="Background" stylesheets="@StyleSpider.css"
+            xmlns="http://javafx.com/javafx/23.0.1" fx:controller="cr.ac.una.proyectospider.controller.IntroController">
+    <center>
+        <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" BorderPane.alignment="CENTER">
+            <children>
+                <AnchorPane id="AnchorPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
+                            prefHeight="600.0" prefWidth="800.0" VBox.vgrow="ALWAYS">
+                    <children>
+                        <StackPane fx:id="spBackground" maxHeight="1.7976931348623157E308"
+                                   maxWidth="1.7976931348623157E308" AnchorPane.bottomAnchor="0.0"
+                                   AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                            <children>
+                                <ImageView fx:id="imgBackground" fitHeight="150.0" fitWidth="200.0"
+                                           pickOnBounds="true"/>
+                                <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0">
+                                    <children>
+                                        <VBox fx:id="vboxLogo" alignment="TOP_CENTER" maxHeight="-Infinity"
+                                              prefHeight="500.0" prefWidth="800.0" VBox.vgrow="ALWAYS">
+                                            <VBox.margin>
+                                                <Insets/>
+                                            </VBox.margin>
+                                            <children>
+                                                <StackPane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="400.0"
+                                                           prefWidth="400.0" styleClass="sp-imagelogo">
+                                                    <children>
+                                                        <ImageView fx:id="imgLogoSpider" fitHeight="400.0"
+                                                                   fitWidth="400.0" pickOnBounds="true"
+                                                                   preserveRatio="true"/>
+                                                    </children>
+                                                    <VBox.margin>
+                                                        <Insets top="80.0"/>
+                                                    </VBox.margin>
+                                                </StackPane>
+                                            </children>
+                                        </VBox>
+                                        <VBox>
+                                            <children>
+                                                <VBox fx:id="vboxTitle" alignment="TOP_CENTER"
+                                                      maxHeight="1.7976931348623157E308">
+                                                    <children>
+                                                        <Label fx:id="lblTitulo" alignment="TOP_CENTER"
+                                                               contentDisplay="TOP" maxHeight="1.7976931348623157E308"
+                                                               styleClass="label-title" text="SOLITARIO"/>
+                                                    </children>
+                                                </VBox>
+                                                <VBox fx:id="vboxTitle2" alignment="TOP_CENTER"
+                                                      maxHeight="1.7976931348623157E308">
+                                                    <children>
+                                                        <Label fx:id="lblTitulo2" alignment="TOP_CENTER"
+                                                               contentDisplay="TOP" maxHeight="1.7976931348623157E308"
+                                                               styleClass="label-title" text="SPIDER"/>
+                                                    </children>
+                                                </VBox>
+                                            </children>
+                                        </VBox>
+                                        <ImageView fx:id="imgButtonComenzar" fitHeight="70.0" fitWidth="170.0"
+                                                   onMouseClicked="#onMouseClickedButtonComenzar" pickOnBounds="true"
+                                                   styleClass="neon-image-button">
+                                            <VBox.margin>
+                                                <Insets top="20.0"/>
+                                            </VBox.margin>
+                                        </ImageView>
+                                    </children>
+                                </VBox>
+                            </children>
+                        </StackPane>
+                    </children>
+                </AnchorPane>
+            </children>
+        </VBox>
+    </center>
+</BorderPane>

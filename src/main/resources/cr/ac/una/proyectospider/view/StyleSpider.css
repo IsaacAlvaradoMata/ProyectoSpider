@@ -1,7 +1,686 @@
-.jfx-Subtitulo-label {    
-    -fx-font-size: 14px;    
-    -fx-padding: 5 0 5 0;     
-    -fx-text-fill: GOLD;    
-    -fx-font-weight: bold;  
+@font-face {
+    font-family: "Cynatar";
+    src: url("../resources/Cynatar.ttf");
 }
 
+@font-face {
+    font-family: "Raster";
+    src: url("../resources/Raster.ttf");
+}
+
+@font-face {
+    font-family: "Joystix Monospace";
+    src: url("../resources/Joystix.ttf");
+}
+
+
+/*VISTA INTRO*/
+
+.Background {
+    -fx-background-color: linear-gradient(to bottom, #0f0f0f, #260033, #4a0033);
+}
+
+.label-title {
+    -fx-font-family: "Cynatar";
+    -fx-font-size: 100px;
+    -fx-text-fill: #ffc107;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(gaussian, #ff8f00, 15, 0.6, 0, 0);
+    -fx-alignment: center;
+}
+
+.sp-imagelogo {
+    -fx-effect: dropshadow(gaussian, #ffc107, 35, 0.8, 0, 0);
+}
+
+#imgLogoSpider {
+    -fx-image: url('../resources/LogoSpiderIcon.png');
+}
+
+#imgButtonComenzar {
+    -fx-image: url('../resources/ButtonComenzar.png');
+}
+
+.neon-image-button {
+    -fx-effect: dropshadow(gaussian, #ff00ff, 10, 0.5, 0, 0);
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+    -fx-transition: all 0.2s ease-in-out;
+}
+
+.neon-image-button:hover {
+    -fx-effect: dropshadow(gaussian, #00ffff, 15, 0.8, 0, 0);
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+}
+
+.neon-image-button:pressed {
+    -fx-scale-x: 0.95;
+    -fx-scale-y: 0.95;
+}
+
+
+.glitch {
+    -fx-effect: dropshadow(gaussian, #ff00ff, 10, 0.8, 4, 0),
+    dropshadow(gaussian, #00ffff, 10, 0.8, -4, 0);
+}
+
+.glitch-flash {
+    -fx-background-color: rgba(255, 255, 255, 0.3);
+}
+
+
+/*VISTA LOGIN*/
+
+.label-subtitle {
+    -fx-font-family: "Cynatar";
+    -fx-font-size: 50px;
+    -fx-text-fill: #ffc107;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(gaussian, #ff8f00, 15, 0.6, 0, 0);
+    -fx-alignment: center;
+}
+
+#btnRegistrarJugador {
+    -fx-image: url('../resources/ButtonRegistrar.png');
+}
+
+#BtnIniciarSesion {
+    -fx-image: url('../resources/ButtonIniciarSesion.png');
+}
+
+#btnAcercaDe {
+    -fx-image: url('../resources/ButtonAcercaDe.png');
+}
+
+#imgLoginInfo {
+    -fx-image: url('../resources/LoginSymbol.png');
+}
+
+#imgBackgroundLogin {
+    -fx-fit-width: 100%;
+    -fx-fit-height: 100%;
+}
+
+#txtfildLogin {
+    -fx-background-color: rgba(20, 20, 20, 0.8);
+    -fx-border-color: #ff00ff;
+    -fx-border-width: 2px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 7px;
+    -fx-text-fill: #ffc107;
+    -fx-font-family: 'Cynatar';
+    -fx-font-size: 24px;
+    -fx-padding: 8px;
+    -fx-font-weight: bold;
+    -fx-prompt-text-fill: #ff00ff;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 5, 0.3, 0, 2);
+}
+
+#txtfildLogin:focused {
+    -fx-border-color: #00ffff;
+    -fx-effect: dropshadow(gaussian, #00ffff, 10, 0.5, 0, 0);
+    -fx-background-color: rgba(30, 30, 30, 0.9);
+    -fx-prompt-text-fill: #00ffff;
+}
+
+
+/*VISTA ACERCA DE*/
+
+.terminal-box {
+    -fx-border-color: grey;
+    -fx-border-width: 2px;
+}
+
+.terminal-box-containers {
+    -fx-background-color: black;
+}
+
+
+.terminal-label-titles {
+    -fx-font-family: "Raster";
+    -fx-font-size: 18px;
+    -fx-text-fill: #00FF00;
+    -fx-effect: dropshadow(gaussian, #00FF00, 5, 0.3, 0, 0);
+}
+
+.label-hackeando {
+    -fx-background-color: #00FF00;
+    -fx-text-fill: black;
+    -fx-font-family: "Raster";
+    -fx-font-size: 18px;
+    -fx-effect: dropshadow(gaussian, #e80b0b, 5, 0.3, 0, 0);
+    -fx-font-weight: bold;
+}
+
+.terminal-label-subtitles {
+    -fx-font-family: "Raster";
+    -fx-font-size: 16px;
+    -fx-text-fill: #00FF00;
+    -fx-effect: dropshadow(gaussian, #00FF00, 5, 0.3, 0, 0);
+}
+
+
+.label-title-info {
+    -fx-font-family: "Cynatar";
+    -fx-font-size: 35px;
+    -fx-text-fill: #ffc107;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(gaussian, #ff8f00, 15, 0.6, 0, 0);
+    -fx-alignment: center;
+}
+
+
+#imgCloseTerminal {
+    -fx-image: url('../resources/CloseTerminalIcon.png');
+}
+
+#imgReziseTerminal {
+    -fx-image: url('../resources/ReziseTerminalIcon.png');
+}
+
+#imgHideTerminal {
+    -fx-image: url('../resources/HideTerminalIcon.png');
+}
+
+#imgLogoInfo {
+    -fx-image: url('../resources/LogoSpiderIcon.png');
+}
+
+#imgIsaac {
+    -fx-image: url('../resources/IsaacIcon.jpg');
+}
+
+#imgMatiw {
+    -fx-image: url('../resources/MatiwIcon.jpg');
+}
+
+#imgEmmanuel {
+    -fx-image: url('../resources/EmmanuelIcon.jpg');
+}
+
+#imgUniversidad {
+    -fx-image: url('../resources/LogoUNAIcon.png');
+}
+
+#btnVolver {
+    -fx-image: url('../resources/ButtonVolver.png');
+}
+
+
+/*VISTA MENU*/
+
+#btnNuevaPartida {
+    -fx-image: url('../resources/ButtonNuevaPartida.png');
+}
+
+#btnContinuarPartida {
+    -fx-image: url('../resources/ButtonContinuarPartida.png');
+}
+
+#btnPersonalizacion {
+    -fx-image: url('../resources/ButtonPersonalizacion.png');
+}
+
+#btnVerPuntajes {
+    -fx-image: url('../resources/ButtonVerPuntajes.png');
+}
+
+#btnAyuda {
+    -fx-image: url('../resources/ButtonAyuda.png');
+}
+
+#btnCerrarSesion {
+    -fx-image: url('../resources/ButtonCerrarSesion.png');
+}
+
+#imgMenuLogo {
+    -fx-image: url('../resources/LogoSpiderIcon.png');
+}
+
+
+.label-title-menu {
+    -fx-font-family: "Cynatar";
+    -fx-font-size: 40px;
+    -fx-text-fill: #ffc107;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(gaussian, #ff8f00, 15, 0.6, 0, 0);
+    -fx-alignment: center;
+}
+
+.label-subtitle-menu {
+    -fx-font-family: "Cynatar";
+    -fx-font-size: 27px;
+    -fx-text-fill: #ffc107;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(gaussian, #ff8f00, 15, 0.6, 0, 0);
+    -fx-alignment: center;
+}
+
+.label-info-menu {
+    -fx-font-family: "Cynatar";
+    -fx-font-size: 25px;
+    -fx-text-fill: #00ffff;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(gaussian, #ff00ff, 15, 0.6, 0, 0);
+    -fx-alignment: center;
+}
+
+.label-info-menu2 {
+    -fx-font-family: "Cynatar";
+    -fx-font-size: 35px;
+    -fx-text-fill: #00ffff;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(gaussian, #ff00ff, 15, 0.6, 0, 0);
+    -fx-alignment: center;
+}
+
+
+.table-view-menu {
+    -fx-font-family: "Raster";
+    -fx-background-color: rgba(1, 1, 1, 0.5);
+    -fx-control-inner-background: transparent;
+    -fx-table-cell-border-color: transparent;
+    -fx-border-color: #ffc107;
+    -fx-border-width: 3px;
+    -fx-border-radius: 0px;
+    -fx-padding: 10;
+    -fx-effect: dropshadow(gaussian, #ff8f00, 15, 0.6, 0, 0);
+
+}
+
+.table-view-menu .column-header {
+    -fx-alignment: CENTER;
+    -fx-background-color: #000000;
+}
+
+.table-view-menu .column-header .label {
+    -fx-font-size: 18px;
+    -fx-text-fill: #ffc107;
+    -fx-effect: dropshadow(gaussian, #ff8f00, 15, 0.6, 0, 0);
+    -fx-font-weight: bold;
+    -fx-alignment: center;
+}
+
+.table-view-menu .scroll-bar:vertical {
+    -fx-pref-width: 4px;
+    -fx-background-color: #000000;
+}
+
+.table-view-menu .scroll-bar:vertical .thumb {
+    -fx-background-color: #ffc107;
+    -fx-background-insets: 0;
+    -fx-effect: dropshadow(gaussian, #ff8f00, 15, 0.6, 0, 0);
+
+
+}
+
+.table-view-menu .scroll-bar:vertical .track {
+    -fx-background-color: #2d0062;
+}
+
+.table-view-menu .scroll-bar .increment-button,
+.table-view-menu .scroll-bar .decrement-button {
+    -fx-background-color: #000000;
+    -fx-padding: 0;
+    -fx-shape: "";
+    -fx-background-insets: 0;
+}
+
+.table-view-menu .column-header-background {
+    -fx-background-color: #000000;
+}
+
+
+/*VISTA AYUDA*/
+.label-titleee-ayudaa {
+    -fx-font-family: "Cynatar";
+    -fx-font-size: 45px;
+    -fx-text-fill: #00ffff;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(gaussian, #ff00ff, 15, 0.6, 0, 0);
+    -fx-alignment: center;
+}
+
+
+.label-titlee-ayudaa {
+    -fx-font-family: "Cynatar";
+    -fx-font-size: 24px;
+    -fx-text-fill: #00ffff;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(gaussian, #ff00ff, 15, 0.6, 0, 0);
+    -fx-alignment: center;
+}
+
+.label-titlee-ayudaa-hover {
+    -fx-text-fill: #ffc107;
+    -fx-effect: dropshadow(gaussian, #ff8f00, 15, 0.6, 0, 0);
+}
+
+
+.label-titlee-ayudaa-no-hover {
+    -fx-text-fill: #00ffff;
+    -fx-effect: dropshadow(gaussian, #ff00ff, 15, 0.6, 0, 0);
+}
+
+.label-title-ayuda {
+    -fx-font-family: "Cynatar";
+    -fx-font-size: 24px;
+    -fx-text-fill: #00ffff;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(gaussian, #ff00ff, 15, 0.6, 0, 0);
+    -fx-alignment: center;
+}
+
+
+#btnObjetivo {
+    -fx-image: url('../resources/FrameHelp1.png');
+}
+
+#btnDificultades {
+    -fx-image: url('../resources/FrameHelp2.png');
+}
+
+#btnControles {
+    -fx-image: url('../resources/FrameHelp3.png');
+}
+
+#btnCondiciones {
+    -fx-image: url('../resources/FrameHelp1.png');
+}
+
+#btnExplicacion {
+    -fx-image: url('../resources/FrameHelp2.png');
+}
+
+#imgHelpIcon1 {
+    -fx-image: url('../resources/HelpIcon.png');
+}
+
+#imgHelpIcon2 {
+    -fx-image: url('../resources/HelpIcon.png');
+}
+
+#imgInfoGeneral {
+    -fx-image: url('../resources/imgInfoGeneral.png');
+}
+
+#imgObjetivo {
+    -fx-image: url('../resources/imgObjetivo.png');
+}
+
+#imgDificultades {
+    -fx-image: url('../resources/imgDificultades.png');
+}
+
+#imgControles {
+    -fx-image: url('../resources/imgControles.png');
+}
+
+#imgCondiciones {
+    -fx-image: url('../resources/imgCondiciones.png');
+}
+
+#imgExplicacion {
+    -fx-image: url('../resources/imgExplicacion.png');
+}
+
+#spBackgroundTabPane {
+    -fx-background-radius: 5;
+
+
+}
+
+.help-label-subtitles {
+    -fx-font-family: "Raster";
+    -fx-font-weight: bold;
+    -fx-font-size: 16px;
+    -fx-text-fill: #ffc107;
+    -fx-effect: dropshadow(gaussian, #ff8f00, 15, 0.6, 0, 0);
+}
+
+.help-label-subtitles2 {
+    -fx-font-family: "Raster";
+    -fx-font-weight: bold;
+    -fx-font-size: 16px;
+    -fx-text-fill: #ffc107;
+    -fx-effect: dropshadow(gaussian, #ff00ff, 15, 0.6, 0, 0);
+}
+
+
+.tab-pane .tab-header-area {
+    -fx-padding: 0;
+    -fx-background-color: transparent;
+    -fx-border-width: 0;
+    -fx-tab-min-height: 0;
+    -fx-tab-max-height: 0;
+    -fx-tab-min-width: 0;
+    -fx-tab-max-width: 0;
+    visibility: hidden;
+}
+
+/*VISTA GAME*/
+
+#btnGuardarySalir {
+    -fx-image: url('../resources/btnGuardarySalir.png');
+}
+
+#btnPista {
+    -fx-image: url('../resources/btnPista.png');
+}
+
+#imgSpider1 {
+    -fx-image: url('../resources/SpiderIconGame.png');
+}
+
+#imgSpider2 {
+    -fx-image: url('../resources/SpiderIconGame.png');
+}
+
+#btnUndo {
+    -fx-image: url('../resources/btnUndo.png');
+}
+
+#btnUndoAll {
+    -fx-image: url('../resources/btnUndoAll.png');
+}
+
+#btnRendirse {
+    -fx-image: url('../resources/btnRendirse.png');
+}
+
+
+.spFondoTablero {
+
+    -fx-border-color: linear-gradient(
+            from 0% 0% to 100% 100%,
+            #ff00ff,
+            #00ffff,
+            #ffc107
+    );
+    -fx-border-width: 5px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 7px;
+
+
+}
+
+
+.label-subtitle-game {
+    -fx-font-family: "Cynatar";
+    -fx-font-size: 27px;
+    -fx-text-fill: #00ffff;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(gaussian, #ff00ff, 15, 0.6, 0, 0);
+    -fx-alignment: center;
+}
+
+/*VISTA POINTS*/
+
+#txtfieldFiltro {
+    -fx-background-color: rgba(20, 20, 20, 0.8);
+    -fx-border-color: #ff00ff;
+    -fx-border-width: 2px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 7px;
+    -fx-text-fill: #ffc107;
+    -fx-font-family: 'Cynatar';
+    -fx-font-size: 22px;
+    -fx-padding: 8px;
+    -fx-font-weight: bold;
+    -fx-prompt-text-fill: #ff00ff;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 5, 0.3, 0, 2);
+}
+
+#txtfieldFiltro:focused {
+    -fx-border-color: #00ffff;
+    -fx-effect: dropshadow(gaussian, #00ffff, 10, 0.5, 0, 0);
+    -fx-background-color: rgba(30, 30, 30, 0.9);
+    -fx-prompt-text-fill: #00ffff;
+}
+
+
+#btnBuscar {
+    -fx-image: url('../resources/btnBuscar.png');
+}
+
+#imgArcade {
+    -fx-image: url('../resources/ArcadeIcon.png');
+}
+
+.table-view-arcade {
+    -fx-font-family: "Joystix Monospace";
+    -fx-background-color: transparent;
+    -fx-control-inner-background: transparent;
+    -fx-table-cell-border-color: transparent;
+    -fx-padding: 10;
+}
+
+.table-view-arcade .column-header {
+    -fx-alignment: CENTER;
+    -fx-background-color: #000000;
+}
+
+.table-view-arcade .column-header .label {
+    -fx-text-fill: #ffc107;
+    -fx-effect: dropshadow(gaussian, #ff8f00, 15, 0.6, 0, 0);
+    -fx-font-weight: bold;
+    -fx-alignment: center;
+}
+
+.table-view-arcade .scroll-bar:vertical {
+    -fx-pref-width: 4px;
+    -fx-background-color: #000000;
+}
+
+.table-view-arcade .scroll-bar:vertical .thumb {
+    -fx-background-color: #02b4b4;
+    -fx-background-insets: 0;
+    -fx-effect: dropshadow(gaussian, #00ffff, 15, 0.6, 0, 0);
+
+
+}
+
+.table-view-arcade .scroll-bar:vertical .track {
+    -fx-background-color: #000000;
+}
+
+.table-view-arcade .scroll-bar .increment-button,
+.table-view-arcade .scroll-bar .decrement-button {
+    -fx-background-color: #000000;
+    -fx-padding: 0;
+    -fx-shape: "";
+    -fx-background-insets: 0;
+}
+
+.table-view-arcade .column-header-background {
+    -fx-background-color: #000000;
+}
+
+
+/*VISTA PERSONALIZATION*/
+
+#btnAgregarOtro {
+    -fx-image: url('../resources/btnAgregarOtro.png');
+}
+
+
+#btnGuardarCambios {
+    -fx-image: url('../resources/btnGuardarCambios.png');
+}
+
+#imgCartasCyberpunk {
+    -fx-image: url('../resources/imgCyberpunk.png');
+}
+
+#imgCartasClasicas {
+    -fx-image: url('../resources/imgClasicas.png');
+}
+
+#btnFlechaIzquierda {
+    -fx-image: url('../resources/imgFlechaIzquierda.png');
+}
+
+#btnFlechaDerecha {
+    -fx-image: url('../resources/imgFlechaDerecha.png');
+}
+
+
+.radio-button .radio {
+    -fx-background-color: black;
+    -fx-border-color: #00ffff;
+    -fx-border-width: 2;
+    -fx-border-radius: 100%;
+    -fx-padding: 4;
+    -fx-effect: dropshadow(gaussian, #00ffff, 8, 0.5, 0, 0);
+}
+
+.radio-button:selected .radio {
+    -fx-background-color: #00ffff;
+    -fx-background-insets: 0;
+    -fx-background-radius: 100%;
+    -fx-effect: dropshadow(gaussian, #00ffff, 12, 0.8, 0, 0);
+}
+
+.radio-button:hover {
+    -fx-text-fill: #ffc107;
+    -fx-effect: dropshadow(gaussian, #ff8f00, 8, 0.6, 0, 0);
+}
+
+.stackPreview {
+    -fx-border-color: #00ffff;
+    -fx-border-width: 2px;
+    -fx-border-radius: 10px;
+    -fx-background-radius: 10px;
+    -fx-effect: dropshadow(gaussian, #00ffff, 20, 0.6, 0, 0);
+}
+
+
+/*ALERTAS PERSONALIZADAS*/
+
+.botones-alerta {
+    -fx-background-color: #ff00ea;
+    -fx-text-fill: #FFD700;
+    -fx-font-size: 20;
+    -fx-font-family: 'Cynatar';
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-border-width: 2px;
+    -fx-border-color: #ff00ea;
+}
+
+.label-alerta {
+    -fx-alignment: center;
+    -fx-effect: dropshadow(gaussian, #ff00ea, 15, 0.6, 0, 0);
+
+}
+
+.vbox-alerta {
+    -fx-background-color: #2d0062;
+    -fx-background-radius: 18;
+    -fx-border-radius: 18;
+    -fx-border-width: 4px;
+    -fx-border-color: #ff00ea;
+    -fx-padding: 20;
+
+}

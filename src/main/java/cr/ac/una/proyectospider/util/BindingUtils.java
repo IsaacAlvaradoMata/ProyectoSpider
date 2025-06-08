@@ -7,7 +7,6 @@ import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
 
 /**
- *
  * @author ccarranza
  */
 public final class BindingUtils {

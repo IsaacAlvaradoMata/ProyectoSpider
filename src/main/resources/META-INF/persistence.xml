@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             version="2.2"
+             xmlns="http://xmlns.jcp.org/xml/ns/persistence"
+             xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_2.xsd">
+
+    <persistence-unit name="cr.ac.una_ProyectoSpider_jar_1.0-SNAPSHOTPU" transaction-type="RESOURCE_LOCAL">
+        <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+
+        <class>cr.ac.una.proyectospider.model.Jugador</class>
+        <class>cr.ac.una.proyectospider.model.Partida</class>
+        <class>cr.ac.una.proyectospider.model.CartasPartida</class>
+        <class>cr.ac.una.proyectospider.util.BooleanToIntegerConverter</class>
+
+        <properties>
+            <property name="jakarta.persistence.jdbc.url" value="jdbc:oracle:thin:@//localhost:1521/XEPDB1"/>
+            <property name="jakarta.persistence.jdbc.user" value="spider"/>
+            <property name="jakarta.persistence.jdbc.driver" value="oracle.jdbc.OracleDriver"/>
+            <property name="jakarta.persistence.jdbc.password" value="spider"/>
+        </properties>
+    </persistence-unit>
+</persistence>
