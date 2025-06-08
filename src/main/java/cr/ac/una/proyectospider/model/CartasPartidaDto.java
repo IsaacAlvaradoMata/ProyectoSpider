@@ -14,7 +14,6 @@ public class CartasPartidaDto {
     private final BooleanProperty enPila;
     private final BooleanProperty retirada;
     private final ObjectProperty<PartidaDto> partida;
-    private Long version;
     private String imagenNombre;
 
     public CartasPartidaDto() {
@@ -41,7 +40,6 @@ public class CartasPartidaDto {
         this.enMazo.set(entity.getEnMazo());
         this.enPila.set(entity.getEnPila());
         this.retirada.set(entity.getRetirada());
-        this.version = entity.getVersion();
         this.imagenNombre = entity.getNombreCarta(); // <--- asignar nombre de imagen al DTO
         if (entity.getPartida() != null) {
             this.partida.set(new PartidaDto(entity.getPartida()));
@@ -65,7 +63,6 @@ public class CartasPartidaDto {
         entity.setEnMazo(this.enMazo.get());
         entity.setEnPila(this.enPila.get());
         entity.setRetirada(this.retirada.get());
-        entity.setVersion(this.version);
         entity.setPartida(partidaRef); // ⚠️ clave foránea segura
         entity.setNombreCarta(this.imagenNombre); // <--- guardar nombre de imagen
         return entity;
@@ -113,10 +110,6 @@ public class CartasPartidaDto {
 
     public PartidaDto getPartida() { return partida.get(); }
     public void setPartida(PartidaDto partida) { this.partida.set(partida); }
-
-    public Long getVersion() { return version; }
-    public void setVersion(Long version) { this.version = version; }
-
     public String getImagenNombre() { return imagenNombre; }
     public void setImagenNombre(String imagenNombre) { this.imagenNombre = imagenNombre; }
 

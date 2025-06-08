@@ -60,10 +60,6 @@ public class CartasPartida implements Serializable {
     @Column(name = "NOMBRE_CARTA")
     private String nombreCarta;
 
-    @Version
-    @Column(name = "VERSION")
-    private Long version;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_PARTIDA", referencedColumnName = "ID_PARTIDA", nullable = false)
     private Partida partida;
@@ -86,7 +82,6 @@ public class CartasPartida implements Serializable {
         this.enPila = dto.getEnPila();
         this.retirada = dto.getRetirada();
         this.nombreCarta = dto.getImagenNombre(); // <--- ahora sí se asigna correctamente
-        this.version = dto.getVersion();
     }
 
     // --- Getters y Setters ---
@@ -119,9 +114,6 @@ public class CartasPartida implements Serializable {
 
     public String getNombreCarta() { return nombreCarta; }
     public void setNombreCarta(String nombreCarta) { this.nombreCarta = nombreCarta; }
-
-    public Long getVersion() { return version; }
-    public void setVersion(Long version) { this.version = version; }
 
     public Partida getPartida() { return partida; }
     public void setPartida(Partida partida) { this.partida = partida; }

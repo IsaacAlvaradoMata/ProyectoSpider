@@ -64,11 +64,17 @@ public class PartidaService {
                     .setParameter("idPartida", managed.getIdPartida())
                     .executeUpdate();
 
+            managed.getCartasPartidaList().clear();
+
             for (CartasPartidaDto dto : cartas) {
                 System.out.println("🃏 [DEBUG] Insertando carta con orden: " + dto.getOrden() + " y valor: " + dto.getValor());
-                CartasPartida carta = dto.toEntity(managed); // usar partida gestionada
+                CartasPartida carta = dto.toEntity(managed);
+                managed.getCartasPartidaList().add(carta);
                 em.persist(carta);
             }
+
+            em.flush();
+            em.clear();
 
             em.getTransaction().commit();
             return true;
