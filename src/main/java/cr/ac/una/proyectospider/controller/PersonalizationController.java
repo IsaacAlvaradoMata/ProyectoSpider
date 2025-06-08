@@ -322,6 +322,7 @@ public class PersonalizationController extends Controller implements Initializab
 
         AppContext.getInstance().set(AppContext.KEY_FONDO_SELECCIONADO, fondoSeleccionado);
         AppContext.getInstance().set(AppContext.KEY_ESTILO_CARTAS, claveEstilo);
+        AppContext.getInstance().delete("partidaDtoPersonalizacion");
 
         CustomAlert.showInfo(
                 spBackgroundPersonalization,
