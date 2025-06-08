@@ -1459,4 +1459,68 @@ public class AnimationDepartment {
         tt.play();
     }
 
+    public static void animarCartasAlMazoVisual(
+            List<?> cartasAAnimar,
+            Pane spGamebackground,
+            java.util.Map<?, ImageView> cartaToImageView,
+            javafx.scene.layout.HBox hboxTablero,
+            ImageView imgMazo,
+            Runnable onFinished
+    ) {
+        if (cartasAAnimar == null || cartasAAnimar.isEmpty() || imgMazo == null) {
+            if (onFinished != null) onFinished.run();
+            return;
+        }
+        Pane animPane = new Pane();
+        animPane.setPickOnBounds(false);
+        spGamebackground.getChildren().add(animPane);
+
+        List<ImageView> clones = new ArrayList<>();
+        List<Double> origX = new ArrayList<>();
+        List<Double> origY = new ArrayList<>();
+
+        for (Object carta : cartasAAnimar) {
+            ImageView original = cartaToImageView.get(carta);
+            if (original == null) continue;
+            javafx.geometry.Bounds bounds = original.localToScene(original.getBoundsInLocal());
+            javafx.geometry.Bounds parentBounds = spGamebackground.sceneToLocal(bounds);
+            ImageView clone = new ImageView(original.getImage());
+            clone.setFitWidth(original.getFitWidth());
+            clone.setPreserveRatio(true);
+            clone.setSmooth(true);
+            clone.setLayoutX(parentBounds.getMinX());
+            clone.setLayoutY(parentBounds.getMinY());
+            clones.add(clone);
+            origX.add(parentBounds.getMinX());
+            origY.add(parentBounds.getMinY());
+            animPane.getChildren().add(clone);
+            original.setVisible(false);
+        }
+
+        javafx.geometry.Bounds mazoBounds = imgMazo.localToScene(imgMazo.getBoundsInLocal());
+        javafx.geometry.Bounds mazoParentBounds = spGamebackground.sceneToLocal(mazoBounds);
+        double mazoX = mazoParentBounds.getMinX();
+        double mazoY = mazoParentBounds.getMinY();
+
+        javafx.animation.ParallelTransition toMazo = new javafx.animation.ParallelTransition();
+        for (int i = 0; i < clones.size(); i++) {
+            ImageView clone = clones.get(i);
+            javafx.animation.TranslateTransition go = new javafx.animation.TranslateTransition(javafx.util.Duration.millis(500 + i * 60), clone);
+            go.setToX(mazoX - origX.get(i));
+            go.setToY(mazoY - origY.get(i));
+            toMazo.getChildren().add(go);
+        }
+
+        toMazo.setOnFinished(e -> {
+            spGamebackground.getChildren().remove(animPane);
+            for (int i = 0; i < cartasAAnimar.size(); i++) {
+                Object carta = cartasAAnimar.get(i);
+                ImageView original = cartaToImageView.get(carta);
+                if (original != null) original.setVisible(true);
+            }
+            if (onFinished != null) onFinished.run();
+        });
+        toMazo.play();
+    }
+
 }
