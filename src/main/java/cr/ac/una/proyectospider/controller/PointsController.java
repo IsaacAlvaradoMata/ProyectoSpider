@@ -3,7 +3,8 @@ package cr.ac.una.proyectospider.controller;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import cr.ac.una.proyectospider.model.JugadorRankingMock;
+import cr.ac.una.proyectospider.model.JugadorRankingDto;
+import cr.ac.una.proyectospider.service.JugadorService;
 import cr.ac.una.proyectospider.util.AnimationDepartment;
 import cr.ac.una.proyectospider.util.FlowController;
 import cr.ac.una.proyectospider.util.SoundDepartment;
@@ -14,7 +15,11 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.*;
+import javafx.scene.control.Label;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -25,48 +30,30 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
 
-
 public class PointsController extends Controller implements Initializable {
 
-    @FXML
-    private BorderPane root;
-    @FXML
-    private Label lblTitulo;
-    @FXML
-    private TableView<JugadorRankingMock> tblviewRanking;
-    @FXML
-    private ImageView btnVolver;
-    @FXML
-    private StackPane spTextFieldContainer;
-    @FXML
-    private TextField txtfieldFiltro;
-    @FXML
-    private ImageView btnBuscar;
-    @FXML
-    private StackPane spBackgroundPoints;
-    @FXML
-    private ImageView imgBackgroundPoints;
-    @FXML
-    private ImageView imgArcade;
-    @FXML
-    private StackPane spArcade;
-    @FXML
-    private ImageView imgTela1;
-    @FXML
-    private ImageView imgTela2;
-    @FXML
-    private ImageView imgArana1;
-    @FXML
-    private ImageView imgArana2;
+    @FXML private BorderPane root;
+    @FXML private Label lblTitulo;
+    @FXML private TableView<JugadorRankingDto> tblviewRanking;
+    @FXML private ImageView btnVolver;
+    @FXML private StackPane spTextFieldContainer;
+    @FXML private TextField txtfieldFiltro;
+    @FXML private ImageView btnBuscar;
+    @FXML private StackPane spBackgroundPoints;
+    @FXML private ImageView imgBackgroundPoints;
+    @FXML private ImageView imgArcade;
+    @FXML private StackPane spArcade;
+    @FXML private ImageView imgTela1;
+    @FXML private ImageView imgTela2;
+    @FXML private ImageView imgArana1;
+    @FXML private ImageView imgArana2;
 
+    // Servicio para obtener el ranking real
+    private final JugadorService jugadorService = new JugadorService();
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-    }
-
-
-    @Override
-    public void initialize() {
+        // No se necesita inicializar nada aquí
     }
 
     @FXML
@@ -77,18 +64,19 @@ public class PointsController extends Controller implements Initializable {
 
         AnimationDepartment.glitchFadeOut(spBackgroundPoints, Duration.seconds(1.1), () -> {
             FlowController.getInstance().goView("MenuView");
-            MenuController controller = (MenuController) FlowController.getInstance().getController("MenuView");
+            MenuController controller =
+                    (MenuController) FlowController.getInstance().getController("MenuView");
             controller.RunMenuView();
             Platform.runLater(() -> btnVolver.setDisable(false));
-
         });
     }
 
     public void RunPointsView() {
         ResetPointsView();
         populateTableViewRanking();
-        System.out.println("Run Login View");
+        System.out.println("Run Points View");
 
+        // Código de animaciones e imágenes de fondo (sin cambios)
         if (!spBackgroundPoints.getChildren().contains(imgBackgroundPoints)) {
             spBackgroundPoints.getChildren().add(0, imgBackgroundPoints);
         } else {
@@ -101,14 +89,16 @@ public class PointsController extends Controller implements Initializable {
             imgBackgroundPoints.fitHeightProperty().bind(root.getScene().heightProperty());
         }
 
-        imgBackgroundPoints.setImage(new Image(getClass().getResourceAsStream("/cr/ac/una/proyectospider/resources/PointsView.gif")));
+        imgBackgroundPoints.setImage(
+                new Image(getClass()
+                        .getResourceAsStream("/cr/ac/una/proyectospider/resources/PointsView.gif"))
+        );
         imgBackgroundPoints.setPreserveRatio(false);
         imgBackgroundPoints.setSmooth(true);
         imgBackgroundPoints.setOpacity(0.5);
         imgBackgroundPoints.setVisible(true);
 
         Platform.runLater(() -> {
-
             root.requestFocus();
             root.setVisible(true);
             root.setOpacity(1);
@@ -118,20 +108,27 @@ public class PointsController extends Controller implements Initializable {
 
             double sceneHeight = root.getScene().getHeight();
             AnimationDepartment.glitchFadeIn(root, Duration.seconds(0.6));
-            System.out.println("se hizo el glitchFadeIn");
             AnimationDepartment.slideFromTop(lblTitulo, Duration.seconds(1));
             AnimationDepartment.glitchTextWithFlicker(lblTitulo);
             AnimationDepartment.slideFromLeft(txtfieldFiltro, Duration.seconds(1.5));
             AnimationDepartment.slideFromRight(btnBuscar, Duration.seconds(1.5));
             AnimationDepartment.animateNeonGlow(btnBuscar);
-            AnimationDepartment.animateNeonBorderWithLED(spTextFieldContainer, txtfieldFiltro, 2.5);
+            AnimationDepartment.animateNeonBorderWithLED(
+                    spTextFieldContainer, txtfieldFiltro, 2.5);
             AnimationDepartment.slideFromRight(btnVolver, Duration.seconds(1.5));
             AnimationDepartment.animateNeonGlow(btnVolver);
+
             imgArcade.fitHeightProperty().bind(spArcade.heightProperty());
-            AnimationDepartment.slideUpWithEpicBounceClean(spArcade, Duration.seconds(2), sceneHeight);
+            AnimationDepartment.slideUpWithEpicBounceClean(
+                    spArcade, Duration.seconds(2), sceneHeight);
             AnimationDepartment.animateNeonGlow(imgArcade);
-            Image telaImage = new Image(getClass().getResourceAsStream("/cr/ac/una/proyectospider/resources/TelaIcon.png"));
-            Image aranaImage = new Image(getClass().getResourceAsStream("/cr/ac/una/proyectospider/resources/spiderPoints.png"));
+
+            Image telaImage = new Image(
+                    getClass().getResourceAsStream(
+                            "/cr/ac/una/proyectospider/resources/TelaIcon.png"));
+            Image aranaImage = new Image(
+                    getClass().getResourceAsStream(
+                            "/cr/ac/una/proyectospider/resources/spiderPoints.png"));
 
             imgTela1.setImage(telaImage);
             imgTela2.setImage(telaImage);
@@ -139,27 +136,25 @@ public class PointsController extends Controller implements Initializable {
             imgArana2.setImage(aranaImage);
 
             PauseTransition t1 = new PauseTransition(Duration.seconds(4.5));
-            t1.setOnFinished(e -> {
-                AnimationDepartment.animateSpiderWithWeb(imgTela1, imgArana1, Duration.seconds(8));
-            });
+            t1.setOnFinished(e ->
+                    AnimationDepartment.animateSpiderWithWeb(
+                            imgTela1, imgArana1, Duration.seconds(8))
+            );
             t1.play();
 
             PauseTransition t2 = new PauseTransition(Duration.seconds(14));
-            t2.setOnFinished(e -> {
-                AnimationDepartment.animateSpiderWithWeb(imgTela2, imgArana2, Duration.seconds(8));
-            });
+            t2.setOnFinished(e ->
+                    AnimationDepartment.animateSpiderWithWeb(
+                            imgTela2, imgArana2, Duration.seconds(8))
+            );
             t2.play();
-
-
         });
 
         System.out.println("Run final");
-
-
     }
 
     public void ResetPointsView() {
-        System.out.println("Reset Login View");
+        // Resto de tu lógica de reset (sin cambios)
         root.setOpacity(0);
 
         imgBackgroundPoints.setOpacity(0.5);
@@ -167,7 +162,6 @@ public class PointsController extends Controller implements Initializable {
         imgBackgroundPoints.setTranslateY(0);
         imgBackgroundPoints.setEffect(null);
         imgBackgroundPoints.setVisible(true);
-
 
         lblTitulo.setOpacity(0);
         lblTitulo.setTranslateX(0);
@@ -222,46 +216,43 @@ public class PointsController extends Controller implements Initializable {
     }
 
     private void populateTableViewRanking() {
-        TableColumn<JugadorRankingMock, String> colNombre = new TableColumn<>("Jugador");
-        colNombre.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getNombre()));
+        // Columnas para JugadorRankingDto
+        TableColumn<JugadorRankingDto, String> colNombre =
+                new TableColumn<>("Jugador");
+        colNombre.setCellValueFactory(data ->
+                new SimpleStringProperty(data.getValue().getNombreUsuario()));
         applyCustomCellStyle(colNombre);
 
-        TableColumn<JugadorRankingMock, String> colPartidas = new TableColumn<>("Ptds.Ganadas");
-        colPartidas.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getPartidasGanadas()));
+        TableColumn<JugadorRankingDto, String> colPartidas =
+                new TableColumn<>("Ptds.Ganadas");
+        colPartidas.setCellValueFactory(data ->
+                new SimpleStringProperty(
+                        data.getValue().getPartidasGanadas().toString()));
         applyCustomCellStyle(colPartidas);
 
-        TableColumn<JugadorRankingMock, String> colPuntajeTotal = new TableColumn<>("Pts.Totales");
-        colPuntajeTotal.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getPuntajeTotal()));
+        TableColumn<JugadorRankingDto, String> colPuntajeTotal =
+                new TableColumn<>("Pts.Totales");
+        colPuntajeTotal.setCellValueFactory(data ->
+                new SimpleStringProperty(
+                        data.getValue().getPuntosAcumulados().toString()));
         colPuntajeTotal.setSortType(TableColumn.SortType.DESCENDING);
         applyCustomCellStyle(colPuntajeTotal);
 
-        tblviewRanking.getColumns().setAll(colNombre, colPartidas, colPuntajeTotal);
+        tblviewRanking.getColumns().setAll(
+                colNombre, colPartidas, colPuntajeTotal);
 
-        ObservableList<JugadorRankingMock> jugadores = FXCollections.observableArrayList(
-                new JugadorRankingMock("Zombi Mariachi", "12", "11000"),
-                new JugadorRankingMock("Gordito", "15", "10900"),
-                new JugadorRankingMock("Zoncho del amor", "9", "10800"),
-                new JugadorRankingMock("Ema excusas", "18", "10700"),
-                new JugadorRankingMock("solo gorras marin", "6", "10600"),
-                new JugadorRankingMock("Fatima", "14", "8800"),
-                new JugadorRankingMock("Gustavo", "7", "5100"),
-                new JugadorRankingMock("Helena", "13", "9000"),
-                new JugadorRankingMock("Iván", "11", "7900"),
-                new JugadorRankingMock("Julia", "8", "6000"),
-                new JugadorRankingMock("Kevin", "16", "9700"),
-                new JugadorRankingMock("Laura", "10", "7100"),
-                new JugadorRankingMock("Manuel", "5", "3500"),
-                new JugadorRankingMock("Nadia", "17", "10100"),
-                new JugadorRankingMock("Oscar", "4", "2800")
-        );
-
+        // Carga datos reales desde la base
+        ObservableList<JugadorRankingDto> jugadores =
+                FXCollections.observableArrayList(
+                        jugadorService.getRankingPorPuntaje()
+                );
         tblviewRanking.setItems(jugadores);
-        tblviewRanking.getSortOrder().add(colPuntajeTotal);
+        tblviewRanking.getSortOrder().setAll(colPuntajeTotal);
     }
 
-
-    private void applyCustomCellStyle(TableColumn<JugadorRankingMock, String> column) {
-        column.setCellFactory(col -> new TableCell<>() {
+    private void applyCustomCellStyle(
+            TableColumn<JugadorRankingDto, String> column) {
+        column.setCellFactory(col -> new TableCell<JugadorRankingDto, String>() {
             @Override
             protected void updateItem(String item, boolean empty) {
                 super.updateItem(item, empty);
@@ -282,19 +273,18 @@ public class PointsController extends Controller implements Initializable {
                     text.setEffect(glow);
                     setGraphic(text);
                     setStyle("-fx-alignment: CENTER; -fx-background-color: #000000;");
-
                 }
             }
         });
     }
-
-
-
 
     @FXML
     private void onMouseClickedbtnBuscar(MouseEvent event) {
         SoundDepartment.playClick();
     }
 
+    @Override
+    public void initialize() {
 
+    }
 }
