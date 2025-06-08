@@ -57,7 +57,7 @@ CREATE TABLE Partida
         CONSTRAINT CK_PARTIDA_MOVIMIENTOS CHECK (Movimientos >= 0),
     Estado               VARCHAR2(20) NOT NULL CONSTRAINT CK_PARTIDA_ESTADO CHECK (Estado IN ('EN_JUEGO', 'PAUSADA', 'TERMINADA', 'PERDIDA')),
     Dificultad           VARCHAR2(20) DEFAULT 'MEDIA' NOT NULL CONSTRAINT CK_PARTIDA_DIFICULTAD CHECK (Dificultad IN ('FACIL', 'MEDIA', 'DIFICIL')),
-    Fondo_Seleccionado   VARCHAR2(100),
+    Fondo_Seleccionado   BLOB,
     Reverso_Seleccionado VARCHAR2(100)
 );
 
