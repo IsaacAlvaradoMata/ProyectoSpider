@@ -226,6 +226,7 @@ public class GameController extends Controller implements Initializable {
         // 🧠 Agregar puntos y tiempo actual antes de guardar
         partidaDto.setPuntos(puntaje);
         partidaDto.setTiempoJugado(segundosTranscurridos);
+        partidaDto.setMovimientos(movimientos);
 
         System.out.println("🕒 [DEBUG] Estado de la partida: " + partidaDto.getEstado());
         System.out.println("🕒 [DEBUG] Fecha fin de partida: " + partidaDto.getFechaFin());
@@ -336,12 +337,17 @@ public class GameController extends Controller implements Initializable {
         this.primerIngreso = true;
 
         // Llama a la reconstrucción visual
-        this.RunGameView(partidaDto);
+        this.RunGameView(partidaDto, false); // FALSE: es una partida continuada
     }
 
+    // Sobrecarga para distinguir entre nueva partida y continuada
     public void RunGameView(PartidaDto partidaDto) {
+        this.RunGameView(partidaDto, true); // TRUE: es una partida nueva
+    }
+
+    public void RunGameView(PartidaDto partidaDto, boolean esPartidaNueva) {
         this.partidaDto = partidaDto;
-        ResetGameView();
+        ResetGameView(esPartidaNueva);
         victoryTriggered = false;
         // ⚡ Forzar set del jugador en AppContext si viene desde la partida
         if (partidaDto.getJugador() != null) {
@@ -349,7 +355,6 @@ public class GameController extends Controller implements Initializable {
         }
 
         mostrarNombreJugador();
-        // — Fondo general "GameBackground.gif" —
         // — Fondo general "GameBackground.gif" —
         if (!spGamebackground.getChildren().contains(imgBackgroundGame)) {
             spGamebackground.getChildren().add(0, imgBackgroundGame);
@@ -398,117 +403,41 @@ public class GameController extends Controller implements Initializable {
         // — Generar mazo (solo la primera vez) —
         if (cartasEnJuego == null || cartasEnJuego.isEmpty()) {
             cartasEnJuego = MazoGenerator.generarMazoPorDificultad(dificultad, usarEstiloClasico);
-        }
-
-        // — Reset temporizador si no se ha iniciado —
-        //     Reset temporizador si no se ha iniciado —
-        if (!tiempoIniciado) {
-            segundosTranscurridos = 0;
+            // SOLO aquí reinicia tiempo y movimientos
+            if (esPartidaNueva) {
+                segundosTranscurridos = 0;
+                movimientos = 0;
+                puntaje = 500;
+            }
             actualizarLabelTiempo();
+            if (lblMovimientos != null) lblMovimientos.setText("" + movimientos);
             detenerTemporizador();
         }
 
-        // — Limpiar contenedores antes de pintar —
+        // Limpiar contenedores antes de pintar
         hboxTablero.getChildren().clear();
         hboxTableroSuperior.getChildren().clear();
         imgMazo.setImage(null);
 
-        // — Actualizar labels —
+        // Actualizar labels
         lblPuntaje.setText("" + puntaje);
         lblMovimientos.setText("" + movimientos);
         actualizarLabelTiempo();
 
-        // — PINTAR COLUMNAS + CARTAS: solo este método —
+        // PINTAR COLUMNAS + CARTAS: solo este método
         dibujarColumnasYCargarCartasEnTablero();
 
-        // — PINTAR MAZO + PILAS: solo este método —
+        // PINTAR MAZO + PILAS: solo este método
         actualizarVistaDelMazoYPilas();
 
-        // — Animaciones de primer ingreso (solo la primera vez) —
+        // Animaciones de primer ingreso (solo la primera vez)
         if (primerIngreso) {
             Platform.runLater(this::aplicarAnimacionesDeEntrada);
             primerIngreso = false;
         }
     }
 
-    private void aplicarAnimacionesDeEntrada() {
-        root.requestFocus();
-        root.setVisible(true);
-        root.setOpacity(1); // 🔓 Forzar visibilidad total
-        root.applyCss();
-        root.layout(); // ⬅️ Refresca el layout completamente
-
-        double sceneHeight = root.getScene().getHeight();
-        AnimationDepartment.glitchFadeIn(root, Duration.seconds(0.6));
-        System.out.println("se hizo el glitchFadeIn");
-
-        PauseTransition t1 = new PauseTransition(Duration.seconds(1));
-        t1.setOnFinished(e -> {
-            AnimationDepartment.slideFromTop(lblTitulo, Duration.ZERO);
-            AnimationDepartment.glitchTextWithFlicker(lblTitulo);
-            AnimationDepartment.fadeIn(imgSpider1, Duration.seconds(1.5));
-            AnimationDepartment.fadeIn(imgSpider2, Duration.seconds(1.5));
-        });
-        t1.play();
-
-        PauseTransition t2 = new PauseTransition(Duration.seconds(2.5));
-        t2.setOnFinished(e -> {
-            AnimationDepartment.slideFromLeft(lblNombreJugador, Duration.ZERO);
-            AnimationDepartment.slideFromLeft(lblNombreJugador1, Duration.ZERO);
-            AnimationDepartment.slideFromRight(lblPuntaje, Duration.ZERO);
-            AnimationDepartment.slideFromRight(lblTiempo, Duration.ZERO);
-            AnimationDepartment.slideFromRight(lblPuntaje1, Duration.ZERO);
-            AnimationDepartment.slideFromRight(lblTiempo1, Duration.ZERO);
-            AnimationDepartment.glitchTextWithFlicker(lblNombreJugador);
-            AnimationDepartment.glitchTextWithFlicker(lblPuntaje1);
-            AnimationDepartment.glitchTextWithFlicker(lblTiempo1);
-            AnimationDepartment.slideLoopLeft(imgSpider1, 400, 2);
-            AnimationDepartment.slideLoopRight(imgSpider2, 400, 2);
-            AnimationDepartment.animateNeonGlow(imgSpider1);
-            AnimationDepartment.animateNeonGlow(imgSpider2);
-
-        });
-        t2.play();
-
-        PauseTransition t3 = new PauseTransition(Duration.seconds(3));
-        t3.setOnFinished(e -> {
-            AnimationDepartment.slideUpWithEpicBounceClean(spTableroBackground, Duration.ZERO, sceneHeight);
-
-        });
-        t3.play();
-
-        PauseTransition t4 = new PauseTransition(Duration.seconds(3.8));
-        t4.setOnFinished(e -> {
-            AnimationDepartment.slideFromLeft(lblMovimientos, Duration.ZERO);
-            AnimationDepartment.slideFromLeft(lblMovimientos1, Duration.ZERO);
-            AnimationDepartment.glitchTextWithFlicker(lblMovimientos1);
-            AnimationDepartment.slideFromRight(btnPista, Duration.ZERO);
-            AnimationDepartment.slideFromRight(btnUndoAll, Duration.ZERO);
-            AnimationDepartment.slideFromRight(btnUndo, Duration.ZERO);
-            AnimationDepartment.animateNeonGlow(btnPista);
-            AnimationDepartment.animateNeonGlow(btnUndoAll);
-            AnimationDepartment.animateNeonGlow(btnUndo);
-            AnimationDepartment.slideFromRight(btnRendirse, Duration.ZERO);
-            AnimationDepartment.animateNeonGlow(btnRendirse);
-
-
-        });
-        t4.play();
-
-        PauseTransition t5 = new PauseTransition(Duration.seconds(4.1));
-        t5.setOnFinished(e -> {
-            AnimationDepartment.slideFromLeft(lblDificultad, Duration.ZERO);
-            AnimationDepartment.slideFromLeft(lblDificultad1, Duration.ZERO);
-            AnimationDepartment.glitchTextWithFlicker(lblDificultad1);
-            AnimationDepartment.slideFromRight(btnGuardarySalir, Duration.ZERO);
-            AnimationDepartment.animateNeonGlow(btnGuardarySalir);
-
-
-        });
-        t5.play();
-    }
-
-    public void ResetGameView() {
+    public void ResetGameView(boolean esPartidaNueva) {
         // 1) Hacer fadeOut / reset visual general
         root.setOpacity(0);
 
@@ -623,12 +552,93 @@ public class GameController extends Controller implements Initializable {
         hboxTablero.getChildren().clear();
         hboxPilas.getChildren().clear();
 
-        // 4) Si no hay temporizador iniciado, reiniciar tiempo
+        // 4) Si no hay temporizador iniciado, reiniciar tiempo SOLO si es partida nueva
         if (!tiempoIniciado) {
-            segundosTranscurridos = 0;
+            if (esPartidaNueva) {
+                segundosTranscurridos = 0;
+                movimientos = 0;
+                puntaje = 500;
+            }
             actualizarLabelTiempo();
             detenerTemporizador();
         }
+    }
+
+    private void aplicarAnimacionesDeEntrada() {
+        root.requestFocus();
+        root.setVisible(true);
+        root.setOpacity(1); // 🔓 Forzar visibilidad total
+        root.applyCss();
+        root.layout(); // ⬅️ Refresca el layout completamente
+
+        double sceneHeight = root.getScene().getHeight();
+        AnimationDepartment.glitchFadeIn(root, Duration.seconds(0.6));
+        System.out.println("se hizo el glitchFadeIn");
+
+        PauseTransition t1 = new PauseTransition(Duration.seconds(1));
+        t1.setOnFinished(e -> {
+            AnimationDepartment.slideFromTop(lblTitulo, Duration.ZERO);
+            AnimationDepartment.glitchTextWithFlicker(lblTitulo);
+            AnimationDepartment.fadeIn(imgSpider1, Duration.seconds(1.5));
+            AnimationDepartment.fadeIn(imgSpider2, Duration.seconds(1.5));
+        });
+        t1.play();
+
+        PauseTransition t2 = new PauseTransition(Duration.seconds(2.5));
+        t2.setOnFinished(e -> {
+            AnimationDepartment.slideFromLeft(lblNombreJugador, Duration.ZERO);
+            AnimationDepartment.slideFromLeft(lblNombreJugador1, Duration.ZERO);
+            AnimationDepartment.slideFromRight(lblPuntaje, Duration.ZERO);
+            AnimationDepartment.slideFromRight(lblTiempo, Duration.ZERO);
+            AnimationDepartment.slideFromRight(lblPuntaje1, Duration.ZERO);
+            AnimationDepartment.slideFromRight(lblTiempo1, Duration.ZERO);
+            AnimationDepartment.glitchTextWithFlicker(lblNombreJugador);
+            AnimationDepartment.glitchTextWithFlicker(lblPuntaje1);
+            AnimationDepartment.glitchTextWithFlicker(lblTiempo1);
+            AnimationDepartment.slideLoopLeft(imgSpider1, 400, 2);
+            AnimationDepartment.slideLoopRight(imgSpider2, 400, 2);
+            AnimationDepartment.animateNeonGlow(imgSpider1);
+            AnimationDepartment.animateNeonGlow(imgSpider2);
+
+        });
+        t2.play();
+
+        PauseTransition t3 = new PauseTransition(Duration.seconds(3));
+        t3.setOnFinished(e -> {
+            AnimationDepartment.slideUpWithEpicBounceClean(spTableroBackground, Duration.ZERO, sceneHeight);
+
+        });
+        t3.play();
+
+        PauseTransition t4 = new PauseTransition(Duration.seconds(3.8));
+        t4.setOnFinished(e -> {
+            AnimationDepartment.slideFromLeft(lblMovimientos, Duration.ZERO);
+            AnimationDepartment.slideFromLeft(lblMovimientos1, Duration.ZERO);
+            AnimationDepartment.glitchTextWithFlicker(lblMovimientos1);
+            AnimationDepartment.slideFromRight(btnPista, Duration.ZERO);
+            AnimationDepartment.slideFromRight(btnUndoAll, Duration.ZERO);
+            AnimationDepartment.slideFromRight(btnUndo, Duration.ZERO);
+            AnimationDepartment.animateNeonGlow(btnPista);
+            AnimationDepartment.animateNeonGlow(btnUndoAll);
+            AnimationDepartment.animateNeonGlow(btnUndo);
+            AnimationDepartment.slideFromRight(btnRendirse, Duration.ZERO);
+            AnimationDepartment.animateNeonGlow(btnRendirse);
+
+
+        });
+        t4.play();
+
+        PauseTransition t5 = new PauseTransition(Duration.seconds(4.1));
+        t5.setOnFinished(e -> {
+            AnimationDepartment.slideFromLeft(lblDificultad, Duration.ZERO);
+            AnimationDepartment.slideFromLeft(lblDificultad1, Duration.ZERO);
+            AnimationDepartment.glitchTextWithFlicker(lblDificultad1);
+            AnimationDepartment.slideFromRight(btnGuardarySalir, Duration.ZERO);
+            AnimationDepartment.animateNeonGlow(btnGuardarySalir);
+
+
+        });
+        t5.play();
     }
 
     private void repartirCartasDelMazo() {
@@ -1583,7 +1593,7 @@ public class GameController extends Controller implements Initializable {
     private void iniciarTemporizadorSiEsNecesario() {
         if (!tiempoIniciado) {
             tiempoIniciado = true;
-            segundosTranscurridos = 0;
+            //segundosTranscurridos = 0;
             timeline = new Timeline(new KeyFrame(Duration.seconds(1), e -> {
                 segundosTranscurridos++;
                 actualizarLabelTiempo();
