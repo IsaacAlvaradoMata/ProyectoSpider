@@ -40,18 +40,16 @@ public class CartasPartidaDto {
         this.enMazo.set(entity.getEnMazo());
         this.enPila.set(entity.getEnPila());
         this.retirada.set(entity.getRetirada());
-        this.imagenNombre = entity.getNombreCarta(); // <--- asignar nombre de imagen al DTO
+        this.imagenNombre = entity.getNombreCarta();
         if (entity.getPartida() != null) {
             this.partida.set(new PartidaDto(entity.getPartida()));
         }
     }
 
-    // ❌ Método desactivado para evitar error de clave foránea
     public CartasPartida toEntity() {
         throw new IllegalStateException("⚠️ No usar toEntity() sin referencia de Partida gestionada. Usa toEntity(Partida partidaRef).");
     }
 
-    // ✅ Método recomendado
     public CartasPartida toEntity(Partida partidaRef) {
         CartasPartida entity = new CartasPartida();
         entity.setIdCartaPartida(this.idCartaPartida.get());
@@ -63,12 +61,11 @@ public class CartasPartidaDto {
         entity.setEnMazo(this.enMazo.get());
         entity.setEnPila(this.enPila.get());
         entity.setRetirada(this.retirada.get());
-        entity.setPartida(partidaRef); // ⚠️ clave foránea segura
-        entity.setNombreCarta(this.imagenNombre); // <--- guardar nombre de imagen
+        entity.setPartida(partidaRef);
+        entity.setNombreCarta(this.imagenNombre);
         return entity;
     }
 
-    // Properties
     public LongProperty idCartaPartidaProperty() { return idCartaPartida; }
     public StringProperty paloProperty() { return palo; }
     public StringProperty valorProperty() { return valor; }

@@ -64,7 +64,6 @@ public class CartasPartida implements Serializable {
     @JoinColumn(name = "ID_PARTIDA", referencedColumnName = "ID_PARTIDA", nullable = false)
     private Partida partida;
 
-    // --- Constructors ---
     public CartasPartida() {}
 
     public CartasPartida(CartasPartidaDto dto) {
@@ -81,10 +80,9 @@ public class CartasPartida implements Serializable {
         this.enMazo = dto.getEnMazo();
         this.enPila = dto.getEnPila();
         this.retirada = dto.getRetirada();
-        this.nombreCarta = dto.getImagenNombre(); // <--- ahora sí se asigna correctamente
+        this.nombreCarta = dto.getImagenNombre();
     }
 
-    // --- Getters y Setters ---
     public Long getIdCartaPartida() { return idCartaPartida; }
     public void setIdCartaPartida(Long idCartaPartida) { this.idCartaPartida = idCartaPartida; }
 
@@ -118,7 +116,6 @@ public class CartasPartida implements Serializable {
     public Partida getPartida() { return partida; }
     public void setPartida(Partida partida) { this.partida = partida; }
 
-    // --- Equals & hashCode ---
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

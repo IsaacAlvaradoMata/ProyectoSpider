@@ -2,13 +2,7 @@ package cr.ac.una.proyectospider.util;
 
 import cr.ac.una.proyectospider.model.CartasPartidaDto;
 import javafx.animation.*;
-import javafx.application.Platform;
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.SimpleDoubleProperty;
 import javafx.scene.Node;
-import javafx.scene.SnapshotParameters;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.effect.Blend;
@@ -17,8 +11,6 @@ import javafx.scene.effect.DropShadow;
 import javafx.scene.effect.PerspectiveTransform;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.image.WritableImage;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -26,7 +18,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
 import javafx.scene.text.TextAlignment;
 import javafx.util.Duration;
 
@@ -198,19 +189,15 @@ public class AnimationDepartment {
 
     public static void animateNeonGlow2(Node node) {
         Timeline glowCycle = new Timeline(
-                // Paso 0: aplica drop shadow magenta
                 new KeyFrame(Duration.seconds(0), e ->
                         node.setEffect(new DropShadow(30, Color.web("#ff00ff")))
                 ),
-                // Paso 1.5s: aplica drop shadow cian
                 new KeyFrame(Duration.seconds(1.5), e ->
                         node.setEffect(new DropShadow(30, Color.web("#00ffff")))
                 ),
-                // Paso 3s: aplica drop shadow amarillo
                 new KeyFrame(Duration.seconds(3), e ->
                         node.setEffect(new DropShadow(30, Color.web("#ffc107")))
                 ),
-                // Paso 4.5s: vuelve al drop shadow magenta
                 new KeyFrame(Duration.seconds(4.5), e ->
                         node.setEffect(new DropShadow(30, Color.web("#ff00ff")))
                 )
@@ -251,7 +238,6 @@ public class AnimationDepartment {
     }
 
 
-    // Pulsar Glow Animation (loop)
     public static void pulse(Node node, double durationSeconds) {
         ScaleTransition pulse = new ScaleTransition(Duration.seconds(durationSeconds), node);
         pulse.setFromX(1.0);
@@ -284,7 +270,7 @@ public class AnimationDepartment {
 
 
     public static void subtleBounce(Node node, double delaySeconds) {
-        double originalY = node.getTranslateY(); // Guarda posición actual
+        double originalY = node.getTranslateY();
 
         TranslateTransition bounce = new TranslateTransition(Duration.seconds(2), node);
         bounce.setFromY(originalY - 2.5);
@@ -339,13 +325,12 @@ public class AnimationDepartment {
 
 
     public static void animateNeonBorderWithLED(StackPane container, TextField textField, double delaySeconds) {
-        // 🔁 Limpiar rectángulos anteriores asociados a neon
         container.getChildren().removeIf(node ->
                 node instanceof Rectangle && node.getStyleClass().contains("neon-border")
         );
 
         Rectangle neonBorder = new Rectangle();
-        neonBorder.getStyleClass().add("neon-border"); // Marca para poder eliminar luego
+        neonBorder.getStyleClass().add("neon-border");
 
         neonBorder.setWidth(textField.getPrefWidth());
         neonBorder.setHeight(textField.getPrefHeight());
@@ -383,7 +368,6 @@ public class AnimationDepartment {
     }
 
 
-    //    GLITCH DE SALIDA
     public static void glitchFadeOut(Node targetNode, Duration totalDuration, Runnable onFinished) {
         SoundDepartment.playTransition();
         DropShadow dropShadow = new DropShadow(20, Color.web("#ff00ff"));
@@ -457,7 +441,6 @@ public class AnimationDepartment {
         glitchFadeEffect.play();
     }
 
-    //    GLITCH DE ENTRADA
     public static void glitchFadeIn(Node targetNode, Duration totalDuration) {
         SoundDepartment.playTransition2();
         DropShadow magentaShadow = new DropShadow(20, Color.web("#ff00ff"));
@@ -508,7 +491,6 @@ public class AnimationDepartment {
         glitchInEffect.play();
     }
 
-    //    EFECTO ESCRITURA
     public static void typewriterEffect(Label label, String text, Duration delay, double speedPerChar) {
         label.setText("");
         label.setOpacity(1);
@@ -529,7 +511,6 @@ public class AnimationDepartment {
         activeAnimations.add(initialDelay);
     }
 
-//    ANIMACION DE LABEL HACKEANDO
 
     public static void blinkHackeandoSequence(Label label, Duration blinkRate, Duration totalDuration, Duration startDelay) {
         label.setVisible(false);
@@ -560,9 +541,7 @@ public class AnimationDepartment {
     }
 
 
-    //    GLITCH DE TERMINAL
     public static void applyFullCRTGlitchEffect(StackPane terminal, Duration glitchInterval) {
-        // Buscar si ya hay un scanline activo para evitar duplicados
         Rectangle existingScanline = null;
         for (javafx.scene.Node child : terminal.getChildren()) {
             if (child instanceof Rectangle && "scanline".equals(child.getId())) {
@@ -576,7 +555,7 @@ public class AnimationDepartment {
             scanline = existingScanline;
         } else {
             scanline = new Rectangle();
-            scanline.setId("scanline"); // IMPORTANTE para reconocerla luego
+            scanline.setId("scanline");
             scanline.setFill(Color.web("#39ff14", 0.6));
             scanline.setHeight(3);
             scanline.widthProperty().bind(terminal.widthProperty());
@@ -639,7 +618,7 @@ public class AnimationDepartment {
 
     public static void slideFromLeft(Node node, Duration delay) {
         node.setOpacity(0);
-        node.setTranslateX(-200); // ⬅️ Fuera del viewport a la izquierda
+        node.setTranslateX(-200);
 
         TranslateTransition slide = new TranslateTransition(Duration.millis(800), node);
         slide.setFromX(-200);
@@ -659,7 +638,7 @@ public class AnimationDepartment {
 
     public static void slideFromRight(Node node, Duration delay) {
         node.setOpacity(0);
-        node.setTranslateX(200); // ➡️ Fuera del viewport a la derecha
+        node.setTranslateX(200);
 
         TranslateTransition slide = new TranslateTransition(Duration.millis(800), node);
         slide.setFromX(200);
@@ -732,7 +711,6 @@ public class AnimationDepartment {
     public static void glitchFadeInBackground(ImageView target, Duration duration) {
         target.setOpacity(0);
 
-        // ⚠️ Definimos glitch lateral + cambio de opacidad rápido
         Timeline glitch = new Timeline(
                 new KeyFrame(Duration.seconds(0.0), e -> {
                     target.setTranslateX(0);
@@ -763,13 +741,11 @@ public class AnimationDepartment {
                 })
         );
 
-        // 🔆 Fade final limpio y estable
         FadeTransition fade = new FadeTransition(duration, target);
         fade.setFromValue(0.8);
         fade.setToValue(1.0);
         fade.setDelay(Duration.seconds(1));
 
-        // Limpieza
         fade.setOnFinished(e -> {
             target.setTranslateX(0);
             target.setEffect(null);
@@ -797,7 +773,7 @@ public class AnimationDepartment {
                         new KeyValue(revealClip.heightProperty(), tela.getFitHeight(), Interpolator.EASE_OUT))
         );
 
-        revealWeb.setOnFinished(ev -> tela.setClip(null)); // ✅ remove clip once full shown
+        revealWeb.setOnFinished(ev -> tela.setClip(null));
 
         PauseTransition delayBeforeDrop = new PauseTransition(Duration.seconds(0.2));
         delayBeforeDrop.setOnFinished(ev -> {
@@ -814,7 +790,6 @@ public class AnimationDepartment {
             subir.setInterpolator(Interpolator.EASE_BOTH);
             subir.setOnFinished(e -> {
                 arana.setOpacity(0);
-                // 🧵 Efecto inverso de replegar telaraña
                 Rectangle closeClip = new Rectangle(0, 0, tela.getFitWidth(), tela.getFitHeight());
                 tela.setClip(closeClip);
 
@@ -852,14 +827,12 @@ public class AnimationDepartment {
             boolean usarEstiloClasico,
             Runnable onFinished
     ) {
-        // 0) Limpia animaciones y capas previas
         stopAllAnimations();
         SoundDepartment.playVictory();
         parent.getChildren().removeIf(n -> "celebrationLayer".equals(n.getId()));
 
-        // 1) Crear la capa de celebración
         Pane celebrationLayer = new Pane();
-        celebrationLayer.setId("celebrationLayer");             // marcamos la capa
+        celebrationLayer.setId("celebrationLayer");
         celebrationLayer.setPickOnBounds(false);
         celebrationLayer.setMouseTransparent(false);
         celebrationLayer.setStyle("-fx-background-color: rgba(0, 0, 0, 0.5);");
@@ -868,7 +841,6 @@ public class AnimationDepartment {
         celebrationLayer.setOpacity(0);
         parent.getChildren().add(celebrationLayer);
 
-        // 2) Fade‐in de la capa (0 → 1) en 1s
         FadeTransition fadeInLayer = new FadeTransition(Duration.seconds(1), celebrationLayer);
         fadeInLayer.setFromValue(0);
         fadeInLayer.setToValue(1);
@@ -890,7 +862,6 @@ public class AnimationDepartment {
         double sceneHeight = parent.getScene().getHeight();
         Random rnd = new Random();
 
-        // 3) Lluvia infinita de cartas traseras
         String rutaCarta = usarEstiloClasico
                 ? "/cr/ac/una/proyectospider/resources/rear.png"
                 : "/cr/ac/una/proyectospider/resources/rearS.png";
@@ -910,7 +881,6 @@ public class AnimationDepartment {
             cartaIV.setLayoutY(startY);
             celebrationLayer.getChildren().add(0, cartaIV);
 
-            // Caída continua
             TranslateTransition tt = new TranslateTransition(Duration.seconds(2 + rnd.nextDouble()), cartaIV);
             tt.setFromY(0);
             tt.setToY(sceneHeight + 100 - startY);
@@ -919,7 +889,6 @@ public class AnimationDepartment {
             tt.play();
             activeAnimations.add(tt);
 
-            // Rotación infinita
             RotateTransition rot = new RotateTransition(Duration.seconds(1 + rnd.nextDouble()), cartaIV);
             rot.setByAngle(360 * (rnd.nextBoolean() ? 1 : -1));
             rot.setCycleCount(Animation.INDEFINITE);
@@ -927,7 +896,6 @@ public class AnimationDepartment {
             rot.play();
             activeAnimations.add(rot);
 
-            // “Sway” horizontal infinito
             TranslateTransition sway = new TranslateTransition(Duration.seconds(1 + rnd.nextDouble()), cartaIV);
             sway.setByX(20 * (rnd.nextBoolean() ? 1 : -1));
             sway.setAutoReverse(true);
@@ -939,7 +907,6 @@ public class AnimationDepartment {
         cartasSpawner.play();
         activeAnimations.add(cartasSpawner);
 
-        // 4) Lluvia infinita de confeti
         Color[] paleta = new Color[]{
                 Color.RED, Color.ORANGE, Color.YELLOW,
                 Color.LIME, Color.CYAN, Color.MAGENTA
@@ -954,7 +921,6 @@ public class AnimationDepartment {
             confetti.setLayoutY(startY);
             celebrationLayer.getChildren().add(0, confetti);
 
-            // Caída continua
             TranslateTransition ttConf = new TranslateTransition(
                     Duration.seconds(2 + rnd.nextDouble()), confetti);
             ttConf.setFromY(0);
@@ -964,7 +930,6 @@ public class AnimationDepartment {
             ttConf.play();
             activeAnimations.add(ttConf);
 
-            // Giro infinito
             RotateTransition rotConf = new RotateTransition(
                     Duration.seconds(2 + rnd.nextDouble()), confetti);
             rotConf.setByAngle(360);
@@ -977,7 +942,6 @@ public class AnimationDepartment {
         confettiSpawner.play();
         activeAnimations.add(confettiSpawner);
 
-        // 5) Telarañas y arañas: 4 ciclos distribuidos horizontalmente
         Image spiderImg = new Image(
                 AnimationDepartment.class.getResourceAsStream(
                         "/cr/ac/una/proyectospider/resources/spiderPoints.png"));
@@ -985,13 +949,11 @@ public class AnimationDepartment {
                 AnimationDepartment.class.getResourceAsStream(
                         "/cr/ac/una/proyectospider/resources/TelaIcon.png"));
 
-        // Retraso base entre cada telaraña/araña
-        double baseDelay = 0.5; // 0.5 s entre cada ciclo
+        double baseDelay = 0.5;
         String[] spiderAppearSounds = { "Spider1", "Spider2", "Spider3", "Spider4" };
         for (int i = 0; i < 4; i++) {
-            final int idx = i; // Capturar "i" en variable effectively final
+            final int idx = i;
 
-            // --- Configurar telaraña ---
             ImageView tela = new ImageView(webImg);
             tela.setFitWidth(180);
             tela.setPreserveRatio(true);
@@ -1003,13 +965,11 @@ public class AnimationDepartment {
             tela.setOpacity(0);
             celebrationLayer.getChildren().add(tela);
 
-            // Forzar layout para obtener altura real
             tela.applyCss();
             celebrationLayer.applyCss();
             celebrationLayer.layout();
             double fullHeight = tela.getBoundsInLocal().getHeight();
 
-            // --- Configurar araña ---
             ImageView arana = new ImageView(spiderImg);
             arana.setFitWidth(120);
             arana.setPreserveRatio(true);
@@ -1021,12 +981,10 @@ public class AnimationDepartment {
             arana.setOpacity(0);
             celebrationLayer.getChildren().add(0, arana);
 
-            // --- Clip para revelar telaraña desde arriba (0 → fullHeight) ---
             Rectangle revealClip = new Rectangle(0, 0, tela.getFitWidth(), 0);
             tela.setClip(revealClip);
-            tela.setOpacity(1); // Visible, pero clip inicia con altura=0
+            tela.setOpacity(1);
 
-            // Timeline para revelar telaraña (0 → fullHeight)
             Timeline revealWeb = new Timeline(
                     new KeyFrame(Duration.seconds(0),
                             new KeyValue(revealClip.heightProperty(), 0)),
@@ -1036,10 +994,9 @@ public class AnimationDepartment {
             revealWeb.setOnFinished(evt -> {
                 tela.setClip(null);
 
-            }); // Quitar clip al terminar
+            });
             revealWeb.setDelay(Duration.seconds(idx * baseDelay));
 
-            // Pausa antes de bajar la araña
             PauseTransition delayBeforeDrop = new PauseTransition(Duration.seconds(0.4 + idx * 0.4));
             delayBeforeDrop.setOnFinished(evt -> {
                 arana.setOpacity(1);
@@ -1049,7 +1006,6 @@ public class AnimationDepartment {
                 SoundDepartment.play(spiderAppearSounds[idx]);
             });
 
-            // Pausa antes de subir la araña y ocultar la telaraña
             PauseTransition delayBeforeRise = new PauseTransition(Duration.seconds(3.5 + idx * 0.2));
             delayBeforeRise.setOnFinished(evt -> {
                 TranslateTransition subir = new TranslateTransition(Duration.seconds(3), arana);
@@ -1059,7 +1015,6 @@ public class AnimationDepartment {
                 subir.setOnFinished(e2 -> {
                     arana.setOpacity(0);
 
-                    // Clip inverso para ocultar telaraña (fullHeight → 0)
                     Rectangle closeClip = new Rectangle(0, 0, tela.getFitWidth(), fullHeight);
                     tela.setClip(closeClip);
 
@@ -1073,20 +1028,18 @@ public class AnimationDepartment {
                         tela.setClip(null);
                         tela.setOpacity(0);
 
-                        // Cuando la última araña termine su ciclo, hacemos fade‐out y quitamos la capa
                         if (idx == 3) {
                             cartasSpawner.stop();
                             confettiSpawner.stop();
                             parent.getChildren().remove(activeCelebrationLayer);
-                            // 6) Fade‐out de la capa entera (1 → 0) en 1 segundo
                             FadeTransition fadeOutLayer = new FadeTransition(Duration.seconds(1), celebrationLayer);
                             fadeOutLayer.setFromValue(1);
                             fadeOutLayer.setToValue(0);
                             fadeOutLayer.setInterpolator(Interpolator.EASE_OUT);
                             fadeOutLayer.setOnFinished(e4 -> {
-                                stopAllAnimations();                                  // para todo
-                                parent.getChildren().remove(celebrationLayer);        // quita la capa residual
-                                if (onFinished != null) onFinished.run();             // navega al menú
+                                stopAllAnimations();
+                                parent.getChildren().remove(celebrationLayer);
+                                if (onFinished != null) onFinished.run();
                             });
                             fadeOutLayer.play();
                             activeAnimations.add(fadeOutLayer);
@@ -1097,7 +1050,6 @@ public class AnimationDepartment {
                 subir.play();
             });
 
-            // Secuencia completa: revealWeb → bajar araña → subir araña + ocultar telaraña
             SequentialTransition ciclo = new SequentialTransition(
                     revealWeb,
                     delayBeforeDrop,
@@ -1107,26 +1059,23 @@ public class AnimationDepartment {
             activeAnimations.add(ciclo);
         }
 
-        // 7) Label “¡VICTORIA!” en el centro, encima de todo lo demás
         Font cynatar = Font.loadFont(
                 AnimationDepartment.class.getResourceAsStream("/cr/ac/una/proyectospider/resources/Cynatar.ttf"),
                 150
         );
 
         Label lblVictoria = new Label("¡VICTORIA!");
-        lblVictoria.setTextFill(Color.web("#ffc107")); // color dorado
+        lblVictoria.setTextFill(Color.web("#ffc107"));
         lblVictoria.setFont(cynatar);
         lblVictoria.setTextAlignment(TextAlignment.CENTER);
         lblVictoria.setOpacity(0);
         lblVictoria.setScaleX(0.1);
         lblVictoria.setScaleY(0.1);
 
-        // Efectos de neón, glitch y pulso
         AnimationDepartment.animateNeonGlow2(lblVictoria);
         AnimationDepartment.glitchTextWithFlicker(lblVictoria);
         AnimationDepartment.pulse(lblVictoria, 1.5);
 
-        // Centrar etiqueta
         lblVictoria.layoutXProperty().bind(
                 parent.widthProperty().divide(2).subtract(lblVictoria.widthProperty().divide(2))
         );
@@ -1136,7 +1085,6 @@ public class AnimationDepartment {
         celebrationLayer.getChildren().add(lblVictoria);
         lblVictoria.toFront();
 
-        // Fade‐in + Scale‐up del label
         FadeTransition fade = new FadeTransition(Duration.seconds(1.2), lblVictoria);
         fade.setFromValue(0);
         fade.setToValue(1);
@@ -1153,10 +1101,8 @@ public class AnimationDepartment {
     }
 
 
-    // Animación de flip para cartas (volteo tipo Spider)
     public static void flipCardAnimation(ImageView cardView, Image imagenBocaArriba, Runnable onFinished) {
         SoundDepartment.playFlip();
-        // Asegura que la rotación sea sobre el eje Y (efecto 3D)
         cardView.setRotationAxis(javafx.geometry.Point3D.ZERO.add(0, 1, 0));
 
         RotateTransition flip1 = new RotateTransition(Duration.millis(180), cardView);
@@ -1165,35 +1111,23 @@ public class AnimationDepartment {
         flip1.setInterpolator(Interpolator.EASE_IN);
 
         RotateTransition flip2 = new RotateTransition(Duration.millis(180), cardView);
-        flip2.setFromAngle(270); // 90 + 180 para evitar efecto espejo
+        flip2.setFromAngle(270);
         flip2.setToAngle(360);
         flip2.setInterpolator(Interpolator.EASE_OUT);
 
         flip1.setOnFinished(e -> {
-            // Cambia la imagen a boca arriba justo en el medio del flip
             cardView.setImage(imagenBocaArriba);
-            cardView.setRotate(270); // Salta a 270° para continuar el giro natural
+            cardView.setRotate(270);
             flip2.play();
         });
         flip2.setOnFinished(e -> {
-            cardView.setRotate(0); // Restablece la rotación
+            cardView.setRotate(0);
             if (onFinished != null) onFinished.run();
         });
         flip1.play();
     }
 
-    /**
-     * Animación visual de undo, igual a la de pista pero en reversa.
-     * @param grupo Cartas a mover visualmente de regreso
-     * @param columnaOrigen Columna a la que deben regresar
-     * @param spGamebackground Pane principal de fondo
-     * @param cartaToImageView Mapa de cartas a sus ImageView
-     * @param hboxTablero HBox del tablero
-     * @param cartasEnJuego Lista de cartas en juego
-     * @param calcularEspaciadoVertical Función para calcular el espaciado vertical
-     * @param onFinished Runnable opcional para ejecutar al terminar
-     * @param cartaDebajoEstabaBocaAbajo true si la carta debajo estaba boca abajo antes del movimiento
-     */
+
     public static void animarUndoVisual(List<?> grupo, int columnaOrigen, Pane spGamebackground,
                                         java.util.Map<?, ImageView> cartaToImageView, javafx.scene.layout.HBox hboxTablero,
                                         List<?> cartasEnJuego, java.util.function.IntFunction<Double> calcularEspaciadoVertical,
@@ -1246,10 +1180,9 @@ public class AnimationDepartment {
         int totalCartasDespues = cartasEnColOrig + grupo.size();
         double spacing = calcularEspaciadoVertical.apply(totalCartasDespues);
 
-        // Calcular la posición Y real del primer clon: justo después de la última carta visible
+
         double baseY;
         if (cartasEnColOrig > 0) {
-            // Buscar la última carta visible en la columna origen
             Object ultima = cartasEnJuego.stream()
                     .filter(c -> {
                         try {
@@ -1308,7 +1241,6 @@ public class AnimationDepartment {
             seq.play();
         };
 
-        // Solo hacer flip si la carta debajo existía y estaba boca abajo antes del movimiento
         if (cartaDebajo != null && Boolean.TRUE.equals(cartaDebajoEstabaBocaAbajo)) {
             ImageView ivDebajo = cartaToImageView.get(cartaDebajo);
             if (ivDebajo != null) {
@@ -1366,23 +1298,19 @@ public class AnimationDepartment {
         List<Integer> columnasDestino = new ArrayList<>();
         List<Integer> ordenesDestino = new ArrayList<>();
 
-        // Obtener posición del mazo en pantalla
         javafx.geometry.Bounds mazoBounds = imgMazo.localToScene(imgMazo.getBoundsInLocal());
         javafx.geometry.Bounds mazoParentBounds = spGamebackground.sceneToLocal(mazoBounds);
         double mazoX = mazoParentBounds.getMinX();
         double mazoY = mazoParentBounds.getMinY();
 
-        // Crear clones en la posición del mazo
         for (int i = 0; i < cartasRepartidas.size(); i++) {
             Object carta = cartasRepartidas.get(i);
             ImageView clone;
-            // Mostrar siempre la carta boca arriba (frontal) en la animación
             try {
                 java.lang.reflect.Method getImagenNombre = carta.getClass().getMethod("getImagenNombre");
                 String imgNombre = (String) getImagenNombre.invoke(carta);
                 Image imgFrontal = new Image(AnimationDepartment.class.getResourceAsStream("/cr/ac/una/proyectospider/resources/" + imgNombre));
                 clone = new ImageView(imgFrontal);
-                // Si el original existe, igualar tamaño
                 ImageView original = cartaToImageView.get(carta);
                 if (original != null) {
                     clone.setFitWidth(original.getFitWidth());
@@ -1390,7 +1318,6 @@ public class AnimationDepartment {
                     clone.setFitWidth(imgMazo.getFitWidth());
                 }
             } catch (Exception ex) {
-                // fallback: usar trasera
                 clone = new ImageView(imgMazo.getImage());
                 clone.setFitWidth(imgMazo.getFitWidth());
             }
@@ -1403,7 +1330,6 @@ public class AnimationDepartment {
             origY.add(mazoY);
             animPane.getChildren().add(clone);
 
-            // Obtener columna y orden destino
             try {
                 java.lang.reflect.Method getColumna = carta.getClass().getMethod("getColumna");
                 java.lang.reflect.Method getOrden = carta.getClass().getMethod("getOrden");
@@ -1415,7 +1341,6 @@ public class AnimationDepartment {
             }
         }
 
-        // Calcular destino de cada carta
         List<Double> destX = new ArrayList<>();
         List<Double> destY = new ArrayList<>();
         for (int i = 0; i < clones.size(); i++) {
@@ -1425,7 +1350,6 @@ public class AnimationDepartment {
             javafx.geometry.Bounds colBounds = columnaPane.localToScene(columnaPane.getBoundsInLocal());
             javafx.geometry.Bounds colParentBounds = spGamebackground.sceneToLocal(colBounds);
             double x = colParentBounds.getMinX();
-            // Calcular cuántas cartas habrá en la columna después del reparto
             int totalCartas = (int) cartasEnJuego.stream().filter(c -> {
                 try {
                     java.lang.reflect.Method getColumna = c.getClass().getMethod("getColumna");
@@ -1438,7 +1362,6 @@ public class AnimationDepartment {
             destY.add(y);
         }
 
-        // Animar cada clon desde el mazo a su destino
         javafx.animation.ParallelTransition toDest = new javafx.animation.ParallelTransition();
         for (int i = 0; i < clones.size(); i++) {
             ImageView clone = clones.get(i);
@@ -1470,7 +1393,6 @@ public class AnimationDepartment {
             return;
         }
         SoundDepartment.playPila();
-        // Crear un Pane temporal para las animaciones
         Pane animPane = new Pane();
         animPane.setPickOnBounds(false);
         spGamebackground.getChildren().add(animPane);
@@ -1479,14 +1401,12 @@ public class AnimationDepartment {
         List<Double> origX = new ArrayList<>();
         List<Double> origY = new ArrayList<>();
 
-        // Obtener destino: la pila correspondiente
         ImageView pilaDestinoIV = (ImageView) hboxTableroSuperior.getChildren().get(2 + pilaDestinoIndex);
         javafx.geometry.Bounds pilaBounds = pilaDestinoIV.localToScene(pilaDestinoIV.getBoundsInLocal());
         javafx.geometry.Bounds pilaParentBounds = spGamebackground.sceneToLocal(pilaBounds);
         double destX = pilaParentBounds.getMinX();
         double destY = pilaParentBounds.getMinY();
 
-        // Crear clones de las cartas y ubicarlos en su posición actual
         for (CartasPartidaDto carta : grupoDe13Cartas) {
             ImageView original = cartaToImageView.get(carta);
             if (original == null) continue;
@@ -1502,15 +1422,13 @@ public class AnimationDepartment {
             origX.add(parentBounds.getMinX());
             origY.add(parentBounds.getMinY());
             animPane.getChildren().add(clone);
-            // Ocultar el original durante la animación
             original.setVisible(false);
         }
 
-        // Crear las animaciones en paralelo con delay tipo "ola"
         ParallelTransition parallel = new ParallelTransition();
         Duration baseDelay = Duration.ZERO;
-        Duration delayStep = Duration.millis(40);  // más rápido y fluido
-        Duration duracion = Duration.millis(400);  // similar a otras animaciones
+        Duration delayStep = Duration.millis(40);
+        Duration duracion = Duration.millis(400);
 
         for (int i = 0; i < clones.size(); i++) {
             ImageView clone = clones.get(i);
@@ -1524,7 +1442,6 @@ public class AnimationDepartment {
 
         parallel.setOnFinished(e -> {
             spGamebackground.getChildren().remove(animPane);
-            // Ya no es necesario restaurar la visibilidad de los originales
             if (onFinished != null) onFinished.run();
         });
 

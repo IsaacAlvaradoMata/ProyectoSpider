@@ -60,7 +60,6 @@ public class JugadorDto {
         return j;
     }
 
-    // JavaFX properties
     public ObjectProperty<Long> idJugadorProperty() { return idJugador; }
     public StringProperty nombreUsuarioProperty() { return nombreUsuario; }
     public IntegerProperty partidasJugadasProperty() { return partidasJugadas; }

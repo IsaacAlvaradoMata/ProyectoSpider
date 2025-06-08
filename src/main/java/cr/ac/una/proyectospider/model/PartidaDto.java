@@ -10,7 +10,7 @@ public class PartidaDto {
     private final ObjectProperty<Date> fechaFin;
     private final IntegerProperty puntos;
     private final IntegerProperty tiempoJugado;
-    private final IntegerProperty movimientos; // 🆕 NUEVO
+    private final IntegerProperty movimientos;
     private final StringProperty estado;
     private final StringProperty dificultad;
     private final ObjectProperty<JugadorDto> jugador;
@@ -22,7 +22,7 @@ public class PartidaDto {
         this.fechaFin = new SimpleObjectProperty<>();
         this.puntos = new SimpleIntegerProperty(0);
         this.tiempoJugado = new SimpleIntegerProperty(0);
-        this.movimientos = new SimpleIntegerProperty(0); // 🆕 default
+        this.movimientos = new SimpleIntegerProperty(0);
         this.estado = new SimpleStringProperty("");
         this.dificultad = new SimpleStringProperty("MEDIA");
         this.jugador = new SimpleObjectProperty<>();
@@ -64,12 +64,12 @@ public class PartidaDto {
         return partida;
     }
 
-    // Properties
+
     public ObjectProperty<Long> idPartidaProperty() { return idPartida; }
     public ObjectProperty<Date> fechaInicioProperty() { return fechaInicio; }
     public ObjectProperty<Date> fechaFinProperty() { return fechaFin; }
     public IntegerProperty puntosProperty() { return puntos; }
-    public IntegerProperty movimientosProperty() { return movimientos; } // 🆕
+    public IntegerProperty movimientosProperty() { return movimientos; }
     public IntegerProperty tiempoJugadoProperty() { return tiempoJugado; }
     public StringProperty estadoProperty() { return estado; }
     public StringProperty dificultadProperty() { return dificultad; }

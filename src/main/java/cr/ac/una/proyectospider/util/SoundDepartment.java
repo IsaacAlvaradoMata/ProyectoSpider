@@ -356,7 +356,6 @@ public class SoundDepartment {
             case "Spider2": playSpider2(); break;
             case "Spider3": playSpider3(); break;
             case "Spider4": playSpider4(); break;
-            // Puedes agregar más casos si necesitas otros sonidos
             default:
                 System.err.println("[SoundDepartment] Unknown sound: " + soundName);
         }

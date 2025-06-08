@@ -14,7 +14,7 @@ import java.util.List;
         @NamedQuery(name = "Partida.findByFechaFin", query = "SELECT p FROM Partida p WHERE p.fechaFin = :fechaFin"),
         @NamedQuery(name = "Partida.findByPuntos", query = "SELECT p FROM Partida p WHERE p.puntos = :puntos"),
         @NamedQuery(name = "Partida.findByTiempoJugado", query = "SELECT p FROM Partida p WHERE p.tiempoJugado = :tiempoJugado"),
-        @NamedQuery(name = "Partida.findByMovimientos", query = "SELECT p FROM Partida p WHERE p.movimientos = :movimientos"), // 🔥
+        @NamedQuery(name = "Partida.findByMovimientos", query = "SELECT p FROM Partida p WHERE p.movimientos = :movimientos"),
         @NamedQuery(name = "Partida.findByEstado", query = "SELECT p FROM Partida p WHERE p.estado = :estado"),
         @NamedQuery(name = "Partida.findByDificultad", query = "SELECT p FROM Partida p WHERE p.dificultad = :dificultad")
 })
@@ -42,7 +42,7 @@ public class Partida implements Serializable {
     @Column(name = "TIEMPO_JUGADO")
     private Integer tiempoJugado;
 
-    @Column(name = "MOVIMIENTOS") // 💾 NUEVO CAMPO
+    @Column(name = "MOVIMIENTOS")
     private Integer movimientos;
 
     @Basic(optional = false)
@@ -93,7 +93,6 @@ public class Partida implements Serializable {
         this.version = dto.getVersion();
     }
 
-    // Getters & Setters
     public Long getIdPartida() {
         return idPartida;
     }

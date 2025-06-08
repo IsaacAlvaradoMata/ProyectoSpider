@@ -61,7 +61,6 @@ public class CustomCursor {
             content.setLayoutY(evt.getY() - hotSpotY);
         };
 
-        // Nuevo: DragEvent para que el cursor siga durante drag & drop
         dragOverHandler = evt -> {
             content.setLayoutX(evt.getX() - hotSpotX);
             content.setLayoutY(evt.getY() - hotSpotY);
