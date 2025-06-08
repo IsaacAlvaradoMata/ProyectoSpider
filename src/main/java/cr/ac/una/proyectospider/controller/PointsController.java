@@ -30,9 +30,8 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
-import cr.ac.una.proyectospider.model.JugadorRankingDto;
-import cr.ac.una.proyectospider.service.JugadorService;
-// …
+
+
 
 
 public class PointsController extends Controller implements Initializable {
@@ -53,7 +52,6 @@ public class PointsController extends Controller implements Initializable {
     @FXML private ImageView imgArana1;
     @FXML private ImageView imgArana2;
 
-    // Servicio para obtener el ranking real
     private final JugadorService jugadorService = new JugadorService();
     private TableColumn<JugadorRankingDto, String> colNombre;
     private TableColumn<JugadorRankingDto, String> colPartidas;
@@ -61,7 +59,6 @@ public class PointsController extends Controller implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // Aquí inicializas y configuras las columnas
         colNombre = new TableColumn<>("Jugador");
         colNombre.setCellValueFactory(data ->
                 new SimpleStringProperty(data.getValue().getNombreUsuario()));
@@ -104,7 +101,6 @@ public class PointsController extends Controller implements Initializable {
         populateTableViewRanking();
         System.out.println("Run Points View");
 
-        // Código de animaciones e imágenes de fondo (sin cambios)
         if (!spBackgroundPoints.getChildren().contains(imgBackgroundPoints)) {
             spBackgroundPoints.getChildren().add(0, imgBackgroundPoints);
         } else {
@@ -182,7 +178,6 @@ public class PointsController extends Controller implements Initializable {
     }
 
     public void ResetPointsView() {
-        // Resto de tu lógica de reset (sin cambios)
         root.setOpacity(0);
 
         imgBackgroundPoints.setOpacity(0.5);
@@ -249,7 +244,6 @@ public class PointsController extends Controller implements Initializable {
                         jugadorService.getRankingPorPuntaje()
                 );
         tblviewRanking.setItems(jugadores);
-        // Como colPuntajeTotal es un campo, aquí lo usas sin problemas
         tblviewRanking.getSortOrder().setAll(colPuntajeTotal);
     }
 
@@ -291,7 +285,6 @@ public class PointsController extends Controller implements Initializable {
                         jugadorService.getRankingPorFiltro(filtro)
                 );
         tblviewRanking.setItems(datos);
-        // ¡colPuntajeTotal sigue accesible aquí!
         tblviewRanking.getSortOrder().setAll(colPuntajeTotal);
     }
 

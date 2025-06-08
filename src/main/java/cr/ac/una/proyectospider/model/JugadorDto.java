@@ -64,6 +64,13 @@ public class JugadorDto {
         return nombreUsuario.get();
     }
 
+    public void setImagenFondo(byte[] imagenFondo) {
+        this.imagenFondo.set(imagenFondo);
+    }
+    public void setEstiloCartas(int estiloCartas) {
+        this.estiloCartas.set(estiloCartas);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

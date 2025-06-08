@@ -36,7 +36,12 @@
                                  <children>
                                     <VBox fx:id="vboxRigth" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="200.0" prefWidth="100.0" spacing="30.0" HBox.hgrow="ALWAYS">
                                        <children>
-                                          <Label fx:id="lblJugador" styleClass="label-subtitle-menu" text="JUGADOR: " />
+                                          <HBox alignment="CENTER">
+                                             <children>
+                                                <Label fx:id="lblJugador" styleClass="label-subtitle-menu" text="JUGADOR: " />
+                                                <Label fx:id="lblJugador1" layoutX="350.0" layoutY="10.0" styleClass="label-info-menu2" />
+                                             </children>
+                                          </HBox>
                                           <StackPane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="500.0" prefWidth="800.0" styleClass="stackPreview">
                                              <children>
                                                 <ImageView fx:id="imgPrevistaFondo" fitHeight="500.0" fitWidth="800.0" opacity="0.6" pickOnBounds="true" />

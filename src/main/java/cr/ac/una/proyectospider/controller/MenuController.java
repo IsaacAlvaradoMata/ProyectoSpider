@@ -127,29 +127,38 @@ public class MenuController extends Controller implements Initializable {
             JugadorService jugadorService = new JugadorService();
             jugadorService.actualizarEstadisticas(jugador.getIdJugador());
 
-            // Recargar el DTO actualizado desde la base de datos
             JugadorDto jugadorActualizado = jugadorService.buscarJugadorPorNombre(jugador.getNombreUsuario());
             AppContext.getInstance().set("jugadorActivo", jugadorActualizado);
 
             lblJugadorRegistradoDinamico.setText(jugadorActualizado.nombreUsuarioProperty().get() != null ? jugadorActualizado.nombreUsuarioProperty().get() : "-");
             lblPuntajeAcomuladoDinamico.setText(String.valueOf(jugadorActualizado.puntosAcumuladosProperty().get()));
             lblTotalPartidasGanadasDinamico.setText(String.valueOf(jugadorActualizado.partidasGanadasProperty().get()));
-        }
 
-        Object fondoEnContext = AppContext.getInstance().get(AppContext.KEY_FONDO_SELECCIONADO);
-        if (fondoEnContext instanceof Image) {
-            imgFondoActual.setImage((Image) fondoEnContext);
+            byte[] fondoBytes = jugadorActualizado.imagenFondoProperty().get();
+            if (fondoBytes != null && fondoBytes.length > 0) {
+                Image fondoImg = new Image(new java.io.ByteArrayInputStream(fondoBytes));
+                imgFondoActual.setImage(fondoImg);
+                AppContext.getInstance().set(AppContext.KEY_FONDO_SELECCIONADO, fondoImg);
+            } else {
+                imgFondoActual.setImage(
+                        new Image(getClass().getResourceAsStream("/cr/ac/una/proyectospider/resources/DefaultBack3.png"))
+                );
+                AppContext.getInstance().set(AppContext.KEY_FONDO_SELECCIONADO, imgFondoActual.getImage());
+            }
+
+            int estiloCartas = jugadorActualizado.estiloCartasProperty().get();
+            String rutaEstilo;
+            if (estiloCartas == 2) {
+                rutaEstilo = AppContext.RUTA_CARTAS_CYBERPUNK;
+            } else {
+                rutaEstilo = AppContext.RUTA_CARTAS_CLASICAS;
+            }
+            imgCartasActual.setImage(new Image(getClass().getResourceAsStream(rutaEstilo)));
+            AppContext.getInstance().set(AppContext.KEY_ESTILO_CARTAS, rutaEstilo);
         } else {
             imgFondoActual.setImage(
                     new Image(getClass().getResourceAsStream("/cr/ac/una/proyectospider/resources/DefaultBack3.png"))
             );
-        }
-
-        Object estiloEnContext = AppContext.getInstance().get(AppContext.KEY_ESTILO_CARTAS);
-        if (estiloEnContext instanceof String) {
-            String ruta = (String) estiloEnContext;
-            imgCartasActual.setImage(new Image(getClass().getResourceAsStream(ruta)));
-        } else {
             imgCartasActual.setImage(
                     new Image(getClass().getResourceAsStream(AppContext.RUTA_CARTAS_CYBERPUNK))
             );
@@ -337,7 +346,6 @@ public class MenuController extends Controller implements Initializable {
             JugadorDto jugadorActivo = (JugadorDto) AppContext.getInstance().get("jugadorActivo");
             partidaDto.setJugador(jugadorActivo);
 
-            // Asignar fondo y reverso seleccionados desde AppContext o desde la personalización
             PartidaDto partidaDtoPersonalizacion = (PartidaDto) AppContext.getInstance().get("partidaDtoPersonalizacion");
             if (partidaDtoPersonalizacion != null) {
                 byte[] fondo = partidaDtoPersonalizacion.getFondoSeleccionado();

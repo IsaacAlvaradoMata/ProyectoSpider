@@ -61,13 +61,14 @@ public class JugadorService {
         }
     }
 
-    public void actualizarPersonalizacion(Long idJugador, byte[] imagenFondo, byte[] imagenReverso, byte[] imagenFrente) {
+    public void actualizarPersonalizacion(Long idJugador, byte[] imagenFondo, int estiloCartas) {
         EntityManager em = emf.createEntityManager();
         try {
             em.getTransaction().begin();
             Jugador jugador = em.find(Jugador.class, idJugador);
             if (jugador != null) {
                 jugador.setImagenFondo(imagenFondo);
+                jugador.setEstiloCartas(estiloCartas);
                 em.merge(jugador);
             }
             em.getTransaction().commit();
@@ -85,7 +86,6 @@ public class JugadorService {
             em.getTransaction().begin();
             Jugador jugador = em.find(Jugador.class, idJugador);
             if (jugador != null) {
-                // Obtener partidas terminadas usando PartidaService
                 PartidaService partidaService = new PartidaService();
                 java.util.List<PartidaDto> partidasTerminadas = partidaService.listarTerminadasPorJugador(idJugador);
                 int partidasGanadas = partidasTerminadas.size();

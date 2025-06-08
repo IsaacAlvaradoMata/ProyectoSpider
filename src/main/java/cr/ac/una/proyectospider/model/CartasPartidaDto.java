@@ -77,7 +77,6 @@ public class CartasPartidaDto {
     public BooleanProperty retiradaProperty() { return retirada; }
     public ObjectProperty<PartidaDto> partidaProperty() { return partida; }
 
-    // Getters y setters
     public Long getIdCartaPartida() { return idCartaPartida.get(); }
     public void setIdCartaPartida(Long id) { this.idCartaPartida.set(id); }
 

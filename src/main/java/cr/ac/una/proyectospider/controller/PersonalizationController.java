@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import cr.ac.una.proyectospider.model.JugadorDto;
+import cr.ac.una.proyectospider.service.JugadorService;
 import cr.ac.una.proyectospider.util.*;
 import javafx.animation.FadeTransition;
 import javafx.application.Platform;
@@ -80,6 +82,8 @@ public class PersonalizationController extends Controller implements Initializab
     private VBox vboxleft;
     @FXML
     private VBox vboxRigth;
+    @FXML
+    private Label lblJugador1;
 
 
     @Override
@@ -132,7 +136,36 @@ public class PersonalizationController extends Controller implements Initializab
                             "/cr/ac/una/proyectospider/resources/DefaultBack" + i + ".png")));
                 }
             }
-            mostrarFondoPreview();
+
+            JugadorDto jugador = (JugadorDto) AppContext.getInstance().get("jugadorActivo");
+            boolean fondoMostrado = false;
+            if (jugador != null) {
+                lblJugador1.setText(" " + (jugador.getNombreUsuario() != null ? jugador.getNombreUsuario() : "-"));
+                byte[] fondoBytes = jugador.imagenFondoProperty().get();
+                if (fondoBytes != null && fondoBytes.length > 0) {
+                    Image fondoImg = new Image(new java.io.ByteArrayInputStream(fondoBytes));
+                    imgPrevistaFondo.setImage(fondoImg);
+                    imgFondoPreview.setImage(fondoImg);
+                    imgPrevistaFondo.setEffect(new ColorAdjust(0, 0, -0.2, 0));
+                    imgPrevistaFondo.setOpacity(1);
+                    imgFondoPreview.setEffect(null);
+                    imgFondoPreview.setOpacity(1);
+                    fondoMostrado = true;
+                }
+                int estiloCartas = jugador.estiloCartasProperty().get();
+                if (estiloCartas == 2) {
+                    rbtnCyberpunk.setSelected(true);
+                    rbtnClasicas.setSelected(false);
+                    imgCartasPrevista.setImage(new Image(getClass().getResourceAsStream("/cr/ac/una/proyectospider/resources/Preview2.png")));
+                } else {
+                    rbtnCyberpunk.setSelected(false);
+                    rbtnClasicas.setSelected(true);
+                    imgCartasPrevista.setImage(new Image(getClass().getResourceAsStream("/cr/ac/una/proyectospider/resources/Preview1.png")));
+                }
+            }
+            if (!fondoMostrado) {
+                mostrarFondoPreview();
+            }
 
             AnimationDepartment.glitchTextWithFlicker(lblTitulo);
             AnimationDepartment.glitchTextWithFlicker(lblJugador);
@@ -154,40 +187,6 @@ public class PersonalizationController extends Controller implements Initializab
             AnimationDepartment.slideFromLeft(vboxleft, Duration.seconds(1.8));
             AnimationDepartment.slideFromRight(vboxRigth, Duration.seconds(1.8));
             AnimationDepartment.slideUpWithEpicBounceClean(btnVolver, Duration.seconds(2), sceneHeight);
-
-
-            Object estiloGuardado = AppContext.getInstance().get(AppContext.KEY_ESTILO_CARTAS);
-
-            final String rutaCyberpunk = AppContext.RUTA_CARTAS_CYBERPUNK;
-            final String rutaClasicas   = AppContext.RUTA_CARTAS_CLASICAS;
-
-            if (estiloGuardado == null) {
-                rbtnCyberpunk.setSelected(true);
-                rbtnClasicas.setSelected(false);
-                imgCartasPrevista.setImage(new Image(
-                        getClass().getResourceAsStream("/cr/ac/una/proyectospider/resources/Preview2.png")));
-            }
-            else {
-                String ruta = estiloGuardado.toString();
-                if (ruta.equals(rutaCyberpunk)) {
-                    rbtnCyberpunk.setSelected(true);
-                    rbtnClasicas.setSelected(false);
-                    imgCartasPrevista.setImage(new Image(
-                            getClass().getResourceAsStream("/cr/ac/una/proyectospider/resources/Preview2.png")));
-                }
-                else if (ruta.equals(rutaClasicas)) {
-                    rbtnCyberpunk.setSelected(false);
-                    rbtnClasicas.setSelected(true);
-                    imgCartasPrevista.setImage(new Image(
-                            getClass().getResourceAsStream("/cr/ac/una/proyectospider/resources/Preview1.png")));
-                }
-                else {
-                    rbtnCyberpunk.setSelected(true);
-                    rbtnClasicas.setSelected(false);
-                    imgCartasPrevista.setImage(new Image(
-                            getClass().getResourceAsStream("/cr/ac/una/proyectospider/resources/Preview2.png")));
-                }
-            }
 
             rbtnCyberpunk.setOnAction(ev -> {
                 if (rbtnCyberpunk.isSelected()) {
@@ -280,19 +279,15 @@ public class PersonalizationController extends Controller implements Initializab
         SoundDepartment.playClick();
         Image fondoSeleccionado = imgPrevistaFondo.getImage();
         String claveEstilo;
+        int estiloCartas;
         if (rbtnCyberpunk.isSelected()) {
             claveEstilo = AppContext.RUTA_CARTAS_CYBERPUNK;
+            estiloCartas = 2;
         } else {
             claveEstilo = AppContext.RUTA_CARTAS_CLASICAS;
+            estiloCartas = 1;
         }
 
-        AppContext.getInstance().set(AppContext.KEY_FONDO_SELECCIONADO, fondoSeleccionado);
-        AppContext.getInstance().set(AppContext.KEY_ESTILO_CARTAS, claveEstilo);
-
-        PartidaDto partidaDtoPersonalizacion = (PartidaDto) AppContext.getInstance().get("partidaDtoPersonalizacion");
-        if (partidaDtoPersonalizacion == null) {
-            partidaDtoPersonalizacion = new PartidaDto();
-        }
         byte[] fondoBytes = null;
         try {
             String url = fondoSeleccionado.getUrl();
@@ -307,7 +302,6 @@ public class PersonalizationController extends Controller implements Initializab
                 }
             } else if (fondosPredeterminados.contains(fondoSeleccionado)) {
                 int idx = fondosPredeterminados.indexOf(fondoSeleccionado) + 1;
-                AppContext.getInstance().set("fondoRecurso", "DefaultBack" + idx + ".png");
                 try (InputStream is = getClass().getResourceAsStream("/cr/ac/una/proyectospider/resources/DefaultBack" + idx + ".png"); ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
                     byte[] buffer = new byte[8192];
                     int bytesRead;
@@ -316,15 +310,21 @@ public class PersonalizationController extends Controller implements Initializab
                     }
                     fondoBytes = baos.toByteArray();
                 }
-            } else {
-                AppContext.getInstance().set("fondoRecurso", null);
             }
         } catch (Exception ex) {
             fondoBytes = null;
         }
-        partidaDtoPersonalizacion.setFondoSeleccionado(fondoBytes);
-        partidaDtoPersonalizacion.setReversoSeleccionado(claveEstilo);
-        AppContext.getInstance().set("partidaDtoPersonalizacion", partidaDtoPersonalizacion);
+
+        JugadorDto jugador = (JugadorDto) AppContext.getInstance().get("jugadorActivo");
+        if (jugador != null) {
+            new JugadorService().actualizarPersonalizacion(jugador.getIdJugador(), fondoBytes, estiloCartas);
+            jugador.setImagenFondo(fondoBytes);
+            jugador.setEstiloCartas(estiloCartas);
+            AppContext.getInstance().set("jugadorActivo", jugador);
+        }
+
+        AppContext.getInstance().set(AppContext.KEY_FONDO_SELECCIONADO, fondoSeleccionado);
+        AppContext.getInstance().set(AppContext.KEY_ESTILO_CARTAS, claveEstilo);
 
         CustomAlert.showInfo(
                 spBackgroundPersonalization,
@@ -371,7 +371,6 @@ public class PersonalizationController extends Controller implements Initializab
                 imgPrevistaFondo.setImage(imagenPersonalizada);
                 AppContext.getInstance().set(AppContext.KEY_FONDO_SELECCIONADO, imagenPersonalizada);
                 AppContext.getInstance().set("fondoRecurso", null);
-                // Actualizar el DTO temporal con los bytes de la imagen personalizada
                 PartidaDto partidaDtoPersonalizacion = (PartidaDto) AppContext.getInstance().get("partidaDtoPersonalizacion");
                 if (partidaDtoPersonalizacion == null) {
                     partidaDtoPersonalizacion = new PartidaDto();
