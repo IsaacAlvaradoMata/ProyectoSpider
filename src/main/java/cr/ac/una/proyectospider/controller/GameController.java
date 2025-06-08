@@ -649,11 +649,6 @@ public class GameController extends Controller implements Initializable {
         repartiendo = true;
 
         iniciarTemporizadorSiEsNecesario();
-        movimientos++;
-        puntaje = Math.max(0, puntaje - 1);
-
-        lblMovimientos.setText("" + movimientos);
-        lblPuntaje.setText("" + puntaje);
 
         // Verificar si todas las columnas tienen al menos una carta
         boolean todasColumnasConCartas = true;
@@ -683,6 +678,12 @@ public class GameController extends Controller implements Initializable {
             repartiendo = false; // Liberar el flag si no se puede repartir
             return;
         }
+
+        // Solo aquí se suman movimientos y se resta puntaje
+        movimientos++;
+        puntaje = Math.max(0, puntaje - 1);
+        lblMovimientos.setText("" + movimientos);
+        lblPuntaje.setText("" + puntaje);
 
         // Repartir una carta a cada columna (solo en modelo temporal para animación)
         List<CartasPartidaDto> cartasRepartidas = new ArrayList<>();
