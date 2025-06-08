@@ -1,6 +1,7 @@
 package cr.ac.una.proyectospider.controller;
 
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import cr.ac.una.proyectospider.model.JugadorRankingDto;
@@ -29,6 +30,10 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
+import cr.ac.una.proyectospider.model.JugadorRankingDto;
+import cr.ac.una.proyectospider.service.JugadorService;
+// …
+
 
 public class PointsController extends Controller implements Initializable {
 
@@ -50,10 +55,33 @@ public class PointsController extends Controller implements Initializable {
 
     // Servicio para obtener el ranking real
     private final JugadorService jugadorService = new JugadorService();
+    private TableColumn<JugadorRankingDto, String> colNombre;
+    private TableColumn<JugadorRankingDto, String> colPartidas;
+    private TableColumn<JugadorRankingDto, String> colPuntajeTotal;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // No se necesita inicializar nada aquí
+        // Aquí inicializas y configuras las columnas
+        colNombre = new TableColumn<>("Jugador");
+        colNombre.setCellValueFactory(data ->
+                new SimpleStringProperty(data.getValue().getNombreUsuario()));
+        applyCustomCellStyle(colNombre);
+
+        colPartidas = new TableColumn<>("Ptds.Ganadas");
+        colPartidas.setCellValueFactory(data ->
+                new SimpleStringProperty(
+                        data.getValue().getPartidasGanadas().toString()));
+        applyCustomCellStyle(colPartidas);
+
+        colPuntajeTotal = new TableColumn<>("Pts.Totales");
+        colPuntajeTotal.setCellValueFactory(data ->
+                new SimpleStringProperty(
+                        data.getValue().getPuntosAcumulados().toString()));
+        colPuntajeTotal.setSortType(TableColumn.SortType.DESCENDING);
+        applyCustomCellStyle(colPuntajeTotal);
+
+        tblviewRanking.getColumns().setAll(
+                colNombre, colPartidas, colPuntajeTotal);
     }
 
     @FXML
@@ -216,39 +244,15 @@ public class PointsController extends Controller implements Initializable {
     }
 
     private void populateTableViewRanking() {
-        // Columnas para JugadorRankingDto
-        TableColumn<JugadorRankingDto, String> colNombre =
-                new TableColumn<>("Jugador");
-        colNombre.setCellValueFactory(data ->
-                new SimpleStringProperty(data.getValue().getNombreUsuario()));
-        applyCustomCellStyle(colNombre);
-
-        TableColumn<JugadorRankingDto, String> colPartidas =
-                new TableColumn<>("Ptds.Ganadas");
-        colPartidas.setCellValueFactory(data ->
-                new SimpleStringProperty(
-                        data.getValue().getPartidasGanadas().toString()));
-        applyCustomCellStyle(colPartidas);
-
-        TableColumn<JugadorRankingDto, String> colPuntajeTotal =
-                new TableColumn<>("Pts.Totales");
-        colPuntajeTotal.setCellValueFactory(data ->
-                new SimpleStringProperty(
-                        data.getValue().getPuntosAcumulados().toString()));
-        colPuntajeTotal.setSortType(TableColumn.SortType.DESCENDING);
-        applyCustomCellStyle(colPuntajeTotal);
-
-        tblviewRanking.getColumns().setAll(
-                colNombre, colPartidas, colPuntajeTotal);
-
-        // Carga datos reales desde la base
         ObservableList<JugadorRankingDto> jugadores =
                 FXCollections.observableArrayList(
                         jugadorService.getRankingPorPuntaje()
                 );
         tblviewRanking.setItems(jugadores);
+        // Como colPuntajeTotal es un campo, aquí lo usas sin problemas
         tblviewRanking.getSortOrder().setAll(colPuntajeTotal);
     }
+
 
     private void applyCustomCellStyle(
             TableColumn<JugadorRankingDto, String> column) {
@@ -281,6 +285,14 @@ public class PointsController extends Controller implements Initializable {
     @FXML
     private void onMouseClickedbtnBuscar(MouseEvent event) {
         SoundDepartment.playClick();
+        String filtro = txtfieldFiltro.getText().trim();
+        ObservableList<JugadorRankingDto> datos =
+                FXCollections.observableArrayList(
+                        jugadorService.getRankingPorFiltro(filtro)
+                );
+        tblviewRanking.setItems(datos);
+        // ¡colPuntajeTotal sigue accesible aquí!
+        tblviewRanking.getSortOrder().setAll(colPuntajeTotal);
     }
 
     @Override

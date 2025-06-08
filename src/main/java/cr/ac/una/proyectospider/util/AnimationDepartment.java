@@ -1467,6 +1467,7 @@ public class AnimationDepartment {
             ImageView imgMazo,
             Runnable onFinished
     ) {
+        SoundDepartment.playDeal();
         if (cartasAAnimar == null || cartasAAnimar.isEmpty() || imgMazo == null) {
             if (onFinished != null) onFinished.run();
             return;

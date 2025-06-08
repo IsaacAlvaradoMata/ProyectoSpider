@@ -120,4 +120,22 @@ public class JugadorService {
         }
     }
 
+    public List<JugadorRankingDto> getRankingPorFiltro(String filtro) {
+        EntityManager em = emf.createEntityManager();
+        try {
+            return em.createQuery(
+                            "SELECT new cr.ac.una.proyectospider.model.JugadorRankingDto(" +
+                                    "  j.nombreUsuario, j.partidasGanadas, j.puntosAcumulados) " +
+                                    "FROM Jugador j " +
+                                    "WHERE LOWER(j.nombreUsuario) LIKE :filtro " +
+                                    "ORDER BY j.puntosAcumulados DESC",
+                            JugadorRankingDto.class
+                    )
+                    .setParameter("filtro", "%" + filtro.toLowerCase() + "%")
+                    .getResultList();
+        } finally {
+            em.close();
+        }
+    }
+
 }
