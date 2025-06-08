@@ -23,6 +23,7 @@ public class SoundDepartment {
     private static MediaPlayer Spider2;
     private static MediaPlayer Spider3;
     private static MediaPlayer Spider4;
+    private static MediaPlayer Victory;
 
     public static void playFlip() {
         try {
@@ -351,6 +352,19 @@ public class SoundDepartment {
         }
     }
 
+    public static void play(String soundName) {
+        switch (soundName) {
+            case "Spider1": playSpider1(); break;
+            case "Spider2": playSpider2(); break;
+            case "Spider3": playSpider3(); break;
+            case "Spider4": playSpider4(); break;
+            // Puedes agregar más casos si necesitas otros sonidos
+            default:
+                System.err.println("[SoundDepartment] Unknown sound: " + soundName);
+        }
+    }
+
+
     public static void playPutCard() {
         try {
             var url = SoundDepartment.class.getResource("/cr/ac/una/proyectospider/resources/card.mp3");
@@ -364,6 +378,24 @@ public class SoundDepartment {
             Media sound = new Media(url.toExternalForm());
             PutCard = new MediaPlayer(sound);
             PutCard.play();
+        } catch (Exception e) {
+            System.err.println("[SoundDepartment] Could not play undoall sound: " + e.getMessage());
+        }
+    }
+
+    public static void playVictory() {
+        try {
+            var url = SoundDepartment.class.getResource("/cr/ac/una/proyectospider/resources/CYBERPUNK.mp3");
+            if (url == null) {
+                System.err.println("[SoundDepartment] CYBERPUNK.mp3 not found in resources. No undoall sound will be played.");
+                return;
+            }
+            if (Victory != null) {
+                Victory.stop();
+            }
+            Media sound = new Media(url.toExternalForm());
+            Victory = new MediaPlayer(sound);
+            Victory.play();
         } catch (Exception e) {
             System.err.println("[SoundDepartment] Could not play undoall sound: " + e.getMessage());
         }

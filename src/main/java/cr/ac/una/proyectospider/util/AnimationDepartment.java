@@ -852,6 +852,7 @@ public class AnimationDepartment {
     ) {
         // 0) Limpia animaciones y capas previas
         stopAllAnimations();
+        SoundDepartment.playVictory();
         parent.getChildren().removeIf(n -> "celebrationLayer".equals(n.getId()));
 
         // 1) Crear la capa de celebración
@@ -984,7 +985,7 @@ public class AnimationDepartment {
 
         // Retraso base entre cada telaraña/araña
         double baseDelay = 0.5; // 0.5 s entre cada ciclo
-
+        String[] spiderAppearSounds = { "Spider1", "Spider2", "Spider3", "Spider4" };
         for (int i = 0; i < 4; i++) {
             final int idx = i; // Capturar "i" en variable effectively final
 
@@ -1030,7 +1031,10 @@ public class AnimationDepartment {
                     new KeyFrame(Duration.seconds(0.7),
                             new KeyValue(revealClip.heightProperty(), fullHeight, Interpolator.EASE_OUT))
             );
-            revealWeb.setOnFinished(evt -> tela.setClip(null)); // Quitar clip al terminar
+            revealWeb.setOnFinished(evt -> {
+                tela.setClip(null);
+
+            }); // Quitar clip al terminar
             revealWeb.setDelay(Duration.seconds(idx * baseDelay));
 
             // Pausa antes de bajar la araña
@@ -1040,6 +1044,7 @@ public class AnimationDepartment {
                 TranslateTransition bajar = new TranslateTransition(Duration.seconds(2), arana);
                 bajar.setToY(300);
                 bajar.play();
+                SoundDepartment.play(spiderAppearSounds[idx]);
             });
 
             // Pausa antes de subir la araña y ocultar la telaraña
@@ -1047,6 +1052,7 @@ public class AnimationDepartment {
             delayBeforeRise.setOnFinished(evt -> {
                 TranslateTransition subir = new TranslateTransition(Duration.seconds(3), arana);
                 subir.setToY(-300);
+                SoundDepartment.play(spiderAppearSounds[idx]);
                 subir.setInterpolator(Interpolator.EASE_BOTH);
                 subir.setOnFinished(e2 -> {
                     arana.setOpacity(0);
