@@ -1,6 +1,7 @@
 package cr.ac.una.proyectospider.model;
 
 import jakarta.persistence.*;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -50,7 +51,8 @@ public class Jugador implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "jugador", fetch = FetchType.LAZY)
     private List<Partida> partidaList;
 
-    public Jugador() {}
+    public Jugador() {
+    }
 
     public Jugador(Long idJugador) {
         this.idJugador = idJugador;
@@ -120,6 +122,7 @@ public class Jugador implements Serializable {
     public Long getVersion() {
         return version;
     }
+
     public void setVersion(Long version) {
         this.version = version;
     }

@@ -1,6 +1,5 @@
 package cr.ac.una.proyectospider.model;
 
-import cr.ac.una.proyectospider.model.Jugador;
 import javafx.beans.property.*;
 
 public class JugadorDto {
@@ -48,18 +47,42 @@ public class JugadorDto {
         return j;
     }
 
-    public ObjectProperty<Long> idJugadorProperty() { return idJugador; }
-    public StringProperty nombreUsuarioProperty() { return nombreUsuario; }
-    public IntegerProperty partidasGanadasProperty() { return partidasGanadas; }
-    public IntegerProperty puntosAcumuladosProperty() { return puntosAcumulados; }
-    public IntegerProperty estiloCartasProperty() { return estiloCartas; }
-    public ObjectProperty<byte[]> imagenFondoProperty() { return imagenFondo; }
+    public ObjectProperty<Long> idJugadorProperty() {
+        return idJugador;
+    }
 
-    public Long getVersion() { return version; }
-    public void setVersion(Long version) { this.version = version; }
+    public StringProperty nombreUsuarioProperty() {
+        return nombreUsuario;
+    }
+
+    public IntegerProperty partidasGanadasProperty() {
+        return partidasGanadas;
+    }
+
+    public IntegerProperty puntosAcumuladosProperty() {
+        return puntosAcumulados;
+    }
+
+    public IntegerProperty estiloCartasProperty() {
+        return estiloCartas;
+    }
+
+    public ObjectProperty<byte[]> imagenFondoProperty() {
+        return imagenFondo;
+    }
+
+    public Long getVersion() {
+        return version;
+    }
+
+    public void setVersion(Long version) {
+        this.version = version;
+    }
+
     public Long getIdJugador() {
         return idJugador.get();
     }
+
     public String getNombreUsuario() {
         return nombreUsuario.get();
     }
@@ -67,6 +90,7 @@ public class JugadorDto {
     public void setImagenFondo(byte[] imagenFondo) {
         this.imagenFondo.set(imagenFondo);
     }
+
     public void setEstiloCartas(int estiloCartas) {
         this.estiloCartas.set(estiloCartas);
     }

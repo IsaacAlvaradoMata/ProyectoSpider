@@ -1,14 +1,7 @@
 package cr.ac.una.proyectospider.controller;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.InputStream;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ResourceBundle;
-
 import cr.ac.una.proyectospider.model.JugadorDto;
+import cr.ac.una.proyectospider.model.PartidaDto;
 import cr.ac.una.proyectospider.service.JugadorService;
 import cr.ac.una.proyectospider.util.*;
 import javafx.animation.FadeTransition;
@@ -24,15 +17,22 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Window;
 import javafx.util.Duration;
-import cr.ac.una.proyectospider.model.PartidaDto;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ResourceBundle;
 
 
 public class PersonalizationController extends Controller implements Initializable {
 
+    private final List<Image> fondosPredeterminados = new ArrayList<>();
     @FXML
     private BorderPane root;
     @FXML
@@ -75,8 +75,6 @@ public class PersonalizationController extends Controller implements Initializab
     private ImageView btnVolver;
     @FXML
     private ImageView imgFondoPreview;
-
-    private final List<Image> fondosPredeterminados = new ArrayList<>();
     private int currentIndex = 0;
     @FXML
     private VBox vboxleft;
@@ -229,7 +227,6 @@ public class PersonalizationController extends Controller implements Initializab
     }
 
 
-
     public void ResetPersonalizationView() {
         System.out.println("Reset Login View");
         root.setOpacity(0);
@@ -335,7 +332,6 @@ public class PersonalizationController extends Controller implements Initializab
     }
 
 
-
     @FXML
     private void OnMouseClickedbtnFlechaIzquierda(MouseEvent event) {
         SoundDepartment.playClick();
@@ -424,5 +420,5 @@ public class PersonalizationController extends Controller implements Initializab
         SoundDepartment.playRadioButton();
 
     }
-    
+
 }

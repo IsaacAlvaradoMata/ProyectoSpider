@@ -8,12 +8,12 @@ import java.util.Properties;
 
 public class AppContext {
 
-    private static AppContext INSTANCE = null;
-    private static HashMap<String, Object> context = new HashMap<>();
     public static final String KEY_ESTILO_CARTAS = "estiloCartasSeleccionado";
     public static final String RUTA_CARTAS_CYBERPUNK = "/cr/ac/una/proyectospider/resources/imgCyberpunk.png";
-    public static final String RUTA_CARTAS_CLASICAS  = "/cr/ac/una/proyectospider/resources/imgClasicas.png";
-    public static final String KEY_FONDO_SELECCIONADO  = "fondoSeleccionado";
+    public static final String RUTA_CARTAS_CLASICAS = "/cr/ac/una/proyectospider/resources/imgClasicas.png";
+    public static final String KEY_FONDO_SELECCIONADO = "fondoSeleccionado";
+    private static AppContext INSTANCE = null;
+    private static HashMap<String, Object> context = new HashMap<>();
 
     private AppContext() {
         //cargarPropiedades();
@@ -35,8 +35,8 @@ public class AppContext {
         }
         return INSTANCE;
     }
-    
-    private void cargarPropiedades(){
+
+    private void cargarPropiedades() {
         try {
             FileInputStream configFile;
             configFile = new FileInputStream("config/properties.ini");
@@ -48,7 +48,7 @@ public class AppContext {
 //            }
 //            if (appProperties.getProperty("propiedades.resturl") != null) {
 //                this.set("resturl",appProperties.getProperty("propiedades.resturl"));
-  //          }
+            //          }
         } catch (IOException io) {
             System.out.println("Archivo de configuración no encontrado.");
         }
@@ -59,7 +59,7 @@ public class AppContext {
         throw new CloneNotSupportedException();
     }
 
-    public Object get(String parameter){    
+    public Object get(String parameter) {
         return context.get(parameter);
     }
 

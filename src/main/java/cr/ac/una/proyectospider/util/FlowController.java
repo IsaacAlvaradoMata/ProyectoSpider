@@ -2,24 +2,25 @@ package cr.ac.una.proyectospider.util;
 
 import cr.ac.una.proyectospider.App;
 import cr.ac.una.proyectospider.controller.Controller;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.ResourceBundle;
-import java.util.logging.Level;
+import io.github.palexdev.materialfx.css.themes.MFXThemeManager;
+import io.github.palexdev.materialfx.css.themes.Themes;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import io.github.palexdev.materialfx.css.themes.MFXThemeManager;
-import io.github.palexdev.materialfx.css.themes.Themes;
-import javafx.geometry.Insets;
-import javafx.scene.layout.Priority;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.ResourceBundle;
+import java.util.logging.Level;
 
 public class FlowController {
 
@@ -46,6 +47,10 @@ public class FlowController {
             createInstance();
         }
         return INSTANCE;
+    }
+
+    public static void setIdioma(ResourceBundle idioma) {
+        FlowController.idioma = idioma;
     }
 
     @Override
@@ -148,14 +153,13 @@ public class FlowController {
         }
     }
 
-
     public void goViewInStage(String viewName, Stage stage) {
         FXMLLoader loader = getLoader(viewName);
         Controller controller = loader.getController();
         controller.setStage(stage);
         stage.getScene().setRoot(loader.getRoot());
         MFXThemeManager.addOn(stage.getScene(), Themes.DEFAULT, Themes.LEGACY);
-        
+
     }
 
     public void goViewInWindow(String viewName) {
@@ -177,6 +181,10 @@ public class FlowController {
         stage.centerOnScreen();
         stage.show();
     }
+
+//    public void preloadViewsAsync() {
+//        new Thread(() -> {
+//            getLoader("LoginView");
 
     public void goViewInWindowModal(String viewName, Stage parentStage, Boolean resizable) {
         FXMLLoader loader = getLoader(viewName);
@@ -202,31 +210,23 @@ public class FlowController {
 
     }
 
-//    public void preloadViewsAsync() {
-//        new Thread(() -> {
-//            getLoader("LoginView");
-////            getLoader("IntroView");
-////            getLoader("PrincipalMenuView");
-////            getLoader("PersonalizationView");
-////            getLoader("PointsView");
-////            getLoader("HelpView");
+    /// /            getLoader("IntroView");
+    /// /            getLoader("PrincipalMenuView");
+    /// /            getLoader("PersonalizationView");
+    /// /            getLoader("PointsView");
+    /// /            getLoader("HelpView");
 //            // ... cualquier otra vista
 //            System.out.println("✅ Vistas precargadas correctamente.");
 //        }).start();
 //    }
-
     public Controller getController(String viewName) {
         return getLoader(viewName).getController();
     }
-    
-    public void limpiarLoader(String view){
+
+    public void limpiarLoader(String view) {
         this.loaders.remove(view);
     }
 
-    public static void setIdioma(ResourceBundle idioma) {
-        FlowController.idioma = idioma;
-    }
-    
     public void initialize() {
         this.loaders.clear();
     }

@@ -950,7 +950,7 @@ public class AnimationDepartment {
                         "/cr/ac/una/proyectospider/resources/TelaIcon.png"));
 
         double baseDelay = 0.5;
-        String[] spiderAppearSounds = { "Spider1", "Spider2", "Spider3", "Spider4" };
+        String[] spiderAppearSounds = {"Spider1", "Spider2", "Spider3", "Spider4"};
         for (int i = 0; i < 4; i++) {
             final int idx = i;
 
@@ -1174,7 +1174,9 @@ public class AnimationDepartment {
                     try {
                         java.lang.reflect.Method getColumna = c.getClass().getMethod("getColumna");
                         return (int) getColumna.invoke(c) == columnaOrigen;
-                    } catch (Exception e) { return false; }
+                    } catch (Exception e) {
+                        return false;
+                    }
                 })
                 .count();
         int totalCartasDespues = cartasEnColOrig + grupo.size();
@@ -1188,7 +1190,9 @@ public class AnimationDepartment {
                         try {
                             java.lang.reflect.Method getColumna = c.getClass().getMethod("getColumna");
                             return (int) getColumna.invoke(c) == columnaOrigen;
-                        } catch (Exception e) { return false; }
+                        } catch (Exception e) {
+                            return false;
+                        }
                     })
                     .max((a, b) -> {
                         try {
@@ -1196,7 +1200,9 @@ public class AnimationDepartment {
                             int ordenA = (int) getOrden.invoke(a);
                             int ordenB = (int) getOrden.invoke(b);
                             return Integer.compare(ordenA, ordenB);
-                        } catch (Exception e) { return 0; }
+                        } catch (Exception e) {
+                            return 0;
+                        }
                     })
                     .orElse(null);
             if (ultima != null) {
@@ -1252,7 +1258,7 @@ public class AnimationDepartment {
                 }
                 String imgTrasera = usarEstiloClasico ? "rear.png" : "rearS.png";
                 javafx.scene.image.Image imgTraseraObj = new javafx.scene.image.Image(
-                    AnimationDepartment.class.getResourceAsStream("/cr/ac/una/proyectospider/resources/" + imgTrasera)
+                        AnimationDepartment.class.getResourceAsStream("/cr/ac/una/proyectospider/resources/" + imgTrasera)
                 );
                 AnimationDepartment.flipCardAnimation(ivDebajo, imgTraseraObj, () -> {
                     doMove.run();
@@ -1265,14 +1271,15 @@ public class AnimationDepartment {
 
     /**
      * Animación visual de reparto de cartas desde el mazo a las columnas.
-     * @param cartasRepartidas Lista de cartas a repartir (en orden de columna)
-     * @param spGamebackground Pane principal de fondo
-     * @param cartaToImageView Mapa de cartas a sus ImageView (solo cartas en mazo)
-     * @param hboxTablero HBox del tablero
-     * @param imgMazo ImageView del mazo
+     *
+     * @param cartasRepartidas          Lista de cartas a repartir (en orden de columna)
+     * @param spGamebackground          Pane principal de fondo
+     * @param cartaToImageView          Mapa de cartas a sus ImageView (solo cartas en mazo)
+     * @param hboxTablero               HBox del tablero
+     * @param imgMazo                   ImageView del mazo
      * @param calcularEspaciadoVertical Función para calcular el espaciado vertical
-     * @param cartasEnJuego Lista de cartas en juego
-     * @param onFinished Runnable opcional para ejecutar al terminar
+     * @param cartasEnJuego             Lista de cartas en juego
+     * @param onFinished                Runnable opcional para ejecutar al terminar
      */
     public static void animarRepartoCartasVisual(
             List<?> cartasRepartidas,
@@ -1354,7 +1361,9 @@ public class AnimationDepartment {
                 try {
                     java.lang.reflect.Method getColumna = c.getClass().getMethod("getColumna");
                     return (int) getColumna.invoke(c) == col;
-                } catch (Exception e) { return false; }
+                } catch (Exception e) {
+                    return false;
+                }
             }).count();
             double spacing = calcularEspaciadoVertical.apply(totalCartas);
             double y = colParentBounds.getMinY() + orden * spacing;
@@ -1379,6 +1388,7 @@ public class AnimationDepartment {
         });
         toDest.play();
     }
+
     public static void animarSecuenciaAHaciaPila(
 
             List<CartasPartidaDto> grupoDe13Cartas,

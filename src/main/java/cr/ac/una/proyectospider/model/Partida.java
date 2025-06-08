@@ -1,6 +1,7 @@
 package cr.ac.una.proyectospider.model;
 
 import jakarta.persistence.*;
+
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -71,7 +72,8 @@ public class Partida implements Serializable {
     @Column(name = "VERSION")
     private Long version;
 
-    public Partida() {}
+    public Partida() {
+    }
 
     public Partida(Long idPartida) {
         this.idPartida = idPartida;

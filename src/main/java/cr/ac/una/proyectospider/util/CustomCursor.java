@@ -93,6 +93,7 @@ public class CustomCursor {
     public SimpleIntegerProperty hotSpotXProperty() {
         return hotSpotX;
     }
+
     public SimpleIntegerProperty hotSpotYProperty() {
         return hotSpotY;
     }

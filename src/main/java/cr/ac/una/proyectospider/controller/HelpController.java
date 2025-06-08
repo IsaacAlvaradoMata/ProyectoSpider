@@ -1,8 +1,5 @@
 package cr.ac.una.proyectospider.controller;
 
-import java.net.URL;
-import java.util.ResourceBundle;
-
 import cr.ac.una.proyectospider.util.AnimationDepartment;
 import cr.ac.una.proyectospider.util.FlowController;
 import cr.ac.una.proyectospider.util.SoundDepartment;
@@ -21,6 +18,9 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
+
+import java.net.URL;
+import java.util.ResourceBundle;
 
 
 public class HelpController extends Controller implements Initializable {
@@ -91,7 +91,7 @@ public class HelpController extends Controller implements Initializable {
     private StackPane opcionSeleccionadaActual = null;
     private ImageView imagenSeleccionadaActual = null;
     private Label labelSeleccionadoActual = null;
-    
+
     @FXML
     private ImageView imgInfoGeneral;
     @FXML
@@ -131,6 +131,20 @@ public class HelpController extends Controller implements Initializable {
     @FXML
     private Label lbl10;
 
+    private static Duration computeTypewriterDelay(String text, double speedPerChar, Duration base, double marginSeconds) {
+        double writingTime = text.length() * speedPerChar;
+        return base.add(Duration.seconds(writingTime + marginSeconds));
+    }
+
+    public static void applyRoundedClip(ImageView imageView, double arcSize) {
+        Rectangle clip = new Rectangle();
+        clip.widthProperty().bind(imageView.fitWidthProperty());
+        clip.heightProperty().bind(imageView.fitHeightProperty());
+        clip.setArcWidth(arcSize);
+        clip.setArcHeight(arcSize);
+        imageView.setClip(clip);
+    }
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
@@ -154,7 +168,6 @@ public class HelpController extends Controller implements Initializable {
         }
 
 
-
         if (root.getScene() != null) {
             imgBackgroundHelp.fitWidthProperty().bind(root.getScene().widthProperty());
             imgBackgroundHelp.fitHeightProperty().bind(root.getScene().heightProperty());
@@ -175,7 +188,6 @@ public class HelpController extends Controller implements Initializable {
         applyRoundedClip(imgBackgroundTabPane, 20);
 
 
-
         Platform.runLater(() -> {
             root.setOpacity(1);
             root.setVisible(true);
@@ -191,7 +203,6 @@ public class HelpController extends Controller implements Initializable {
             spDificultades.setDisable(true);
             spCondiciones.setDisable(true);
             spExplicacion.setDisable(true);
-
 
 
             PauseTransition t1 = new PauseTransition(Duration.seconds(1));
@@ -239,7 +250,7 @@ public class HelpController extends Controller implements Initializable {
                 AnimationDepartment.slideLoopRight(imgHelpIcon2, 400, 2);
                 AnimationDepartment.animateNeonGlow(imgHelpIcon1);
                 AnimationDepartment.animateNeonGlow(imgHelpIcon2);
-                AnimationDepartment.glitchFadeInBackground(imgBackgroundTabPane,  Duration.ZERO);
+                AnimationDepartment.glitchFadeInBackground(imgBackgroundTabPane, Duration.ZERO);
                 AnimationDepartment.animateNeonGlowStrong(spBackgroundTabPane);
                 AnimationDepartment.fadeIn(lblInformacionGeneral, Duration.seconds(1.2));
                 AnimationDepartment.fadeIn(imgInfoGeneral, Duration.seconds(1.2));
@@ -304,7 +315,6 @@ public class HelpController extends Controller implements Initializable {
 
 
     }
-
 
     public void ResetHelpView() {
         System.out.println("🔁 Reset Help View");
@@ -420,7 +430,6 @@ public class HelpController extends Controller implements Initializable {
         seleccionarOpcionCompleta(spExplicacion, btnExplicacion, lblExplicacion);
     }
 
-
     @FXML
     private void OnMouseClickedBtnBolver(MouseEvent event) {
         SoundDepartment.playClick();
@@ -435,7 +444,6 @@ public class HelpController extends Controller implements Initializable {
 
         });
     }
-
 
     private void seleccionarOpcionCompleta(StackPane nuevoSeleccionado, ImageView nuevaImagen, Label nuevoLabel) {
         if (opcionSeleccionadaActual != null && imagenSeleccionadaActual != null && labelSeleccionadoActual != null) {
@@ -460,7 +468,6 @@ public class HelpController extends Controller implements Initializable {
         imagenSeleccionadaActual = nuevaImagen;
         labelSeleccionadoActual = nuevoLabel;
     }
-
 
     private void setupHoverEffect(Label label, ImageView imageFrame, StackPane containerStack) {
         imageFrame.setVisible(false);
@@ -504,20 +511,6 @@ public class HelpController extends Controller implements Initializable {
             label.setScaleX(1.0);
             label.setScaleY(1.0);
         });
-    }
-
-    private static Duration computeTypewriterDelay(String text, double speedPerChar, Duration base, double marginSeconds) {
-        double writingTime = text.length() * speedPerChar;
-        return base.add(Duration.seconds(writingTime + marginSeconds));
-    }
-
-    public static void applyRoundedClip(ImageView imageView, double arcSize) {
-        Rectangle clip = new Rectangle();
-        clip.widthProperty().bind(imageView.fitWidthProperty());
-        clip.heightProperty().bind(imageView.fitHeightProperty());
-        clip.setArcWidth(arcSize);
-        clip.setArcHeight(arcSize);
-        imageView.setClip(clip);
     }
 
 

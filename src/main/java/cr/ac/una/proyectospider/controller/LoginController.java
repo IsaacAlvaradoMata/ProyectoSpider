@@ -3,14 +3,9 @@ package cr.ac.una.proyectospider.controller;
 import cr.ac.una.proyectospider.model.JugadorDto;
 import cr.ac.una.proyectospider.service.JugadorService;
 import cr.ac.una.proyectospider.util.*;
-
-import java.net.URL;
-import java.util.ResourceBundle;
-
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
@@ -20,6 +15,9 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
+
+import java.net.URL;
+import java.util.ResourceBundle;
 
 
 public class LoginController extends Controller implements Initializable {
@@ -163,10 +161,10 @@ public class LoginController extends Controller implements Initializable {
 
         if (nombre == null || nombre.trim().isEmpty()) {
             CustomAlert.showInfo(
-                spBackgroundLogin,
-                "Campo vacío",
-                "Por favor ingrese un nombre de usuario.",
-                null
+                    spBackgroundLogin,
+                    "Campo vacío",
+                    "Por favor ingrese un nombre de usuario.",
+                    null
             );
             return;
         }
@@ -176,24 +174,24 @@ public class LoginController extends Controller implements Initializable {
 
         if (jugador == null) {
             CustomAlert.showInfo(
-                spBackgroundLogin,
-                "Usuario existente",
-                "Ya existe un jugador con ese nombre. Usa el botón de iniciar sesión.",
-                null
+                    spBackgroundLogin,
+                    "Usuario existente",
+                    "Ya existe un jugador con ese nombre. Usa el botón de iniciar sesión.",
+                    null
             );
             return;
         }
 
         CustomAlert.showInfo(
-            spBackgroundLogin,
-            "Registro exitoso",
-            "¡Jugador registrado exitosamente!",
-            () -> {
-                AppContext.getInstance().set("jugadorActivo", jugador);
-                FlowController.getInstance().goView("MenuView");
-                MenuController controller = (MenuController) FlowController.getInstance().getController("MenuView");
-                controller.RunMenuView();
-            }
+                spBackgroundLogin,
+                "Registro exitoso",
+                "¡Jugador registrado exitosamente!",
+                () -> {
+                    AppContext.getInstance().set("jugadorActivo", jugador);
+                    FlowController.getInstance().goView("MenuView");
+                    MenuController controller = (MenuController) FlowController.getInstance().getController("MenuView");
+                    controller.RunMenuView();
+                }
         );
     }
 

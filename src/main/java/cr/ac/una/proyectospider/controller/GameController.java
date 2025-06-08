@@ -1877,6 +1877,7 @@ public class GameController extends Controller implements Initializable {
         int ordenInicioSecuencia;
         CartasPartidaDto cartaDebajoSecuencia;
         Boolean cartaDebajoSecuenciaEstadoAnterior;
+
         Movimiento(Tipo tipo) {
             this.tipo = tipo;
             cartasMovidas = new ArrayList<>();

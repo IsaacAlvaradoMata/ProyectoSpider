@@ -1,6 +1,7 @@
 package cr.ac.una.proyectospider.model;
 
 import javafx.beans.property.*;
+
 import java.util.Date;
 
 public class PartidaDto {
@@ -14,9 +15,9 @@ public class PartidaDto {
     private final StringProperty estado;
     private final StringProperty dificultad;
     private final ObjectProperty<JugadorDto> jugador;
+    private final StringProperty reversoSeleccionado = new SimpleStringProperty("");
     private Long version;
     private byte[] fondoSeleccionado;
-    private final StringProperty reversoSeleccionado = new SimpleStringProperty("");
 
     public PartidaDto() {
         this.idPartida = new SimpleObjectProperty<>(null);
@@ -72,42 +73,141 @@ public class PartidaDto {
     }
 
 
-    public ObjectProperty<Long> idPartidaProperty() { return idPartida; }
-    public ObjectProperty<Date> fechaInicioProperty() { return fechaInicio; }
-    public ObjectProperty<Date> fechaFinProperty() { return fechaFin; }
-    public IntegerProperty puntosProperty() { return puntos; }
-    public IntegerProperty movimientosProperty() { return movimientos; }
-    public IntegerProperty tiempoJugadoProperty() { return tiempoJugado; }
-    public StringProperty estadoProperty() { return estado; }
-    public StringProperty dificultadProperty() { return dificultad; }
-    public ObjectProperty<JugadorDto> jugadorProperty() { return jugador; }
-    public StringProperty reversoSeleccionadoProperty() { return reversoSeleccionado; }
-    public String getReversoSeleccionado() { return reversoSeleccionado.get(); }
-    public void setReversoSeleccionado(String reverso) { this.reversoSeleccionado.set(reverso); }
+    public ObjectProperty<Long> idPartidaProperty() {
+        return idPartida;
+    }
 
-    public Long getIdPartida() { return idPartida.get(); }
-    public Date getFechaInicio() { return fechaInicio.get(); }
-    public Date getFechaFin() { return fechaFin.get(); }
-    public Integer getPuntos() { return puntos.get(); }
-    public Integer getMovimientos() { return movimientos.get(); }
-    public Integer getTiempoJugado() { return tiempoJugado.get(); }
-    public String getEstado() { return estado.get(); }
-    public String getDificultad() { return dificultad.get(); }
-    public JugadorDto getJugador() { return jugador.get(); }
-    public Long getVersion() { return version; }
-    public byte[] getFondoSeleccionado() { return fondoSeleccionado; }
-    public void setFondoSeleccionado(byte[] fondo) { this.fondoSeleccionado = fondo; }
+    public ObjectProperty<Date> fechaInicioProperty() {
+        return fechaInicio;
+    }
 
-    public void setIdPartida(Long id) { this.idPartida.set(id); }
-    public void setFechaInicio(Date fechaInicio) { this.fechaInicio.set(fechaInicio); }
-    public void setFechaFin(Date fechaFin) { this.fechaFin.set(fechaFin); }
-    public void setPuntos(Integer puntos) { this.puntos.set(puntos); }
-    public void setMovimientos(Integer m) { this.movimientos.set(m); }
-    public void setTiempoJugado(Integer tiempoJugado) { this.tiempoJugado.set(tiempoJugado); }
-    public void setEstado(String estado) { this.estado.set(estado); }
-    public void setDificultad(String dificultad) { this.dificultad.set(dificultad); }
-    public void setJugador(JugadorDto jugador) { this.jugador.set(jugador); }
-    public void setVersion(Long version) { this.version = version; }
+    public ObjectProperty<Date> fechaFinProperty() {
+        return fechaFin;
+    }
+
+    public IntegerProperty puntosProperty() {
+        return puntos;
+    }
+
+    public IntegerProperty movimientosProperty() {
+        return movimientos;
+    }
+
+    public IntegerProperty tiempoJugadoProperty() {
+        return tiempoJugado;
+    }
+
+    public StringProperty estadoProperty() {
+        return estado;
+    }
+
+    public StringProperty dificultadProperty() {
+        return dificultad;
+    }
+
+    public ObjectProperty<JugadorDto> jugadorProperty() {
+        return jugador;
+    }
+
+    public StringProperty reversoSeleccionadoProperty() {
+        return reversoSeleccionado;
+    }
+
+    public String getReversoSeleccionado() {
+        return reversoSeleccionado.get();
+    }
+
+    public void setReversoSeleccionado(String reverso) {
+        this.reversoSeleccionado.set(reverso);
+    }
+
+    public Long getIdPartida() {
+        return idPartida.get();
+    }
+
+    public void setIdPartida(Long id) {
+        this.idPartida.set(id);
+    }
+
+    public Date getFechaInicio() {
+        return fechaInicio.get();
+    }
+
+    public void setFechaInicio(Date fechaInicio) {
+        this.fechaInicio.set(fechaInicio);
+    }
+
+    public Date getFechaFin() {
+        return fechaFin.get();
+    }
+
+    public void setFechaFin(Date fechaFin) {
+        this.fechaFin.set(fechaFin);
+    }
+
+    public Integer getPuntos() {
+        return puntos.get();
+    }
+
+    public void setPuntos(Integer puntos) {
+        this.puntos.set(puntos);
+    }
+
+    public Integer getMovimientos() {
+        return movimientos.get();
+    }
+
+    public void setMovimientos(Integer m) {
+        this.movimientos.set(m);
+    }
+
+    public Integer getTiempoJugado() {
+        return tiempoJugado.get();
+    }
+
+    public void setTiempoJugado(Integer tiempoJugado) {
+        this.tiempoJugado.set(tiempoJugado);
+    }
+
+    public String getEstado() {
+        return estado.get();
+    }
+
+    public void setEstado(String estado) {
+        this.estado.set(estado);
+    }
+
+    public String getDificultad() {
+        return dificultad.get();
+    }
+
+    public void setDificultad(String dificultad) {
+        this.dificultad.set(dificultad);
+    }
+
+    public JugadorDto getJugador() {
+        return jugador.get();
+    }
+
+    public void setJugador(JugadorDto jugador) {
+        this.jugador.set(jugador);
+    }
+
+    public Long getVersion() {
+        return version;
+    }
+
+    public void setVersion(Long version) {
+        this.version = version;
+    }
+
+    public byte[] getFondoSeleccionado() {
+        return fondoSeleccionado;
+    }
+
+    public void setFondoSeleccionado(byte[] fondo) {
+        this.fondoSeleccionado = fondo;
+    }
 
     @Override
     public boolean equals(Object o) {

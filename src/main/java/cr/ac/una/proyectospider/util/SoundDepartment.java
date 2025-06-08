@@ -352,10 +352,18 @@ public class SoundDepartment {
 
     public static void play(String soundName) {
         switch (soundName) {
-            case "Spider1": playSpider1(); break;
-            case "Spider2": playSpider2(); break;
-            case "Spider3": playSpider3(); break;
-            case "Spider4": playSpider4(); break;
+            case "Spider1":
+                playSpider1();
+                break;
+            case "Spider2":
+                playSpider2();
+                break;
+            case "Spider3":
+                playSpider3();
+                break;
+            case "Spider4":
+                playSpider4();
+                break;
             default:
                 System.err.println("[SoundDepartment] Unknown sound: " + soundName);
         }
@@ -418,9 +426,6 @@ public class SoundDepartment {
             System.err.println("[SoundDepartment] Could not play undoall sound: " + e.getMessage());
         }
     }
-
-
-
 
 
 }

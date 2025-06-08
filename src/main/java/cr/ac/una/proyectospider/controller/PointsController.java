@@ -1,9 +1,5 @@
 package cr.ac.una.proyectospider.controller;
 
-import java.net.URL;
-import java.util.List;
-import java.util.ResourceBundle;
-
 import cr.ac.una.proyectospider.model.JugadorRankingDto;
 import cr.ac.una.proyectospider.service.JugadorService;
 import cr.ac.una.proyectospider.util.AnimationDepartment;
@@ -16,11 +12,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -31,28 +23,43 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
 
-
+import java.net.URL;
+import java.util.ResourceBundle;
 
 
 public class PointsController extends Controller implements Initializable {
 
-    @FXML private BorderPane root;
-    @FXML private Label lblTitulo;
-    @FXML private TableView<JugadorRankingDto> tblviewRanking;
-    @FXML private ImageView btnVolver;
-    @FXML private StackPane spTextFieldContainer;
-    @FXML private TextField txtfieldFiltro;
-    @FXML private ImageView btnBuscar;
-    @FXML private StackPane spBackgroundPoints;
-    @FXML private ImageView imgBackgroundPoints;
-    @FXML private ImageView imgArcade;
-    @FXML private StackPane spArcade;
-    @FXML private ImageView imgTela1;
-    @FXML private ImageView imgTela2;
-    @FXML private ImageView imgArana1;
-    @FXML private ImageView imgArana2;
-
     private final JugadorService jugadorService = new JugadorService();
+    @FXML
+    private BorderPane root;
+    @FXML
+    private Label lblTitulo;
+    @FXML
+    private TableView<JugadorRankingDto> tblviewRanking;
+    @FXML
+    private ImageView btnVolver;
+    @FXML
+    private StackPane spTextFieldContainer;
+    @FXML
+    private TextField txtfieldFiltro;
+    @FXML
+    private ImageView btnBuscar;
+    @FXML
+    private StackPane spBackgroundPoints;
+    @FXML
+    private ImageView imgBackgroundPoints;
+    @FXML
+    private ImageView imgArcade;
+    @FXML
+    private StackPane spArcade;
+    @FXML
+    private ImageView imgTela1;
+    @FXML
+    private ImageView imgTela2;
+    @FXML
+    private ImageView imgArana1;
+    @FXML
+    private ImageView imgArana2;
     private TableColumn<JugadorRankingDto, String> colNombre;
     private TableColumn<JugadorRankingDto, String> colPartidas;
     private TableColumn<JugadorRankingDto, String> colPuntajeTotal;

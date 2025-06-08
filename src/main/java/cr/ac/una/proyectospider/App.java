@@ -5,26 +5,29 @@ import cr.ac.una.proyectospider.util.FlowController;
 import cr.ac.una.proyectospider.util.FontDepartment;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
 import javafx.scene.ImageCursor;
+import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.stage.Stage;
-import javafx.scene.Parent;
-import javafx.scene.Node;
-import javafx.scene.control.TextField;
-import javafx.scene.control.PasswordField;
-import javafx.beans.value.ChangeListener;
 
 import java.io.IOException;
 
 public class App extends Application {
     private static Scene scene;
     private static MediaPlayer mediaPlayer;
+
+    public static void main(String[] args) {
+        launch(args);
+    }
 
     @Override
     public void start(Stage stage) throws IOException {
@@ -37,7 +40,7 @@ public class App extends Application {
             Media media = new Media(musicPath);
             mediaPlayer = new MediaPlayer(media);
             mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
-            mediaPlayer.setVolume(0.08); 
+            mediaPlayer.setVolume(0.08);
             mediaPlayer.play();
         }
 
@@ -82,7 +85,6 @@ public class App extends Application {
         });
     }
 
-
     private void addCursorListenersToTextInputs(Node node, ImageCursor customCursor, Scene escena) {
         if (node instanceof TextField || node instanceof PasswordField) {
             ChangeListener<Boolean> hoverListener = (obs, oldVal, newVal) -> {
@@ -99,10 +101,6 @@ public class App extends Application {
                 addCursorListenersToTextInputs(child, customCursor, escena);
             }
         }
-    }
-
-    public static void main(String[] args) {
-        launch(args);
     }
 }
 

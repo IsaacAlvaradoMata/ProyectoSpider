@@ -98,6 +98,10 @@ public class InfoController extends Controller implements Initializable {
     @FXML
     private Label lblDesarrolladores;
 
+    private static Duration computeTypewriterDelay(String text, double speedPerChar, Duration base, double marginSeconds) {
+        double writingTime = text.length() * speedPerChar;
+        return base.add(Duration.seconds(writingTime + marginSeconds));
+    }
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -237,7 +241,6 @@ public class InfoController extends Controller implements Initializable {
         });
     }
 
-
     public void ResetInfoView() {
         System.out.println("🔁 Reset Info View");
 
@@ -294,7 +297,6 @@ public class InfoController extends Controller implements Initializable {
         spBackgroundInfo.setVisible(true);
     }
 
-
     @FXML
     private void onMouseClickedbtnVolver(MouseEvent event) {
         SoundDepartment.playClick();
@@ -309,10 +311,5 @@ public class InfoController extends Controller implements Initializable {
 
         });
 
-    }
-
-    private static Duration computeTypewriterDelay(String text, double speedPerChar, Duration base, double marginSeconds) {
-        double writingTime = text.length() * speedPerChar;
-        return base.add(Duration.seconds(writingTime + marginSeconds));
     }
 }

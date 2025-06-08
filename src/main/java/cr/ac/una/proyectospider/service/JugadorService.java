@@ -2,9 +2,11 @@ package cr.ac.una.proyectospider.service;
 
 import cr.ac.una.proyectospider.model.Jugador;
 import cr.ac.una.proyectospider.model.JugadorDto;
-import cr.ac.una.proyectospider.model.PartidaDto;
 import cr.ac.una.proyectospider.model.JugadorRankingDto;
-import jakarta.persistence.*;
+import cr.ac.una.proyectospider.model.PartidaDto;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Persistence;
 
 import java.util.List;
 
@@ -90,8 +92,8 @@ public class JugadorService {
                 java.util.List<PartidaDto> partidasTerminadas = partidaService.listarTerminadasPorJugador(idJugador);
                 int partidasGanadas = partidasTerminadas.size();
                 int puntosAcumulados = partidasTerminadas.stream()
-                    .mapToInt(p -> p.getPuntos() != null ? p.getPuntos() : 0)
-                    .sum();
+                        .mapToInt(p -> p.getPuntos() != null ? p.getPuntos() : 0)
+                        .sum();
                 jugador.setPartidasGanadas(partidasGanadas);
                 jugador.setPuntosAcumulados(puntosAcumulados);
                 em.merge(jugador);

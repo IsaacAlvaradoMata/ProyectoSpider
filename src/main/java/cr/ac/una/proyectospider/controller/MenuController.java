@@ -1,21 +1,15 @@
 package cr.ac.una.proyectospider.controller;
 
-import java.net.URL;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.ResourceBundle;
-
-import cr.ac.una.proyectospider.model.*;
-import cr.ac.una.proyectospider.service.PartidaService;
+import cr.ac.una.proyectospider.model.JugadorDto;
+import cr.ac.una.proyectospider.model.PartidaCompletaDto;
+import cr.ac.una.proyectospider.model.PartidaDto;
 import cr.ac.una.proyectospider.service.JugadorService;
+import cr.ac.una.proyectospider.service.PartidaService;
 import cr.ac.una.proyectospider.util.*;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -29,7 +23,12 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
-import java.io.ByteArrayInputStream;
+
+import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.ResourceBundle;
 
 
 public class MenuController extends Controller implements Initializable {
@@ -249,18 +248,18 @@ public class MenuController extends Controller implements Initializable {
 
             PauseTransition t5 = new PauseTransition(Duration.seconds(4));
             t5.setOnFinished(e -> {
-            AnimationDepartment.slideUpWithEpicBounceClean(btnNuevaPartida, Duration.seconds(0), sceneHeight);
-            AnimationDepartment.slideUpWithEpicBounceClean(btnContinuarPartida, Duration.seconds(0.2), sceneHeight);
-            AnimationDepartment.slideUpWithEpicBounceClean(btnPersonalizacion, Duration.seconds(0.4), sceneHeight);
-            AnimationDepartment.slideUpWithEpicBounceClean(btnVerPuntajes, Duration.seconds(0.6), sceneHeight);
-            AnimationDepartment.slideUpWithEpicBounceClean(btnAyuda, Duration.seconds(0.8), sceneHeight);
-            AnimationDepartment.slideUpWithEpicBounceClean(btnCerrarSesion, Duration.seconds(1), sceneHeight);
-            AnimationDepartment.animateNeonGlow(btnNuevaPartida);
-            AnimationDepartment.animateNeonGlow(btnContinuarPartida);
-            AnimationDepartment.animateNeonGlow(btnPersonalizacion);
-            AnimationDepartment.animateNeonGlow(btnVerPuntajes);
-            AnimationDepartment.animateNeonGlow(btnAyuda);
-            AnimationDepartment.animateNeonGlow(btnCerrarSesion);
+                AnimationDepartment.slideUpWithEpicBounceClean(btnNuevaPartida, Duration.seconds(0), sceneHeight);
+                AnimationDepartment.slideUpWithEpicBounceClean(btnContinuarPartida, Duration.seconds(0.2), sceneHeight);
+                AnimationDepartment.slideUpWithEpicBounceClean(btnPersonalizacion, Duration.seconds(0.4), sceneHeight);
+                AnimationDepartment.slideUpWithEpicBounceClean(btnVerPuntajes, Duration.seconds(0.6), sceneHeight);
+                AnimationDepartment.slideUpWithEpicBounceClean(btnAyuda, Duration.seconds(0.8), sceneHeight);
+                AnimationDepartment.slideUpWithEpicBounceClean(btnCerrarSesion, Duration.seconds(1), sceneHeight);
+                AnimationDepartment.animateNeonGlow(btnNuevaPartida);
+                AnimationDepartment.animateNeonGlow(btnContinuarPartida);
+                AnimationDepartment.animateNeonGlow(btnPersonalizacion);
+                AnimationDepartment.animateNeonGlow(btnVerPuntajes);
+                AnimationDepartment.animateNeonGlow(btnAyuda);
+                AnimationDepartment.animateNeonGlow(btnCerrarSesion);
             });
             t5.play();
 

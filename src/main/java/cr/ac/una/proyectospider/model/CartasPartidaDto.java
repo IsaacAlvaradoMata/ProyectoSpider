@@ -66,48 +66,133 @@ public class CartasPartidaDto {
         return entity;
     }
 
-    public LongProperty idCartaPartidaProperty() { return idCartaPartida; }
-    public StringProperty paloProperty() { return palo; }
-    public StringProperty valorProperty() { return valor; }
-    public IntegerProperty columnaProperty() { return columna; }
-    public IntegerProperty ordenProperty() { return orden; }
-    public BooleanProperty bocaArribaProperty() { return bocaArriba; }
-    public BooleanProperty enMazoProperty() { return enMazo; }
-    public BooleanProperty enPilaProperty() { return enPila; }
-    public BooleanProperty retiradaProperty() { return retirada; }
-    public ObjectProperty<PartidaDto> partidaProperty() { return partida; }
+    public LongProperty idCartaPartidaProperty() {
+        return idCartaPartida;
+    }
 
-    public Long getIdCartaPartida() { return idCartaPartida.get(); }
-    public void setIdCartaPartida(Long id) { this.idCartaPartida.set(id); }
+    public StringProperty paloProperty() {
+        return palo;
+    }
 
-    public String getPalo() { return palo.get(); }
-    public void setPalo(String p) { this.palo.set(p); }
+    public StringProperty valorProperty() {
+        return valor;
+    }
 
-    public String getValor() { return valor.get(); }
-    public void setValor(String v) { this.valor.set(v); }
+    public IntegerProperty columnaProperty() {
+        return columna;
+    }
 
-    public Integer getColumna() { return columna.get(); }
-    public void setColumna(Integer c) { this.columna.set(c); }
+    public IntegerProperty ordenProperty() {
+        return orden;
+    }
 
-    public Integer getOrden() { return orden.get(); }
-    public void setOrden(Integer o) { this.orden.set(o); }
+    public BooleanProperty bocaArribaProperty() {
+        return bocaArriba;
+    }
 
-    public Boolean getBocaArriba() { return bocaArriba.get(); }
-    public void setBocaArriba(Boolean b) { this.bocaArriba.set(b); }
+    public BooleanProperty enMazoProperty() {
+        return enMazo;
+    }
 
-    public Boolean getEnMazo() { return enMazo.get(); }
-    public void setEnMazo(Boolean m) { this.enMazo.set(m); }
+    public BooleanProperty enPilaProperty() {
+        return enPila;
+    }
 
-    public Boolean getEnPila() { return enPila.get(); }
-    public void setEnPila(Boolean p) { this.enPila.set(p); }
+    public BooleanProperty retiradaProperty() {
+        return retirada;
+    }
 
-    public Boolean getRetirada() { return retirada.get(); }
-    public void setRetirada(Boolean r) { this.retirada.set(r); }
+    public ObjectProperty<PartidaDto> partidaProperty() {
+        return partida;
+    }
 
-    public PartidaDto getPartida() { return partida.get(); }
-    public void setPartida(PartidaDto partida) { this.partida.set(partida); }
-    public String getImagenNombre() { return imagenNombre; }
-    public void setImagenNombre(String imagenNombre) { this.imagenNombre = imagenNombre; }
+    public Long getIdCartaPartida() {
+        return idCartaPartida.get();
+    }
+
+    public void setIdCartaPartida(Long id) {
+        this.idCartaPartida.set(id);
+    }
+
+    public String getPalo() {
+        return palo.get();
+    }
+
+    public void setPalo(String p) {
+        this.palo.set(p);
+    }
+
+    public String getValor() {
+        return valor.get();
+    }
+
+    public void setValor(String v) {
+        this.valor.set(v);
+    }
+
+    public Integer getColumna() {
+        return columna.get();
+    }
+
+    public void setColumna(Integer c) {
+        this.columna.set(c);
+    }
+
+    public Integer getOrden() {
+        return orden.get();
+    }
+
+    public void setOrden(Integer o) {
+        this.orden.set(o);
+    }
+
+    public Boolean getBocaArriba() {
+        return bocaArriba.get();
+    }
+
+    public void setBocaArriba(Boolean b) {
+        this.bocaArriba.set(b);
+    }
+
+    public Boolean getEnMazo() {
+        return enMazo.get();
+    }
+
+    public void setEnMazo(Boolean m) {
+        this.enMazo.set(m);
+    }
+
+    public Boolean getEnPila() {
+        return enPila.get();
+    }
+
+    public void setEnPila(Boolean p) {
+        this.enPila.set(p);
+    }
+
+    public Boolean getRetirada() {
+        return retirada.get();
+    }
+
+    public void setRetirada(Boolean r) {
+        this.retirada.set(r);
+    }
+
+    public PartidaDto getPartida() {
+        return partida.get();
+    }
+
+    public void setPartida(PartidaDto partida) {
+        this.partida.set(partida);
+    }
+
+    public String getImagenNombre() {
+        return imagenNombre;
+    }
+
+    public void setImagenNombre(String imagenNombre) {
+        this.imagenNombre = imagenNombre;
+    }
 
     @Override
     public String toString() {

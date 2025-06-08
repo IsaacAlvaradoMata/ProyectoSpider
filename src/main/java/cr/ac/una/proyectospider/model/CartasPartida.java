@@ -2,6 +2,7 @@ package cr.ac.una.proyectospider.model;
 
 import cr.ac.una.proyectospider.util.BooleanToIntegerConverter;
 import jakarta.persistence.*;
+
 import java.io.Serializable;
 
 @Entity
@@ -64,7 +65,8 @@ public class CartasPartida implements Serializable {
     @JoinColumn(name = "ID_PARTIDA", referencedColumnName = "ID_PARTIDA", nullable = false)
     private Partida partida;
 
-    public CartasPartida() {}
+    public CartasPartida() {
+    }
 
     public CartasPartida(CartasPartidaDto dto) {
         this.idCartaPartida = dto.getIdCartaPartida();
@@ -83,38 +85,93 @@ public class CartasPartida implements Serializable {
         this.nombreCarta = dto.getImagenNombre();
     }
 
-    public Long getIdCartaPartida() { return idCartaPartida; }
-    public void setIdCartaPartida(Long idCartaPartida) { this.idCartaPartida = idCartaPartida; }
+    public Long getIdCartaPartida() {
+        return idCartaPartida;
+    }
 
-    public String getPalo() { return palo; }
-    public void setPalo(String palo) { this.palo = palo; }
+    public void setIdCartaPartida(Long idCartaPartida) {
+        this.idCartaPartida = idCartaPartida;
+    }
 
-    public String getValor() { return valor; }
-    public void setValor(String valor) { this.valor = valor; }
+    public String getPalo() {
+        return palo;
+    }
 
-    public Integer getColumna() { return columna; }
-    public void setColumna(Integer columna) { this.columna = columna; }
+    public void setPalo(String palo) {
+        this.palo = palo;
+    }
 
-    public Integer getOrden() { return orden; }
-    public void setOrden(Integer orden) { this.orden = orden; }
+    public String getValor() {
+        return valor;
+    }
 
-    public Boolean getBocaArriba() { return bocaArriba; }
-    public void setBocaArriba(Boolean bocaArriba) { this.bocaArriba = bocaArriba; }
+    public void setValor(String valor) {
+        this.valor = valor;
+    }
 
-    public Boolean getEnMazo() { return enMazo; }
-    public void setEnMazo(Boolean enMazo) { this.enMazo = enMazo; }
+    public Integer getColumna() {
+        return columna;
+    }
 
-    public Boolean getEnPila() { return enPila; }
-    public void setEnPila(Boolean enPila) { this.enPila = enPila; }
+    public void setColumna(Integer columna) {
+        this.columna = columna;
+    }
 
-    public Boolean getRetirada() { return retirada; }
-    public void setRetirada(Boolean retirada) { this.retirada = retirada; }
+    public Integer getOrden() {
+        return orden;
+    }
 
-    public String getNombreCarta() { return nombreCarta; }
-    public void setNombreCarta(String nombreCarta) { this.nombreCarta = nombreCarta; }
+    public void setOrden(Integer orden) {
+        this.orden = orden;
+    }
 
-    public Partida getPartida() { return partida; }
-    public void setPartida(Partida partida) { this.partida = partida; }
+    public Boolean getBocaArriba() {
+        return bocaArriba;
+    }
+
+    public void setBocaArriba(Boolean bocaArriba) {
+        this.bocaArriba = bocaArriba;
+    }
+
+    public Boolean getEnMazo() {
+        return enMazo;
+    }
+
+    public void setEnMazo(Boolean enMazo) {
+        this.enMazo = enMazo;
+    }
+
+    public Boolean getEnPila() {
+        return enPila;
+    }
+
+    public void setEnPila(Boolean enPila) {
+        this.enPila = enPila;
+    }
+
+    public Boolean getRetirada() {
+        return retirada;
+    }
+
+    public void setRetirada(Boolean retirada) {
+        this.retirada = retirada;
+    }
+
+    public String getNombreCarta() {
+        return nombreCarta;
+    }
+
+    public void setNombreCarta(String nombreCarta) {
+        this.nombreCarta = nombreCarta;
+    }
+
+    public Partida getPartida() {
+        return partida;
+    }
+
+    public void setPartida(Partida partida) {
+        this.partida = partida;
+    }
 
     @Override
     public boolean equals(Object o) {

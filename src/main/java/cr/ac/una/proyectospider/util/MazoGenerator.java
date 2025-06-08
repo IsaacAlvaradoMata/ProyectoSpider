@@ -2,7 +2,10 @@ package cr.ac.una.proyectospider.util;
 
 import cr.ac.una.proyectospider.model.CartasPartidaDto;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
 
 public class MazoGenerator {
 
