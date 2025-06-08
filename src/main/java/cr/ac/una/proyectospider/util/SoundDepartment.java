@@ -257,7 +257,7 @@ public class SoundDepartment {
 
     public static void playExitnSave() {
         try {
-            var url = SoundDepartment.class.getResource("/cr/ac/una/proyectospider/resources/Save.mp3");
+            var url = SoundDepartment.class.getResource("/cr/ac/una/proyectospider/resources/save.mp3");
             if (url == null) {
                 System.err.println("[SoundDepartment] Save.mp3 not found in resources. No undoall sound will be played.");
                 return;
