@@ -1234,7 +1234,7 @@ public class GameController extends Controller implements Initializable {
         dibujarColumnasYCargarCartasEnTablero();
         actualizarVistaDelMazoYPilas();
     }
-    }  
+
 
     @FXML
     private void onMouseClickedbtnUndoAll(MouseEvent event) {
@@ -1648,7 +1648,7 @@ public class GameController extends Controller implements Initializable {
                             // 1) Navegar al menú
                             FlowController.getInstance().goView("MenuView");
                             MenuController controller =
-                                    (MenuController)FlowController.getInstance()
+                                    (MenuController) FlowController.getInstance()
                                             .getController("MenuView");
                             controller.RunMenuView();
 
@@ -1752,3 +1752,5 @@ public class GameController extends Controller implements Initializable {
         );
     }
 }
+
+
