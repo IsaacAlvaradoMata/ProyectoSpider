@@ -159,42 +159,42 @@ public class LoginController extends Controller implements Initializable {
     @FXML
     private void onMouseClickedbtnRegistrarJugador(MouseEvent event) {
         SoundDepartment.playClick();
-//        String nombre = txtfildLogin.getText();
-//
-//        if (nombre == null || nombre.trim().isEmpty()) {
-//            CustomAlert.showInfo(
-//                spBackgroundLogin,
-//                "Campo vacío",
-//                "Por favor ingrese un nombre de usuario.",
-//                null
-//            );
-//            return;
-//        }
-//
-//        JugadorService jugadorService = new JugadorService();
-//        JugadorDto jugador = jugadorService.registrarJugador(nombre.trim());
-//
-//        if (jugador == null) {
-//            CustomAlert.showInfo(
-//                spBackgroundLogin,
-//                "Usuario existente",
-//                "Ya existe un jugador con ese nombre. Usa el botón de iniciar sesión.",
-//                null
-//            );
-//            return;
-//        }
+        String nombre = txtfildLogin.getText();
 
-//        CustomAlert.showInfo(
-//            spBackgroundLogin,
-//            "Registro exitoso",
-//            "¡Jugador registrado exitosamente!",
-//            () -> {
-//                AppContext.getInstance().set("jugadorActivo", jugador);
+        if (nombre == null || nombre.trim().isEmpty()) {
+            CustomAlert.showInfo(
+                spBackgroundLogin,
+                "Campo vacío",
+                "Por favor ingrese un nombre de usuario.",
+                null
+            );
+            return;
+        }
+
+        JugadorService jugadorService = new JugadorService();
+        JugadorDto jugador = jugadorService.registrarJugador(nombre.trim());
+
+        if (jugador == null) {
+            CustomAlert.showInfo(
+                spBackgroundLogin,
+                "Usuario existente",
+                "Ya existe un jugador con ese nombre. Usa el botón de iniciar sesión.",
+                null
+            );
+            return;
+        }
+
+        CustomAlert.showInfo(
+            spBackgroundLogin,
+            "Registro exitoso",
+            "¡Jugador registrado exitosamente!",
+            () -> {
+                AppContext.getInstance().set("jugadorActivo", jugador);
                 FlowController.getInstance().goView("MenuView");
                 MenuController controller = (MenuController) FlowController.getInstance().getController("MenuView");
                 controller.RunMenuView();
-//            }
-//        );
+            }
+        );
     }
 
     @FXML

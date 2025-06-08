@@ -1312,117 +1312,58 @@ public class GameController extends Controller implements Initializable {
     @FXML
     private void onMouseClickedbtnUndoAll(MouseEvent event) {
         SoundDepartment.playUndoAll();
-        deshacerTodosLosMovimientosPasoAPaso();
+        restaurarEstadoInicialSinAnimaciones();
     }
 
     /**
-     * Deshace todos los movimientos uno a uno, esperando a que termine la animación de cada uno antes de continuar.
-     * Usa un pequeño delay para que sea fluido pero sin errores visuales.
+     * Restaura el estado inicial de la partida sin animaciones, deshaciendo todos los movimientos del historial.
      */
-    private void deshacerTodosLosMovimientosPasoAPaso() {
+    private void restaurarEstadoInicialSinAnimaciones() {
         if (historialMovimientos.isEmpty()) return;
-        deshacerUltimoMovimientoConCallback(() -> {
-            // Pequeño delay antes de deshacer el siguiente (ajustable)
-            PauseTransition pause = new PauseTransition(Duration.millis(5));
-            pause.setOnFinished(e -> deshacerTodosLosMovimientosPasoAPaso());
-            pause.play();
-        });
-    }
-
-    /**
-     * Igual que deshacerUltimoMovimiento, pero acepta un callback para saber cuándo terminó (tras la animación).
-     */
-    private void deshacerUltimoMovimientoConCallback(Runnable onFinished) {
-        if (historialMovimientos.isEmpty()) {
-            if (onFinished != null) onFinished.run();
-            return;
-        }
-        Movimiento mov = historialMovimientos.pop();
-        if (mov.tipo == Movimiento.Tipo.MOVER) {
-            List<CartasPartidaDto> cartasAMover = new ArrayList<>(mov.cartasMovidas);
-            int columnaOrigen = mov.columnasOrigen.get(0);
-            Object cartaDebajo = mov.cartaDebajoVolteada;
-            Boolean cartaDebajoEstabaBocaAbajo = (mov.cartaDebajoVolteadaEstadoAnterior != null) ? !mov.cartaDebajoVolteadaEstadoAnterior : null;
-            AnimationDepartment.animarUndoVisual(
-                    cartasAMover,
-                    columnaOrigen,
-                    spGamebackground,
-                    cartaToImageView,
-                    hboxTablero,
-                    cartasEnJuego,
-                    (n) -> calcularEspaciadoVertical(n),
-                    cartaDebajo,
-                    cartaDebajoEstabaBocaAbajo,
-                    () -> {
-                        for (int i = 0; i < mov.cartasMovidas.size(); i++) {
-                            CartasPartidaDto carta = mov.cartasMovidas.get(i);
-                            carta.setColumna(mov.columnasOrigen.get(i));
-                            carta.setOrden(mov.ordenesOrigen.get(i));
-                            carta.setBocaArriba(mov.bocasArribaOrigen.get(i));
-                        }
-                        if (mov.cartaDebajoVolteada != null && mov.cartaDebajoVolteadaEstadoAnterior != null) {
-                            mov.cartaDebajoVolteada.setBocaArriba(mov.cartaDebajoVolteadaEstadoAnterior);
-                        }
-                        movimientos = Math.max(0, movimientos - 1);
-                        puntaje = Math.max(0, puntaje - 1);
-                        lblMovimientos.setText("" + movimientos);
-                        lblPuntaje.setText("" + puntaje);
-                        dibujarColumnasYCargarCartasEnTablero();
-                        actualizarVistaDelMazoYPilas();
-                        if (onFinished != null) onFinished.run();
-                    }
-            );
-            return;
-        } else if (mov.tipo == Movimiento.Tipo.REPARTIR) {
-            for (int i = 0; i < mov.cartasRepartidas.size(); i++) {
-                CartasPartidaDto carta = mov.cartasRepartidas.get(i);
-                carta.setEnMazo(true);
-                carta.setColumna(-1);
-                carta.setOrden(-1);
-                carta.setBocaArriba(false);
-            }
-            movimientos = Math.max(0, movimientos - 1);
-            puntaje = Math.max(0, puntaje - 1);
-            lblMovimientos.setText("" + movimientos);
-            lblPuntaje.setText("" + puntaje);
-            dibujarColumnasYCargarCartasEnTablero();
-            actualizarVistaDelMazoYPilas();
-            if (onFinished != null) onFinished.run();
-        } else if (mov.tipo == Movimiento.Tipo.COMPLETAR_SECUENCIA) {
-            AnimationDepartment.animarUndoVisual(
-                mov.cartasSecuencia,
-                mov.columnaSecuencia,
-                spGamebackground,
-                cartaToImageView,
-                hboxTablero,
-                cartasEnJuego,
-                (n) -> calcularEspaciadoVertical(n),
-                mov.cartaDebajoSecuencia,
-                mov.cartaDebajoSecuenciaEstadoAnterior != null ? !mov.cartaDebajoSecuenciaEstadoAnterior : null,
-                () -> {
-                    for (int i = 0; i < mov.cartasSecuencia.size(); i++) {
-                        CartasPartidaDto carta = mov.cartasSecuencia.get(i);
-                        carta.setEnPila(false);
-                        carta.setColumna(mov.columnaSecuencia);
-                        carta.setOrden(mov.ordenesSecuencia.get(i));
-                        carta.setBocaArriba(mov.bocasArribaSecuencia.get(i));
-                    }
-                    if (mov.cartaDebajoSecuencia != null && mov.cartaDebajoSecuenciaEstadoAnterior != null) {
-                        mov.cartaDebajoSecuencia.setBocaArriba(mov.cartaDebajoSecuenciaEstadoAnterior);
-                    }
-                    puntaje = Math.max(0, puntaje - 100);
-                    lblPuntaje.setText("" + puntaje);
-                    lblMovimientos.setText("" + movimientos);
-                    dibujarColumnasYCargarCartasEnTablero();
-                    actualizarVistaDelMazoYPilas();
-                    // Deshacer automáticamente el movimiento anterior si existe (solo para undo normal, no undo all)
-                    if (onFinished != null) onFinished.run();
+        // Recorremos el historial en orden inverso y deshacemos cada movimiento directamente
+        while (!historialMovimientos.isEmpty()) {
+            Movimiento mov = historialMovimientos.pop();
+            if (mov.tipo == Movimiento.Tipo.MOVER) {
+                for (int i = 0; i < mov.cartasMovidas.size(); i++) {
+                    CartasPartidaDto carta = mov.cartasMovidas.get(i);
+                    carta.setColumna(mov.columnasOrigen.get(i));
+                    carta.setOrden(mov.ordenesOrigen.get(i));
+                    carta.setBocaArriba(mov.bocasArribaOrigen.get(i));
                 }
-            );
-            return;
+                if (mov.cartaDebajoVolteada != null && mov.cartaDebajoVolteadaEstadoAnterior != null) {
+                    mov.cartaDebajoVolteada.setBocaArriba(mov.cartaDebajoVolteadaEstadoAnterior);
+                }
+                movimientos = Math.max(0, movimientos - 1);
+                puntaje = Math.max(0, puntaje - 1);
+            } else if (mov.tipo == Movimiento.Tipo.REPARTIR) {
+                for (int i = 0; i < mov.cartasRepartidas.size(); i++) {
+                    CartasPartidaDto carta = mov.cartasRepartidas.get(i);
+                    carta.setEnMazo(true);
+                    carta.setColumna(-1);
+                    carta.setOrden(-1);
+                    carta.setBocaArriba(false);
+                }
+                movimientos = Math.max(0, movimientos - 1);
+                puntaje = Math.max(0, puntaje - 1);
+            } else if (mov.tipo == Movimiento.Tipo.COMPLETAR_SECUENCIA) {
+                for (int i = 0; i < mov.cartasSecuencia.size(); i++) {
+                    CartasPartidaDto carta = mov.cartasSecuencia.get(i);
+                    carta.setEnPila(false);
+                    carta.setColumna(mov.columnaSecuencia);
+                    carta.setOrden(mov.ordenesSecuencia.get(i));
+                    carta.setBocaArriba(mov.bocasArribaSecuencia.get(i));
+                }
+                if (mov.cartaDebajoSecuencia != null && mov.cartaDebajoSecuenciaEstadoAnterior != null) {
+                    mov.cartaDebajoSecuencia.setBocaArriba(mov.cartaDebajoSecuenciaEstadoAnterior);
+                }
+                puntaje = Math.max(0, puntaje - 100);
+            }
         }
-        // Si no es ninguno de los tipos, continuar
-        if (onFinished != null) onFinished.run();
+        // Actualizar labels y vista
+        lblMovimientos.setText("" + movimientos);
+        lblPuntaje.setText("" + puntaje);
+        dibujarColumnasYCargarCartasEnTablero();
+        actualizarVistaDelMazoYPilas();
     }
 
     @FXML
