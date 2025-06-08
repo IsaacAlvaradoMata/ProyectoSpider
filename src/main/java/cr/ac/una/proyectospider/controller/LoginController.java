@@ -157,6 +157,7 @@ public class LoginController extends Controller implements Initializable {
     @FXML
     private void onMouseClickedbtnRegistrarJugador(MouseEvent event) {
         SoundDepartment.playClick();
+        btnRegistrarJugador.setDisable(true);
         String nombre = txtfildLogin.getText();
 
         if (nombre == null || nombre.trim().isEmpty()) {
@@ -164,7 +165,8 @@ public class LoginController extends Controller implements Initializable {
                     spBackgroundLogin,
                     "Campo vacío",
                     "Por favor ingrese un nombre de usuario.",
-                    null
+                    () -> btnRegistrarJugador.setDisable(false)
+
             );
             return;
         }
@@ -177,7 +179,7 @@ public class LoginController extends Controller implements Initializable {
                     spBackgroundLogin,
                     "Usuario existente",
                     "Ya existe un jugador con ese nombre. Usa el botón de iniciar sesión.",
-                    null
+                    () -> btnRegistrarJugador.setDisable(false)
             );
             return;
         }
@@ -187,10 +189,15 @@ public class LoginController extends Controller implements Initializable {
                 "Registro exitoso",
                 "¡Jugador registrado exitosamente!",
                 () -> {
-                    AppContext.getInstance().set("jugadorActivo", jugador);
-                    FlowController.getInstance().goView("MenuView");
-                    MenuController controller = (MenuController) FlowController.getInstance().getController("MenuView");
-                    controller.RunMenuView();
+
+                    AnimationDepartment.stopAllAnimations();
+                    AnimationDepartment.glitchFadeOut(spBackgroundLogin, Duration.seconds(1.1), () -> {
+                        AppContext.getInstance().set("jugadorActivo", jugador);
+                        FlowController.getInstance().goView("MenuView");
+                        MenuController controller = (MenuController) FlowController.getInstance().getController("MenuView");
+                        controller.RunMenuView();
+                        Platform.runLater(() -> btnRegistrarJugador.setDisable(false));
+                    });
                 }
         );
     }

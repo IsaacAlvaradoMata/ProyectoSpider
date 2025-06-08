@@ -71,4 +71,8 @@ public class AppContext {
         context.put(parameter, null);
     }
 
+    public void clear() {
+        context.clear();
+    }
+
 }

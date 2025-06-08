@@ -491,6 +491,7 @@ public class MenuController extends Controller implements Initializable {
         AnimationDepartment.stopAllAnimations();
 
         AnimationDepartment.glitchFadeOut(spBackgroundMenu, Duration.seconds(1.1), () -> {
+            AppContext.getInstance().clear();
             FlowController.getInstance().goView("LoginView");
             LoginController controller = (LoginController) FlowController.getInstance().getController("LoginView");
             controller.RunLoginView();
