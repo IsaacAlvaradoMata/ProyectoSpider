@@ -126,12 +126,13 @@ public class MenuController extends Controller implements Initializable {
             JugadorService jugadorService = new JugadorService();
             jugadorService.actualizarEstadisticas(jugador.getIdJugador());
 
-            // Actualizar el DTO local con los valores de la base de datos
-            // (opcional: podrías recargar el jugador desde la base de datos si lo deseas)
+            // Recargar el DTO actualizado desde la base de datos
+            JugadorDto jugadorActualizado = jugadorService.buscarJugadorPorNombre(jugador.getNombreUsuario());
+            AppContext.getInstance().set("jugadorActivo", jugadorActualizado);
 
-            lblJugadorRegistradoDinamico.setText(jugador.nombreUsuarioProperty().get() != null ? jugador.nombreUsuarioProperty().get() : "-");
-            lblPuntajeAcomuladoDinamico.setText(String.valueOf(jugador.puntosAcumuladosProperty().get()));
-            lblTotalPartidasGanadasDinamico.setText(String.valueOf(jugador.partidasGanadasProperty().get()));
+            lblJugadorRegistradoDinamico.setText(jugadorActualizado.nombreUsuarioProperty().get() != null ? jugadorActualizado.nombreUsuarioProperty().get() : "-");
+            lblPuntajeAcomuladoDinamico.setText(String.valueOf(jugadorActualizado.puntosAcumuladosProperty().get()));
+            lblTotalPartidasGanadasDinamico.setText(String.valueOf(jugadorActualizado.partidasGanadasProperty().get()));
         }
 
         Object fondoEnContext = AppContext.getInstance().get(AppContext.KEY_FONDO_SELECCIONADO);
