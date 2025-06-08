@@ -17,7 +17,6 @@ import java.io.Serializable;
         @NamedQuery(name = "CartasPartida.findByBocaArriba", query = "SELECT c FROM CartasPartida c WHERE c.bocaArriba = :bocaArriba"),
         @NamedQuery(name = "CartasPartida.findByEnMazo", query = "SELECT c FROM CartasPartida c WHERE c.enMazo = :enMazo"),
         @NamedQuery(name = "CartasPartida.findByEnPila", query = "SELECT c FROM CartasPartida c WHERE c.enPila = :enPila"),
-        @NamedQuery(name = "CartasPartida.findByRetirada", query = "SELECT c FROM CartasPartida c WHERE c.retirada = :retirada"),
         @NamedQuery(name = "CartasPartida.findByNombreCarta", query = "SELECT c FROM CartasPartida c WHERE c.nombreCarta = :nombreCarta")
 })
 public class CartasPartida implements Serializable {
@@ -54,9 +53,6 @@ public class CartasPartida implements Serializable {
     @Column(name = "EN_PILA", nullable = false)
     private Boolean enPila;
 
-    @Convert(converter = BooleanToIntegerConverter.class)
-    @Column(name = "RETIRADA", nullable = false)
-    private Boolean retirada;
 
     @Column(name = "NOMBRE_CARTA")
     private String nombreCarta;
@@ -81,7 +77,6 @@ public class CartasPartida implements Serializable {
         this.bocaArriba = dto.getBocaArriba();
         this.enMazo = dto.getEnMazo();
         this.enPila = dto.getEnPila();
-        this.retirada = dto.getRetirada();
         this.nombreCarta = dto.getImagenNombre();
     }
 
@@ -147,14 +142,6 @@ public class CartasPartida implements Serializable {
 
     public void setEnPila(Boolean enPila) {
         this.enPila = enPila;
-    }
-
-    public Boolean getRetirada() {
-        return retirada;
-    }
-
-    public void setRetirada(Boolean retirada) {
-        this.retirada = retirada;
     }
 
     public String getNombreCarta() {

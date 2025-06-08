@@ -12,7 +12,6 @@ public class CartasPartidaDto {
     private final BooleanProperty bocaArriba;
     private final BooleanProperty enMazo;
     private final BooleanProperty enPila;
-    private final BooleanProperty retirada;
     private final ObjectProperty<PartidaDto> partida;
     private String imagenNombre;
 
@@ -25,7 +24,6 @@ public class CartasPartidaDto {
         this.bocaArriba = new SimpleBooleanProperty();
         this.enMazo = new SimpleBooleanProperty();
         this.enPila = new SimpleBooleanProperty();
-        this.retirada = new SimpleBooleanProperty();
         this.partida = new SimpleObjectProperty<>();
     }
 
@@ -39,7 +37,6 @@ public class CartasPartidaDto {
         this.bocaArriba.set(entity.getBocaArriba());
         this.enMazo.set(entity.getEnMazo());
         this.enPila.set(entity.getEnPila());
-        this.retirada.set(entity.getRetirada());
         this.imagenNombre = entity.getNombreCarta();
         if (entity.getPartida() != null) {
             this.partida.set(new PartidaDto(entity.getPartida()));
@@ -60,7 +57,6 @@ public class CartasPartidaDto {
         entity.setBocaArriba(this.bocaArriba.get());
         entity.setEnMazo(this.enMazo.get());
         entity.setEnPila(this.enPila.get());
-        entity.setRetirada(this.retirada.get());
         entity.setPartida(partidaRef);
         entity.setNombreCarta(this.imagenNombre);
         return entity;
@@ -96,10 +92,6 @@ public class CartasPartidaDto {
 
     public BooleanProperty enPilaProperty() {
         return enPila;
-    }
-
-    public BooleanProperty retiradaProperty() {
-        return retirada;
     }
 
     public ObjectProperty<PartidaDto> partidaProperty() {
@@ -168,14 +160,6 @@ public class CartasPartidaDto {
 
     public void setEnPila(Boolean p) {
         this.enPila.set(p);
-    }
-
-    public Boolean getRetirada() {
-        return retirada.get();
-    }
-
-    public void setRetirada(Boolean r) {
-        this.retirada.set(r);
     }
 
     public PartidaDto getPartida() {

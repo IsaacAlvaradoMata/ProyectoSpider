@@ -46,7 +46,6 @@ public class MazoGenerator {
                     carta.setBocaArriba(false);
                     carta.setEnMazo(false);
                     carta.setEnPila(false);
-                    carta.setRetirada(false);
                     if (usarEstiloClasico) {
                         carta.setImagenNombre(numeroPalo + "-" + valor + ".png");
                     } else {
