@@ -25,7 +25,7 @@
                               <VBox alignment="TOP_CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="200.0" prefWidth="100.0" spacing="10.0" HBox.hgrow="ALWAYS">
                                  <children>
                                     <Label fx:id="lblJugadorRegistrado" styleClass="label-subtitle-menu" text="JUGADOR REGISTRADO " />
-                                    <Label fx:id="lblJugadorRegistradoDinamico" prefHeight="40.0" prefWidth="120.0" styleClass="label-info-menu">
+                                    <Label fx:id="lblJugadorRegistradoDinamico" styleClass="label-info-menu2">
                                        <VBox.margin>
                                           <Insets top="10.0" />
                                        </VBox.margin>
@@ -35,7 +35,7 @@
                                           <Insets top="25.0" />
                                        </VBox.margin>
                                     </Label>
-                                    <Label fx:id="lblPuntajeAcomuladoDinamico" prefHeight="40.0" prefWidth="120.0" styleClass="label-info-menu">
+                                    <Label fx:id="lblPuntajeAcomuladoDinamico" styleClass="label-info-menu2">
                                        <VBox.margin>
                                           <Insets top="10.0" />
                                        </VBox.margin>
@@ -45,7 +45,7 @@
                                           <Insets top="25.0" />
                                        </VBox.margin>
                                     </Label>
-                                    <Label fx:id="lblTotalPartidasGanadasDinamico" layoutX="36.0" layoutY="118.0" prefHeight="40.0" prefWidth="120.0" styleClass="label-info-menu">
+                                    <Label fx:id="lblTotalPartidasGanadasDinamico" layoutX="36.0" layoutY="118.0" styleClass="label-info-menu2">
                                        <VBox.margin>
                                           <Insets top="10.0" />
                                        </VBox.margin>

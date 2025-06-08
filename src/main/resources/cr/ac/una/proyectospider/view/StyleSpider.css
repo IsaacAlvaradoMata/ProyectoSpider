@@ -271,6 +271,15 @@
     -fx-alignment: center;
 }
 
+.label-info-menu2 {
+    -fx-font-family: "Cynatar";
+    -fx-font-size: 35px;
+    -fx-text-fill: #00ffff; /* Dorado más cálido y legible */
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(gaussian, #ff00ff, 15, 0.6, 0, 0); /* Glow reducido */
+    -fx-alignment: center;
+}
+
 
 
 .table-view-menu {
