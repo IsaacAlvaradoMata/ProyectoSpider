@@ -1,5 +1,6 @@
 package cr.ac.una.proyectospider.util;
 
+import cr.ac.una.proyectospider.model.CartasPartidaDto;
 import javafx.animation.*;
 import javafx.application.Platform;
 import javafx.beans.property.DoubleProperty;
@@ -31,6 +32,7 @@ import javafx.util.Duration;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 public class AnimationDepartment {
@@ -1454,4 +1456,80 @@ public class AnimationDepartment {
         });
         toDest.play();
     }
+    public static void animarSecuenciaAHaciaPila(
+            List<CartasPartidaDto> grupoDe13Cartas,
+            int pilaDestinoIndex,
+            Map<CartasPartidaDto, ImageView> cartaToImageView,
+            StackPane spGamebackground,
+            javafx.scene.layout.HBox hboxTableroSuperior,
+            Runnable onFinished
+    ) {
+        if (grupoDe13Cartas == null || grupoDe13Cartas.size() != 13) {
+            if (onFinished != null) onFinished.run();
+            return;
+        }
+
+        // Crear un Pane temporal para las animaciones
+        Pane animPane = new Pane();
+        animPane.setPickOnBounds(false);
+        spGamebackground.getChildren().add(animPane);
+
+        List<ImageView> clones = new ArrayList<>();
+        List<Double> origX = new ArrayList<>();
+        List<Double> origY = new ArrayList<>();
+
+        // Obtener destino: la pila correspondiente
+        ImageView pilaDestinoIV = (ImageView) hboxTableroSuperior.getChildren().get(2 + pilaDestinoIndex);
+        javafx.geometry.Bounds pilaBounds = pilaDestinoIV.localToScene(pilaDestinoIV.getBoundsInLocal());
+        javafx.geometry.Bounds pilaParentBounds = spGamebackground.sceneToLocal(pilaBounds);
+        double destX = pilaParentBounds.getMinX();
+        double destY = pilaParentBounds.getMinY();
+
+        // Crear clones de las cartas y ubicarlos en su posición actual
+        for (CartasPartidaDto carta : grupoDe13Cartas) {
+            ImageView original = cartaToImageView.get(carta);
+            if (original == null) continue;
+            javafx.geometry.Bounds bounds = original.localToScene(original.getBoundsInLocal());
+            javafx.geometry.Bounds parentBounds = spGamebackground.sceneToLocal(bounds);
+            ImageView clone = new ImageView(original.getImage());
+            clone.setFitWidth(original.getFitWidth());
+            clone.setPreserveRatio(true);
+            clone.setSmooth(true);
+            clone.setLayoutX(parentBounds.getMinX());
+            clone.setLayoutY(parentBounds.getMinY());
+            clones.add(clone);
+            origX.add(parentBounds.getMinX());
+            origY.add(parentBounds.getMinY());
+            animPane.getChildren().add(clone);
+            // Ocultar el original durante la animación
+            original.setVisible(false);
+        }
+
+        // Crear las animaciones en paralelo con delay tipo "ola"
+        ParallelTransition parallel = new ParallelTransition();
+        Duration baseDelay = Duration.ZERO;
+        Duration delayStep = Duration.millis(40);  // más rápido y fluido
+        Duration duracion = Duration.millis(400);  // similar a otras animaciones
+
+        for (int i = 0; i < clones.size(); i++) {
+            ImageView clone = clones.get(i);
+            TranslateTransition tt = new TranslateTransition(duracion, clone);
+            tt.setToX(destX - origX.get(i));
+            tt.setToY(destY - origY.get(i));
+            tt.setDelay(baseDelay.add(delayStep.multiply(i)));
+            tt.setInterpolator(Interpolator.EASE_BOTH);
+            parallel.getChildren().add(tt);
+        }
+
+        parallel.setOnFinished(e -> {
+            spGamebackground.getChildren().remove(animPane);
+            // Ya no es necesario restaurar la visibilidad de los originales
+            if (onFinished != null) onFinished.run();
+        });
+
+        parallel.play();
+        activeAnimations.add(parallel);
+    }
+
+
 }

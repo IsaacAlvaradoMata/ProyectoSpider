@@ -1298,32 +1298,78 @@ public class GameController extends Controller implements Initializable {
                         && Integer.parseInt(primera.getValor()) == 13
                         && Integer.parseInt(ultima.getValor()) == 1) {
 
-                    // Marcar las 13 cartas como “enPila”
+                    // Guardar referencia al grupo de 13 cartas (pero NO marcar enPila aún)
+                    List<CartasPartidaDto> grupoDe13Cartas = new ArrayList<>();
                     for (int i = 0; i < 13; i++) {
                         CartasPartidaDto carta = cartasColumna.get(inicio + i);
-                        carta.setEnPila(true);
-                        carta.setColumna(-1);
-                        carta.setOrden(-1);
+                        grupoDe13Cartas.add(carta);
                     }
 
                     puntaje += 100;
                     lblPuntaje.setText("" + puntaje);
 
+                    // Determinar carta debajo (para el flip después de la animación)
+                    Optional<CartasPartidaDto> cartaDebajoOpt;
                     if (inicio > 0) {
                         CartasPartidaDto debajo = cartasColumna.get(inicio - 1);
                         debajo.setBocaArriba(true);
+                        cartaDebajoOpt = Optional.of(debajo);
                     } else {
-                        // Si no hay cartas visibles restantes, voltear la última carta oculta
-                        cartasEnJuego.stream()
+                        cartaDebajoOpt = cartasEnJuego.stream()
                                 .filter(c -> c.getColumna() == columna && !c.getBocaArriba())
-                                .max(Comparator.comparingInt(CartasPartidaDto::getOrden))
-                                .ifPresent(c -> c.setBocaArriba(true));
+                                .max(Comparator.comparingInt(CartasPartidaDto::getOrden));
+                        cartaDebajoOpt.ifPresent(c -> c.setBocaArriba(true));
                     }
 
-                    // *** EN LUGAR DE RunGameView(partidaDto) ***
+                    // *** PRIMERO redibujar el tablero con las cartas en la columna destino ***
                     dibujarColumnasYCargarCartasEnTablero();
                     actualizarVistaDelMazoYPilas();
-                    return;
+
+                    // Lanzar la animación en el siguiente frame para que las cartas estén visibles en la columna destino
+                    Platform.runLater(() -> {
+                        // Marcar las 13 cartas como enPila justo ANTES de la animación
+                        for (CartasPartidaDto carta : grupoDe13Cartas) {
+                            carta.setEnPila(true);
+                            carta.setColumna(-1);
+                            carta.setOrden(-1);
+                        }
+
+                        // Determinar cuántas pilas completas hay ya (para saber a qué pila mandar la animación)
+                        long pilasCompletas = cartasEnJuego.stream()
+                                .filter(c -> c.getEnPila())
+                                .count() / 13;
+
+                        AnimationDepartment.animarSecuenciaAHaciaPila(
+                                grupoDe13Cartas,
+                                (int) pilasCompletas,
+                                cartaToImageView,
+                                spGamebackground,
+                                hboxTableroSuperior,
+                                () -> {
+                                    // Después de la animación → si hay carta debajo, hacer flip
+                                    if (cartaDebajoOpt.isPresent()) {
+                                        CartasPartidaDto cartaDebajo = cartaDebajoOpt.get();
+                                        ImageView ivDebajo = cartaToImageView.get(cartaDebajo);
+                                        if (ivDebajo != null && cartaDebajo.getBocaArriba()) {
+                                            String imgArchivo = cartaDebajo.getImagenNombre();
+                                            Image imgBocaArriba = new Image(getClass().getResourceAsStream("/cr/ac/una/proyectospider/resources/" + imgArchivo));
+                                            AnimationDepartment.flipCardAnimation(ivDebajo, imgBocaArriba, () -> {
+                                                // Al terminar el flip → redibujar tablero y pilas
+                                                dibujarColumnasYCargarCartasEnTablero();
+                                                actualizarVistaDelMazoYPilas();
+                                            });
+                                            return; // esperar al flip
+                                        }
+                                    }
+
+                                    // Si no hay flip → redibujar directamente
+                                    dibujarColumnasYCargarCartasEnTablero();
+                                    actualizarVistaDelMazoYPilas();
+                                }
+                        );
+                    });
+
+                    return; // Importante: solo procesar una secuencia por llamada
                 }
             }
         }
