@@ -58,7 +58,6 @@ public class LoginController extends Controller implements Initializable {
         ResetLoginView();
         System.out.println("Run Login View");
 
-        // 🟡 Reposicionar y asegurar fondo en el índice 0
         if (!spBackgroundLogin.getChildren().contains(imgBackgroundLogin)) {
             spBackgroundLogin.getChildren().add(0, imgBackgroundLogin);
         } else {
@@ -66,7 +65,6 @@ public class LoginController extends Controller implements Initializable {
             spBackgroundLogin.getChildren().add(0, imgBackgroundLogin);
         }
 
-        // 🔁 Re-bind y recarga de imagen
         if (root.getScene() != null) {
             imgBackgroundLogin.fitWidthProperty().bind(root.getScene().widthProperty());
             imgBackgroundLogin.fitHeightProperty().bind(root.getScene().heightProperty());
@@ -81,10 +79,10 @@ public class LoginController extends Controller implements Initializable {
         Platform.runLater(() -> {
             root.requestFocus();
             root.setVisible(true);
-            root.setOpacity(1); // 🔓 Forzar visibilidad total
+            root.setOpacity(1);
 
             root.applyCss();
-            root.layout(); // ⬅️ Refresca el layout completamente
+            root.layout();
 
             double sceneHeight = root.getScene().getHeight();
             AnimationDepartment.glitchFadeIn(root, Duration.seconds(0.6));
@@ -112,7 +110,6 @@ public class LoginController extends Controller implements Initializable {
 
 
     public void ResetLoginView() {
-        // Reset visual
         System.out.println("Reset Login View");
         root.setOpacity(0);
 
@@ -130,7 +127,7 @@ public class LoginController extends Controller implements Initializable {
         lblTitulo.setTranslateY(0);
         lblTitulo.setScaleX(1.0);
         lblTitulo.setScaleY(1.0);
-        lblTitulo.setTextFill(Color.web("#ffc107")); // Restaurar color original
+        lblTitulo.setTextFill(Color.web("#ffc107"));
 
         txtfildLogin.setOpacity(0);
         txtfildLogin.setTranslateY(0);
@@ -229,7 +226,6 @@ public class LoginController extends Controller implements Initializable {
             return;
         }
 
-        // Si existe, redirigir
         CustomAlert.showInfo(
                 spBackgroundLogin,
                 "Bienvenido",

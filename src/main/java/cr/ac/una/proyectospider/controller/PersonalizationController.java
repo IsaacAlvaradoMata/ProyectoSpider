@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXMLController.java to edit this template
- */
 package cr.ac.una.proyectospider.controller;
 
 import java.io.File;
@@ -95,7 +91,6 @@ public class PersonalizationController extends Controller implements Initializab
         ResetPersonalizationView();
         System.out.println("Run Personalization View");
 
-        // 🟡 Reposicionar y asegurar fondo en el índice 0
         if (!spBackgroundPersonalization.getChildren().contains(imgBackgroundPersonalization)) {
             spBackgroundPersonalization.getChildren().add(0, imgBackgroundPersonalization);
         } else {
@@ -103,7 +98,6 @@ public class PersonalizationController extends Controller implements Initializab
             spBackgroundPersonalization.getChildren().add(0, imgBackgroundPersonalization);
         }
 
-        // 🔁 Re‐bind y recarga de imagen
         if (root.getScene() != null) {
             imgBackgroundPersonalization.fitWidthProperty().bind(root.getScene().widthProperty());
             imgBackgroundPersonalization.fitHeightProperty().bind(root.getScene().heightProperty());
@@ -129,7 +123,6 @@ public class PersonalizationController extends Controller implements Initializab
             System.out.println("se hizo el glitchFadeIn");
             imgPrevistaFondo.setEffect(new ColorAdjust(0, 0, -0.2, 0));
 
-            // --- Inicializar la lista de fondos predeterminados si está vacía ---
             if (fondosPredeterminados.isEmpty()) {
                 for (int i = 1; i <= 6; i++) {
                     fondosPredeterminados.add(new Image(getClass().getResourceAsStream(
@@ -138,7 +131,6 @@ public class PersonalizationController extends Controller implements Initializab
             }
             mostrarFondoPreview();
 
-            // Animaciones de texto y neón (las tuyas ya estaban aquí)
             AnimationDepartment.glitchTextWithFlicker(lblTitulo);
             AnimationDepartment.glitchTextWithFlicker(lblJugador);
             AnimationDepartment.glitchTextWithFlicker(lblEstilosCartas);
@@ -160,44 +152,33 @@ public class PersonalizationController extends Controller implements Initializab
             AnimationDepartment.slideFromRight(vboxRigth, Duration.seconds(1.8));
             AnimationDepartment.slideUpWithEpicBounceClean(btnVolver, Duration.seconds(2), sceneHeight);
 
-            // ─────────────────────────────────────────────────────────────
-            //  Aquí es donde ajustamos QUÉ estilo estaba guardado
-            // ─────────────────────────────────────────────────────────────
 
-            // 1) Leemos lo que haya en AppContext.KEY_ESTILO_CARTAS (puede ser null, o bien la ruta que guardamos)
             Object estiloGuardado = AppContext.getInstance().get(AppContext.KEY_ESTILO_CARTAS);
 
-            // 2) Dos posibles valores (constantes):
             final String rutaCyberpunk = AppContext.RUTA_CARTAS_CYBERPUNK;
             final String rutaClasicas   = AppContext.RUTA_CARTAS_CLASICAS;
 
-            // 3) Comprobamos:
             if (estiloGuardado == null) {
-                // ─ Si nunca se guardó nada, por defecto “Cyberpunk”
                 rbtnCyberpunk.setSelected(true);
                 rbtnClasicas.setSelected(false);
-                // View previa de Cyberpunk (preview2.png)
                 imgCartasPrevista.setImage(new Image(
                         getClass().getResourceAsStream("/cr/ac/una/proyectospider/resources/Preview2.png")));
             }
             else {
                 String ruta = estiloGuardado.toString();
                 if (ruta.equals(rutaCyberpunk)) {
-                    // ─ El usuario había seleccionado Cyberpunk previamente
                     rbtnCyberpunk.setSelected(true);
                     rbtnClasicas.setSelected(false);
                     imgCartasPrevista.setImage(new Image(
                             getClass().getResourceAsStream("/cr/ac/una/proyectospider/resources/Preview2.png")));
                 }
                 else if (ruta.equals(rutaClasicas)) {
-                    // ─ El usuario había seleccionado Clásicas previamente
                     rbtnCyberpunk.setSelected(false);
                     rbtnClasicas.setSelected(true);
                     imgCartasPrevista.setImage(new Image(
                             getClass().getResourceAsStream("/cr/ac/una/proyectospider/resources/Preview1.png")));
                 }
                 else {
-                    // ─ Si el valor guardado no coincide con ninguno (por si se corrompió), usar “Cyberpunk” de fallback
                     rbtnCyberpunk.setSelected(true);
                     rbtnClasicas.setSelected(false);
                     imgCartasPrevista.setImage(new Image(
@@ -205,7 +186,6 @@ public class PersonalizationController extends Controller implements Initializab
                 }
             }
 
-            // 4) Listener para el RadioButton “Cyberpunk”
             rbtnCyberpunk.setOnAction(ev -> {
                 if (rbtnCyberpunk.isSelected()) {
                     rbtnClasicas.setSelected(false);
@@ -214,7 +194,6 @@ public class PersonalizationController extends Controller implements Initializab
                 }
             });
 
-            // 5) Listener para el RadioButton “Clásicas”
             rbtnClasicas.setOnAction(ev -> {
                 if (rbtnClasicas.isSelected()) {
                     rbtnCyberpunk.setSelected(false);
@@ -222,7 +201,6 @@ public class PersonalizationController extends Controller implements Initializab
                             getClass().getResourceAsStream("/cr/ac/una/proyectospider/resources/Preview1.png")));
                 }
             });
-            // ─────────────────────────────────────────────────────────────
 
         });
 
@@ -251,7 +229,6 @@ public class PersonalizationController extends Controller implements Initializab
 
 
     public void ResetPersonalizationView() {
-        // Reset visual
         System.out.println("Reset Login View");
         root.setOpacity(0);
 
@@ -298,11 +275,9 @@ public class PersonalizationController extends Controller implements Initializab
     @FXML
     private void onMouseClickedbtnGuardarCambios(MouseEvent event) {
         SoundDepartment.playClick();
-        // 1. Guardar el fondo seleccionado
         Image fondoSeleccionado = imgPrevistaFondo.getImage();
         AppContext.getInstance().set(AppContext.KEY_FONDO_SELECCIONADO, fondoSeleccionado);
 
-        // 2. Guardar la RUTA del estilo de cartas, según RadioButton
         String claveEstilo;
         if (rbtnCyberpunk.isSelected()) {
             claveEstilo = AppContext.RUTA_CARTAS_CYBERPUNK;
@@ -312,12 +287,11 @@ public class PersonalizationController extends Controller implements Initializab
         AppContext.getInstance().set(AppContext.KEY_ESTILO_CARTAS, claveEstilo);
 
         CustomAlert.showInfo(
-                spBackgroundPersonalization,                 // El StackPane padre donde “dibuja” la alerta
-                "Configuración guardada",                    // Título del diálogo
+                spBackgroundPersonalization,
+                "Configuración guardada",
                 "El fondo y el estilo de cartas han sido guardados correctamente.",
-                null                                         // Runnable que se ejecuta cuando cierre la alerta (aquí no necesitamos nada más)
+                null
         );
-        // 3. Feedback al usuario
 
     }
 
@@ -361,10 +335,10 @@ public class PersonalizationController extends Controller implements Initializab
 
             } catch (Exception ex) {
                 CustomAlert.showInfo(
-                        spBackgroundPersonalization,                 // El StackPane padre donde “dibuja” la alerta
-                        "Error al cargar imagen",                    // Título del diálogo
+                        spBackgroundPersonalization,
+                        "Error al cargar imagen",
                         "No se pudo cargar la imagen seleccionada:\n" + ex.getMessage(),
-                        null                                         // Runnable que se ejecuta cuando cierre la alerta (aquí no necesitamos nada más)
+                        null
                 );
             }
         }

@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXMLController.java to edit this template
- */
 package cr.ac.una.proyectospider.controller;
 
 import java.net.URL;
@@ -114,7 +110,6 @@ public class MenuController extends Controller implements Initializable {
         rbtnMedio.setToggleGroup(tgDificultad);
         rbtnDificil.setToggleGroup(tgDificultad);
 
-        // Dejar “Fácil” seleccionado por defecto
         rbtnFacil.setSelected(true);
     }
 
@@ -132,7 +127,6 @@ public class MenuController extends Controller implements Initializable {
             lblTotalPartidasGanadasDinamico.setText(String.valueOf(jugador.partidasGanadasProperty().get()));
         }
 
-        // Usando la misma constante
         Object fondoEnContext = AppContext.getInstance().get(AppContext.KEY_FONDO_SELECCIONADO);
         if (fondoEnContext instanceof Image) {
             imgFondoActual.setImage((Image) fondoEnContext);
@@ -142,7 +136,6 @@ public class MenuController extends Controller implements Initializable {
             );
         }
 
-        // 3) Cargar el estilo de cartas que guardamos en AppContext
         Object estiloEnContext = AppContext.getInstance().get(AppContext.KEY_ESTILO_CARTAS);
         if (estiloEnContext instanceof String) {
             String ruta = (String) estiloEnContext;
@@ -156,7 +149,6 @@ public class MenuController extends Controller implements Initializable {
         populateTableView();
         System.out.println("Run Menu View");
 
-        // 🟡 Reposicionar y asegurar fondo en el índice 0
         if (!spBackgroundMenu.getChildren().contains(imgBackgroundMenu)) {
             spBackgroundMenu.getChildren().add(0, imgBackgroundMenu);
         } else {
@@ -164,7 +156,6 @@ public class MenuController extends Controller implements Initializable {
             spBackgroundMenu.getChildren().add(0, imgBackgroundMenu);
         }
 
-        // 🔁 Re-bind y recarga de imagen
         if (root.getScene() != null) {
             imgBackgroundMenu.fitWidthProperty().bind(root.getScene().widthProperty());
             imgBackgroundMenu.fitHeightProperty().bind(root.getScene().heightProperty());
@@ -179,10 +170,10 @@ public class MenuController extends Controller implements Initializable {
         Platform.runLater(() -> {
             root.requestFocus();
             root.setVisible(true);
-            root.setOpacity(1); // 🔓 Forzar visibilidad total
+            root.setOpacity(1);
 
             root.applyCss();
-            root.layout(); // ⬅️ Refresca el layout completamente
+            root.layout();
 
             double sceneHeight = root.getScene().getHeight();
             AnimationDepartment.glitchFadeIn(root, Duration.seconds(0.6));
@@ -263,7 +254,6 @@ public class MenuController extends Controller implements Initializable {
 
         AnimationDepartment.stopAllAnimations();
         root.setOpacity(0);
-//        root.setVisible(true);
 
         imgBackgroundMenu.setOpacity(0.7);
         imgBackgroundMenu.setTranslateX(0);
@@ -321,7 +311,6 @@ public class MenuController extends Controller implements Initializable {
         btnNuevaPartida.setDisable(true);
         AnimationDepartment.stopAllAnimations();
         AnimationDepartment.glitchFadeOut(spBackgroundMenu, Duration.seconds(1.1), () -> {
-            // 1) Leer la dificultad seleccionada
             String dif;
             if (rbtnFacil.isSelected()) {
                 dif = "FACIL";
@@ -331,7 +320,6 @@ public class MenuController extends Controller implements Initializable {
                 dif = "DIFICIL";
             }
 
-            // 2) Crear DTO de nueva partida
             PartidaDto partidaDto = new PartidaDto();
             partidaDto.setEstado("EN_JUEGO");
             partidaDto.setFechaInicio(new Date());
@@ -340,13 +328,11 @@ public class MenuController extends Controller implements Initializable {
             JugadorDto jugadorActivo = (JugadorDto) AppContext.getInstance().get("jugadorActivo");
             partidaDto.setJugador(jugadorActivo);
 
-            // 3) Navegar a GameView Y restablecer primerIngreso allí
             FlowController.getInstance().goView("GameView");
             GameController controladorJuego =
                     (GameController) FlowController.getInstance().getController("GameView");
-            controladorJuego.primerIngreso = true;  // <— Solo aquí
+            controladorJuego.primerIngreso = true;
 
-            // 4) Finalmente, inicializar la vista de juego
             controladorJuego.RunGameView(partidaDto);
 
             Platform.runLater(() -> btnNuevaPartida.setDisable(false));
@@ -363,7 +349,6 @@ public class MenuController extends Controller implements Initializable {
             return;
         }
 
-        // Cambiar estado a EN_JUEGO y actualizar en la base de datos
         seleccionada.setEstado("EN_JUEGO");
         new PartidaService().actualizarPartida(seleccionada);
 
@@ -501,15 +486,14 @@ public class MenuController extends Controller implements Initializable {
                     if (row != null) {
                         row.selectedProperty().addListener((obs, wasSelected, isSelected) -> {
                             if (isSelected) {
-                                text.setFill(Color.web("#000000")); // Texto negro cuando la fila está seleccionada
-                                setStyle("-fx-background-color: #ffc107; -fx-alignment: CENTER;"); // Fondo dorado
+                                text.setFill(Color.web("#000000"));
+                                setStyle("-fx-background-color: #ffc107; -fx-alignment: CENTER;");
                             } else {
-                                text.setFill(Color.web("#ff00ff")); // Texto morado cuando no está seleccionada
-                                setStyle("-fx-background-color: #2d0062; -fx-alignment: CENTER;"); // Fondo oscuro
+                                text.setFill(Color.web("#ff00ff"));
+                                setStyle("-fx-background-color: #2d0062; -fx-alignment: CENTER;");
                             }
                         });
 
-                        // Aplicar estilos al cargar la celda
                         if (row.isSelected()) {
                             text.setFill(Color.web("#000000"));
                             setStyle("-fx-background-color: #ffc107; -fx-alignment: CENTER;");

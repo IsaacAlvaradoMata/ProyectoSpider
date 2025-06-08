@@ -113,7 +113,6 @@ public class InfoController extends Controller implements Initializable {
         ResetInfoView();
         System.out.println("🚀 Run Info View");
 
-        // 🖼️ Reinsertar fondo si hiciera falta
         if (!spBackgroundInfo.getChildren().contains(imgBackgroundInfo)) {
             spBackgroundInfo.getChildren().add(0, imgBackgroundInfo);
         } else {
@@ -126,7 +125,6 @@ public class InfoController extends Controller implements Initializable {
             imgBackgroundInfo.fitHeightProperty().bind(root.getScene().heightProperty());
         }
 
-        // 🎞️ Aplicar imagen de fondo y propiedades
         imgBackgroundInfo.setImage(new Image(getClass().getResourceAsStream("/cr/ac/una/proyectospider/resources/InfoBackground.gif")));
         imgBackgroundInfo.setPreserveRatio(false);
         imgBackgroundInfo.setSmooth(true);
@@ -246,14 +244,13 @@ public class InfoController extends Controller implements Initializable {
         AnimationDepartment.stopAllAnimations();
 
         root.setOpacity(0);
-        root.setVisible(true); // Para asegurar que esté presente en el DOM
+        root.setVisible(true);
 
         imgBackgroundInfo.setOpacity(0.7);
         imgBackgroundInfo.setTranslateX(0);
         imgBackgroundInfo.setTranslateY(0);
         imgBackgroundInfo.setEffect(null);
 
-        // Ocultar y resetear elementos visuales
         lblTitulo.setOpacity(0);
         spLogo.setOpacity(0);
         lbUniversitario.setOpacity(0);
@@ -267,7 +264,6 @@ public class InfoController extends Controller implements Initializable {
         spGlitchEffect.setOpacity(1);
 
         lblAccesoSistema.setOpacity(0);
-//        lblHackeando.setOpacity(0);
         lblAccesoSistema.setText("");
         lblHackeando.setText("HACKEANDO");
 

@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXMLController.java to edit this template
- */
 package cr.ac.una.proyectospider.controller;
 
 import java.net.URL;
@@ -93,7 +89,6 @@ public class PointsController extends Controller implements Initializable {
         populateTableViewRanking();
         System.out.println("Run Login View");
 
-        // 🟡 Reposicionar y asegurar fondo en el índice 0
         if (!spBackgroundPoints.getChildren().contains(imgBackgroundPoints)) {
             spBackgroundPoints.getChildren().add(0, imgBackgroundPoints);
         } else {
@@ -101,7 +96,6 @@ public class PointsController extends Controller implements Initializable {
             spBackgroundPoints.getChildren().add(0, imgBackgroundPoints);
         }
 
-        // 🔁 Re-bind y recarga de imagen
         if (root.getScene() != null) {
             imgBackgroundPoints.fitWidthProperty().bind(root.getScene().widthProperty());
             imgBackgroundPoints.fitHeightProperty().bind(root.getScene().heightProperty());
@@ -117,10 +111,10 @@ public class PointsController extends Controller implements Initializable {
 
             root.requestFocus();
             root.setVisible(true);
-            root.setOpacity(1); // 🔓 Forzar visibilidad total
+            root.setOpacity(1);
 
             root.applyCss();
-            root.layout(); // ⬅️ Refresca el layout completamente
+            root.layout();
 
             double sceneHeight = root.getScene().getHeight();
             AnimationDepartment.glitchFadeIn(root, Duration.seconds(0.6));
@@ -165,7 +159,6 @@ public class PointsController extends Controller implements Initializable {
     }
 
     public void ResetPointsView() {
-        // Reset visual
         System.out.println("Reset Login View");
         root.setOpacity(0);
 
@@ -189,9 +182,6 @@ public class PointsController extends Controller implements Initializable {
         btnBuscar.setOpacity(0);
         btnBuscar.setTranslateY(0);
 
-//        tblviewRanking.setOpacity(0);
-//        tblviewRanking.setTranslateY(0);
-//
         btnVolver.setOpacity(0);
         btnVolver.setTranslateY(0);
         root.setEffect(null);
@@ -242,7 +232,7 @@ public class PointsController extends Controller implements Initializable {
 
         TableColumn<JugadorRankingMock, String> colPuntajeTotal = new TableColumn<>("Pts.Totales");
         colPuntajeTotal.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getPuntajeTotal()));
-        colPuntajeTotal.setSortType(TableColumn.SortType.DESCENDING); // 🔥 Orden descendente
+        colPuntajeTotal.setSortType(TableColumn.SortType.DESCENDING);
         applyCustomCellStyle(colPuntajeTotal);
 
         tblviewRanking.getColumns().setAll(colNombre, colPartidas, colPuntajeTotal);
@@ -266,7 +256,7 @@ public class PointsController extends Controller implements Initializable {
         );
 
         tblviewRanking.setItems(jugadores);
-        tblviewRanking.getSortOrder().add(colPuntajeTotal); // 📌 Aplicar orden automáticamente
+        tblviewRanking.getSortOrder().add(colPuntajeTotal);
     }
 
 

@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXMLController.java to edit this template
- */
 package cr.ac.una.proyectospider.controller;
 
 import java.net.URL;
@@ -150,7 +146,6 @@ public class HelpController extends Controller implements Initializable {
         tabpaneCentroDeInfo.getSelectionModel().select(tabGeneral);
 
         System.out.println("Run Help View");
-        // 🟡 Reposicionar y asegurar fondo en el índice 0
         if (!spBackgroundHelp.getChildren().contains(imgBackgroundHelp)) {
             spBackgroundHelp.getChildren().add(0, imgBackgroundHelp);
         } else {
@@ -160,7 +155,6 @@ public class HelpController extends Controller implements Initializable {
 
 
 
-        // 🔁 Re-bind y recarga de imagen
         if (root.getScene() != null) {
             imgBackgroundHelp.fitWidthProperty().bind(root.getScene().widthProperty());
             imgBackgroundHelp.fitHeightProperty().bind(root.getScene().heightProperty());
@@ -189,7 +183,6 @@ public class HelpController extends Controller implements Initializable {
             root.applyCss();
             root.layout();
 
-//            double sceneHeight = root.getScene().getHeight();
             AnimationDepartment.glitchFadeIn(root, Duration.seconds(0.6));
             System.out.println("se hizo el glitchFadeIn");
 
@@ -445,7 +438,6 @@ public class HelpController extends Controller implements Initializable {
 
 
     private void seleccionarOpcionCompleta(StackPane nuevoSeleccionado, ImageView nuevaImagen, Label nuevoLabel) {
-        // Quitar estado anterior
         if (opcionSeleccionadaActual != null && imagenSeleccionadaActual != null && labelSeleccionadoActual != null) {
             DropShadow neonGlow2 = new DropShadow(15, javafx.scene.paint.Color.web("#ff00ff"));
             neonGlow2.setRadius(15);
@@ -456,7 +448,6 @@ public class HelpController extends Controller implements Initializable {
             labelSeleccionadoActual.setEffect(neonGlow2);
         }
 
-        // Activar nuevo estado
         nuevaImagen.setVisible(true);
         nuevoLabel.setTextFill(javafx.scene.paint.Color.web("#ffc107"));
 
@@ -465,7 +456,6 @@ public class HelpController extends Controller implements Initializable {
         glow.setSpread(0.6);
         nuevoLabel.setEffect(glow);
 
-        // Guardar nuevo estado
         opcionSeleccionadaActual = nuevoSeleccionado;
         imagenSeleccionadaActual = nuevaImagen;
         labelSeleccionadoActual = nuevoLabel;
@@ -496,7 +486,6 @@ public class HelpController extends Controller implements Initializable {
         });
 
         containerStack.setOnMouseExited(e -> {
-            // Solo si NO es la opción actualmente seleccionada
             if (opcionSeleccionadaActual != containerStack) {
                 imageFrame.setVisible(false);
                 label.setTextFill(javafx.scene.paint.Color.web("#00ffff"));
