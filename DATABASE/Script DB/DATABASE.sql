@@ -65,7 +65,7 @@ COMMENT ON COLUMN Partida.Version IS 'Número de versión para control de concur
 CREATE INDEX IX_Relationship2 ON Partida (Id_Jugador);
 
 -- ================================
--- TABLA CARTASPARTIDA (Actualizada)
+-- TABLA CARTASPARTIDA
 -- ================================
 
 CREATE TABLE CartasPartida (
@@ -109,7 +109,7 @@ ALTER TABLE CartasPartida ADD CONSTRAINT FK_CartasPartida_Partida
     FOREIGN KEY (Id_Partida) REFERENCES Partida(Id_Partida) ON DELETE CASCADE;
 
 -- ================================
--- TRIGGERS (seguros y mejorados)
+-- TRIGGERS
 -- ================================
 
 -- 🔹 Jugador

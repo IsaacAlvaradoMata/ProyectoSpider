@@ -1821,6 +1821,34 @@ public class GameController extends Controller implements Initializable {
             Platform.runLater(() -> {
                 detenerTemporizador();
 
+                // ACTUALIZAR ESTADO DE LA PARTIDA EN BD Y GUARDAR CARTAS
+                partidaDto.setEstado("TERMINADA");
+                partidaDto.setFechaFin(new Date());
+                partidaDto.setPuntos(puntaje);
+                partidaDto.setTiempoJugado(segundosTranscurridos);
+                partidaDto.setMovimientos(movimientos);
+
+                // Obtener el estado final de las cartas
+                List<CartasPartidaDto> cartasActuales = obtenerEstadoDelTablero();
+                for (CartasPartidaDto carta : cartasActuales) {
+                    carta.setPartida(partidaDto);
+                }
+                PartidaService partidaService = new PartidaService();
+                if (partidaDto.getIdPartida() == null) {
+                    // Si la partida no existe, crearla primero
+                    PartidaDto nuevaPartida = partidaService.crearPartida(partidaDto);
+                    if (nuevaPartida != null) {
+                        partidaDto = nuevaPartida;
+                        for (CartasPartidaDto carta : cartasActuales) {
+                            carta.setPartida(partidaDto);
+                        }
+                        partidaService.guardarPartidaCompleta(partidaDto, cartasActuales);
+                    }
+                } else {
+                    // Si ya existe, guardar el estado final de la partida y cartas
+                    partidaService.guardarPartidaCompleta(partidaDto, cartasActuales);
+                }
+
                 AnimationDepartment.playVictoryAnimation(
                         spGamebackground,
                         usarEstiloClasico,
