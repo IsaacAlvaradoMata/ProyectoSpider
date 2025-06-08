@@ -1144,8 +1144,11 @@ public class GameController extends Controller implements Initializable {
         historialMovimientos.push(mov);
     }
 
-    private void deshacerUltimoMovimiento() {
-        if (historialMovimientos.isEmpty()) return;
+    private void deshacerUltimoMovimiento(Runnable onFinished) {
+        if (historialMovimientos.isEmpty()) {
+            if (onFinished != null) onFinished.run();
+            return;
+        }
         Movimiento mov = historialMovimientos.pop();
         if (mov.tipo == Movimiento.Tipo.MOVER) {
             List<CartasPartidaDto> cartasAMover = new ArrayList<>(mov.cartasMovidas);
@@ -1178,6 +1181,7 @@ public class GameController extends Controller implements Initializable {
                         lblPuntaje.setText("" + puntaje);
                         dibujarColumnasYCargarCartasEnTablero();
                         actualizarVistaDelMazoYPilas();
+                        if (onFinished != null) onFinished.run();
                     }
             );
             return;
@@ -1195,6 +1199,7 @@ public class GameController extends Controller implements Initializable {
             lblPuntaje.setText("" + puntaje);
             dibujarColumnasYCargarCartasEnTablero();
             actualizarVistaDelMazoYPilas();
+            if (onFinished != null) onFinished.run();
         } else if (mov.tipo == Movimiento.Tipo.COMPLETAR_SECUENCIA) {
             AnimationDepartment.animarUndoVisual(
                 mov.cartasSecuencia,
@@ -1223,12 +1228,18 @@ public class GameController extends Controller implements Initializable {
                     dibujarColumnasYCargarCartasEnTablero();
                     actualizarVistaDelMazoYPilas();
                     if (!historialMovimientos.isEmpty()) {
-                        Platform.runLater(() -> deshacerUltimoMovimiento());
+                        Platform.runLater(() -> deshacerUltimoMovimiento(onFinished));
+                    } else {
+                        if (onFinished != null) onFinished.run();
                     }
                 }
             );
             return;
         }
+    }
+
+    private void deshacerUltimoMovimiento() {
+        deshacerUltimoMovimiento(null);
     }
 
     @FXML
@@ -1287,7 +1298,10 @@ public class GameController extends Controller implements Initializable {
     @FXML
     private void onMouseClickedbtnUndo(MouseEvent event) {
         SoundDepartment.playUndo();
-        deshacerUltimoMovimiento();
+        if (btnUndo != null) btnUndo.setDisable(true);
+        deshacerUltimoMovimiento(() -> {
+            if (btnUndo != null) btnUndo.setDisable(false);
+        });
     }
 
     private boolean esGrupoValido(List<CartasPartidaDto> grupo) {
