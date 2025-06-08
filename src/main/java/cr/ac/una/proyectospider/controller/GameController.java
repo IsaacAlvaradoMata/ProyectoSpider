@@ -358,7 +358,7 @@ public class GameController extends Controller implements Initializable {
             Image fondoImg = new Image(new ByteArrayInputStream(fondoBytes));
             imgBackgroundTablero.setImage(fondoImg);
         } else {
-            Image fondoDefault = new Image(getClass().getResourceAsStream("/cr/ac/una/proyectospider/resources/DefaultBack3.png"));
+            Image fondoDefault = new Image(getClass().getResourceAsStream("/cr/ac/una/proyectospider/resources/DefaultBack1.png"));
             imgBackgroundTablero.setImage(fondoDefault);
         }
         AnimationDepartment.animateNeonGlow2(spTableroBackground);

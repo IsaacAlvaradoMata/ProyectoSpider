@@ -140,7 +140,7 @@ public class MenuController extends Controller implements Initializable {
                 AppContext.getInstance().set(AppContext.KEY_FONDO_SELECCIONADO, fondoImg);
             } else {
                 imgFondoActual.setImage(
-                        new Image(getClass().getResourceAsStream("/cr/ac/una/proyectospider/resources/DefaultBack3.png"))
+                        new Image(getClass().getResourceAsStream("/cr/ac/una/proyectospider/resources/DefaultBack1.png"))
                 );
                 AppContext.getInstance().set(AppContext.KEY_FONDO_SELECCIONADO, imgFondoActual.getImage());
             }
@@ -156,7 +156,7 @@ public class MenuController extends Controller implements Initializable {
             AppContext.getInstance().set(AppContext.KEY_ESTILO_CARTAS, rutaEstilo);
         } else {
             imgFondoActual.setImage(
-                    new Image(getClass().getResourceAsStream("/cr/ac/una/proyectospider/resources/DefaultBack3.png"))
+                    new Image(getClass().getResourceAsStream("/cr/ac/una/proyectospider/resources/DefaultBack1.png"))
             );
             imgCartasActual.setImage(
                     new Image(getClass().getResourceAsStream(AppContext.RUTA_CARTAS_CYBERPUNK))
