@@ -330,6 +330,7 @@ public class GameController extends Controller implements Initializable {
 
         mostrarNombreJugador();
         // — Fondo general “GameBackground.gif” —
+        // — Fondo general "GameBackground.gif" —
         if (!spGamebackground.getChildren().contains(imgBackgroundGame)) {
             spGamebackground.getChildren().add(0, imgBackgroundGame);
         } else {
@@ -834,6 +835,7 @@ public class GameController extends Controller implements Initializable {
         }
 
         // 3) Por cada columna, ordenamos sus cartas y las “pintamos” en pantalla
+        // 3) Por cada columna, ordenamos sus cartas y las "pintamos" en pantalla
         for (int col = 0; col < 10; col++) {
             Pane columna = (Pane) hboxTablero.getChildren().get(col);
             columna.getChildren().clear();
@@ -1032,11 +1034,13 @@ public class GameController extends Controller implements Initializable {
                             "/cr/ac/una/proyectospider/resources/" + cartaAs.getImagenNombre())));
                 } else {
                     // Si no consigo el As, le pongo un “1C.png” por defecto
+                    // Si no consigo el As, le pongo un "1C.png" por defecto
                     pila = new ImageView(new Image(getClass().getResourceAsStream(
                             "/cr/ac/una/proyectospider/resources/1C.png")));
                 }
             } else {
                 // Pila vacía: mostrar “white.png” o “whites.png   según estilo
+                // Pila vacía: mostrar "white.png" o "whites.png   según estilo
                 String whiteImg = usarEstiloClasico ? "white.png" : "whites.png";
                 pila = new ImageView(new Image(getClass().getResourceAsStream(
                         "/cr/ac/una/proyectospider/resources/" + whiteImg)));
@@ -1230,6 +1234,7 @@ public class GameController extends Controller implements Initializable {
         dibujarColumnasYCargarCartasEnTablero();
         actualizarVistaDelMazoYPilas();
     }
+    }  
 
     @FXML
     private void onMouseClickedbtnUndoAll(MouseEvent event) {
@@ -1325,6 +1330,11 @@ public class GameController extends Controller implements Initializable {
                     dibujarColumnasYCargarCartasEnTablero();
                     actualizarVistaDelMazoYPilas();
 
+                    // Calcular cuántas pilas completas hay antes de marcar las cartas como enPila
+                    long pilasCompletas = cartasEnJuego.stream()
+                            .filter(c -> c.getEnPila())
+                            .count() / 13;
+
                     // Lanzar la animación en el siguiente frame para que las cartas estén visibles en la columna destino
                     Platform.runLater(() -> {
                         // Marcar las 13 cartas como enPila justo ANTES de la animación
@@ -1333,11 +1343,6 @@ public class GameController extends Controller implements Initializable {
                             carta.setColumna(-1);
                             carta.setOrden(-1);
                         }
-
-                        // Determinar cuántas pilas completas hay ya (para saber a qué pila mandar la animación)
-                        long pilasCompletas = cartasEnJuego.stream()
-                                .filter(c -> c.getEnPila())
-                                .count() / 13;
 
                         AnimationDepartment.animarSecuenciaAHaciaPila(
                                 grupoDe13Cartas,
@@ -1718,7 +1723,7 @@ public class GameController extends Controller implements Initializable {
                         "Si te rindes, la partida se descartará y volverás al menú.",
                 (Boolean usuarioDijoSi) -> {
                     // Este callback se ejecuta después de que el usuario cierre la alerta.
-                    // 'usuarioDijoSi' es true si pinchó “Sí”, false si pinchó “No”.
+                    // 'usuarioDijoSi' es true si pinchó "Sí", false si pinchó "No".
 
                     if (usuarioDijoSi) {
                         // → El usuario pinchó "Sí", así que ejecutamos el flujo de "rendirse":
