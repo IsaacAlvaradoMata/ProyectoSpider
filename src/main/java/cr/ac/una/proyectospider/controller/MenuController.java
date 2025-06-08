@@ -123,7 +123,7 @@ public class MenuController extends Controller implements Initializable {
         JugadorDto jugador = (JugadorDto) AppContext.getInstance().get("jugadorActivo");
         if (jugador != null) {
             PartidaService partidaService = new PartidaService();
-            java.util.List<PartidaDto> partidasTerminadas = partidaService.listarTerminadasPorJugador(jugador.getIdJugador());
+            List<PartidaDto> partidasTerminadas = partidaService.listarTerminadasPorJugador(jugador.getIdJugador());
             int partidasGanadas = partidasTerminadas.size();
             int puntosAcumulados = partidasTerminadas.stream()
                 .mapToInt(p -> p.getPuntos() != null ? p.getPuntos() : 0)
