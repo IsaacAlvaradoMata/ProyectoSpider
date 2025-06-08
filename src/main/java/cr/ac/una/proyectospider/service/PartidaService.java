@@ -36,7 +36,6 @@ public class PartidaService {
     public boolean guardarPartidaCompleta(PartidaDto partidaDto, List<CartasPartidaDto> cartas) {
         EntityManager em = emf.createEntityManager();
         try {
-            System.out.println("🔍 [DEBUG] Iniciando guardado completo de partida...");
             em.getTransaction().begin();
 
             Partida partida = partidaDto.toEntitySinJugador();
@@ -51,14 +50,11 @@ public class PartidaService {
                 em.persist(partida);
                 em.flush();
                 partidaDto.setIdPartida(partida.getIdPartida());
-                System.out.println("🎯 [DEBUG] Partida NUEVA persistida con ID real: " + partidaDto.getIdPartida());
                 managed = partida;
             } else {
                 managed = em.merge(partida);
-                System.out.println("♻️ [DEBUG] Partida EXISTENTE mergeada con ID: " + managed.getIdPartida());
             }
 
-            System.out.println("🧹 [DEBUG] Eliminando cartas antiguas para ID_PARTIDA: " + managed.getIdPartida());
             em.createQuery("DELETE FROM CartasPartida c WHERE c.partida.idPartida = :idPartida")
                     .setParameter("idPartida", managed.getIdPartida())
                     .executeUpdate();
@@ -66,7 +62,6 @@ public class PartidaService {
             managed.getCartasPartidaList().clear();
 
             for (CartasPartidaDto dto : cartas) {
-                System.out.println("🃏 [DEBUG] Insertando carta con orden: " + dto.getOrden() + " y valor: " + dto.getValor());
                 CartasPartida carta = dto.toEntity(managed);
                 managed.getCartasPartidaList().add(carta);
                 em.persist(carta);

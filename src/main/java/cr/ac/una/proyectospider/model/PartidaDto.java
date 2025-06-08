@@ -15,7 +15,7 @@ public class PartidaDto {
     private final StringProperty dificultad;
     private final ObjectProperty<JugadorDto> jugador;
     private Long version;
-    private final StringProperty fondoSeleccionado = new SimpleStringProperty("");
+    private byte[] fondoSeleccionado;
     private final StringProperty reversoSeleccionado = new SimpleStringProperty("");
 
     public PartidaDto() {
@@ -28,6 +28,7 @@ public class PartidaDto {
         this.estado = new SimpleStringProperty("");
         this.dificultad = new SimpleStringProperty("MEDIA");
         this.jugador = new SimpleObjectProperty<>();
+        this.fondoSeleccionado = null;
     }
 
     public PartidaDto(Partida partida) {
@@ -44,7 +45,7 @@ public class PartidaDto {
             this.jugador.set(new JugadorDto(partida.getJugador()));
         }
         this.version = partida.getVersion();
-        this.fondoSeleccionado.set(partida.getFondoSeleccionado());
+        this.fondoSeleccionado = partida.getFondoSeleccionado();
         this.reversoSeleccionado.set(partida.getReversoSeleccionado());
     }
 
@@ -80,9 +81,6 @@ public class PartidaDto {
     public StringProperty estadoProperty() { return estado; }
     public StringProperty dificultadProperty() { return dificultad; }
     public ObjectProperty<JugadorDto> jugadorProperty() { return jugador; }
-    public StringProperty fondoSeleccionadoProperty() { return fondoSeleccionado; }
-    public String getFondoSeleccionado() { return fondoSeleccionado.get(); }
-    public void setFondoSeleccionado(String fondo) { this.fondoSeleccionado.set(fondo); }
     public StringProperty reversoSeleccionadoProperty() { return reversoSeleccionado; }
     public String getReversoSeleccionado() { return reversoSeleccionado.get(); }
     public void setReversoSeleccionado(String reverso) { this.reversoSeleccionado.set(reverso); }
@@ -97,6 +95,8 @@ public class PartidaDto {
     public String getDificultad() { return dificultad.get(); }
     public JugadorDto getJugador() { return jugador.get(); }
     public Long getVersion() { return version; }
+    public byte[] getFondoSeleccionado() { return fondoSeleccionado; }
+    public void setFondoSeleccionado(byte[] fondo) { this.fondoSeleccionado = fondo; }
 
     public void setIdPartida(Long id) { this.idPartida.set(id); }
     public void setFechaInicio(Date fechaInicio) { this.fechaInicio.set(fechaInicio); }

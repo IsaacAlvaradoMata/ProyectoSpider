@@ -53,8 +53,9 @@ public class Partida implements Serializable {
     @Column(name = "DIFICULTAD")
     private String dificultad;
 
+    @Lob
     @Column(name = "FONDO_SELECCIONADO")
-    private String fondoSeleccionado;
+    private byte[] fondoSeleccionado;
 
     @Column(name = "REVERSO_SELECCIONADO")
     private String reversoSeleccionado;
@@ -167,11 +168,11 @@ public class Partida implements Serializable {
         this.dificultad = dificultad;
     }
 
-    public String getFondoSeleccionado() {
+    public byte[] getFondoSeleccionado() {
         return fondoSeleccionado;
     }
 
-    public void setFondoSeleccionado(String fondoSeleccionado) {
+    public void setFondoSeleccionado(byte[] fondoSeleccionado) {
         this.fondoSeleccionado = fondoSeleccionado;
     }
 

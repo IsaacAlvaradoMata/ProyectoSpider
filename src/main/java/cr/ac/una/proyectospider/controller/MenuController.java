@@ -29,6 +29,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
+import java.io.ByteArrayInputStream;
 
 
 public class MenuController extends Controller implements Initializable {
@@ -339,9 +340,9 @@ public class MenuController extends Controller implements Initializable {
             // Asignar fondo y reverso seleccionados desde AppContext o desde la personalización
             PartidaDto partidaDtoPersonalizacion = (PartidaDto) AppContext.getInstance().get("partidaDtoPersonalizacion");
             if (partidaDtoPersonalizacion != null) {
-                String fondo = partidaDtoPersonalizacion.getFondoSeleccionado();
+                byte[] fondo = partidaDtoPersonalizacion.getFondoSeleccionado();
                 String reverso = partidaDtoPersonalizacion.getReversoSeleccionado();
-                if (fondo != null && !fondo.isEmpty()) {
+                if (fondo != null && fondo.length > 0) {
                     partidaDto.setFondoSeleccionado(fondo);
                 }
                 if (reverso != null && !reverso.isEmpty()) {
@@ -351,9 +352,27 @@ public class MenuController extends Controller implements Initializable {
                 Object fondoSeleccionado = AppContext.getInstance().get(AppContext.KEY_FONDO_SELECCIONADO);
                 Object reversoSeleccionado = AppContext.getInstance().get(AppContext.KEY_ESTILO_CARTAS);
                 if (fondoSeleccionado instanceof Image) {
-                    String url = ((Image) fondoSeleccionado).getUrl();
-                    if (url != null) {
-                        partidaDto.setFondoSeleccionado(url);
+                    Image img = (Image) fondoSeleccionado;
+                    String url = img.getUrl();
+                    byte[] fondoBytes = null;
+                    try {
+                        if (url != null && url.startsWith("file:")) {
+                            java.io.InputStream is = new java.net.URL(url).openStream();
+                            java.io.ByteArrayOutputStream baos = new java.io.ByteArrayOutputStream();
+                            byte[] buffer = new byte[8192];
+                            int bytesRead;
+                            while ((bytesRead = is.read(buffer)) != -1) {
+                                baos.write(buffer, 0, bytesRead);
+                            }
+                            fondoBytes = baos.toByteArray();
+                            is.close();
+                            baos.close();
+                        }
+                    } catch (Exception e) {
+                        fondoBytes = null;
+                    }
+                    if (fondoBytes != null && fondoBytes.length > 0) {
+                        partidaDto.setFondoSeleccionado(fondoBytes);
                     }
                 }
                 if (reversoSeleccionado instanceof String) {

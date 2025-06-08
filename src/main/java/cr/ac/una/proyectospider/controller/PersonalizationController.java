@@ -1,6 +1,8 @@
 package cr.ac.una.proyectospider.controller;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -284,22 +286,43 @@ public class PersonalizationController extends Controller implements Initializab
             claveEstilo = AppContext.RUTA_CARTAS_CLASICAS;
         }
 
-        // Guardar en AppContext
         AppContext.getInstance().set(AppContext.KEY_FONDO_SELECCIONADO, fondoSeleccionado);
         AppContext.getInstance().set(AppContext.KEY_ESTILO_CARTAS, claveEstilo);
 
-        // Guardar en un PartidaDto temporal en AppContext para persistencia entre pantallas
         PartidaDto partidaDtoPersonalizacion = (PartidaDto) AppContext.getInstance().get("partidaDtoPersonalizacion");
         if (partidaDtoPersonalizacion == null) {
             partidaDtoPersonalizacion = new PartidaDto();
         }
-        String fondoStr;
-        if (fondosPredeterminados.contains(fondoSeleccionado)) {
-            fondoStr = "DefaultBack" + (fondosPredeterminados.indexOf(fondoSeleccionado) + 1) + ".png";
-        } else {
-            fondoStr = fondoSeleccionado.getUrl();
+        byte[] fondoBytes = null;
+        try {
+            String url = fondoSeleccionado.getUrl();
+            if (url != null && url.startsWith("file:")) {
+                try (InputStream is = new URL(url).openStream(); ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+                    byte[] buffer = new byte[8192];
+                    int bytesRead;
+                    while ((bytesRead = is.read(buffer)) != -1) {
+                        baos.write(buffer, 0, bytesRead);
+                    }
+                    fondoBytes = baos.toByteArray();
+                }
+            } else if (fondosPredeterminados.contains(fondoSeleccionado)) {
+                int idx = fondosPredeterminados.indexOf(fondoSeleccionado) + 1;
+                AppContext.getInstance().set("fondoRecurso", "DefaultBack" + idx + ".png");
+                try (InputStream is = getClass().getResourceAsStream("/cr/ac/una/proyectospider/resources/DefaultBack" + idx + ".png"); ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+                    byte[] buffer = new byte[8192];
+                    int bytesRead;
+                    while ((bytesRead = is.read(buffer)) != -1) {
+                        baos.write(buffer, 0, bytesRead);
+                    }
+                    fondoBytes = baos.toByteArray();
+                }
+            } else {
+                AppContext.getInstance().set("fondoRecurso", null);
+            }
+        } catch (Exception ex) {
+            fondoBytes = null;
         }
-        partidaDtoPersonalizacion.setFondoSeleccionado(fondoStr);
+        partidaDtoPersonalizacion.setFondoSeleccionado(fondoBytes);
         partidaDtoPersonalizacion.setReversoSeleccionado(claveEstilo);
         AppContext.getInstance().set("partidaDtoPersonalizacion", partidaDtoPersonalizacion);
 
@@ -345,10 +368,25 @@ public class PersonalizationController extends Controller implements Initializab
             try {
                 String uri = archivoSeleccionado.toURI().toString();
                 Image imagenPersonalizada = new Image(uri);
-
                 imgPrevistaFondo.setImage(imagenPersonalizada);
-
-
+                AppContext.getInstance().set(AppContext.KEY_FONDO_SELECCIONADO, imagenPersonalizada);
+                AppContext.getInstance().set("fondoRecurso", null);
+                // Actualizar el DTO temporal con los bytes de la imagen personalizada
+                PartidaDto partidaDtoPersonalizacion = (PartidaDto) AppContext.getInstance().get("partidaDtoPersonalizacion");
+                if (partidaDtoPersonalizacion == null) {
+                    partidaDtoPersonalizacion = new PartidaDto();
+                }
+                byte[] fondoBytes = null;
+                try (InputStream is = new java.net.URL(uri).openStream(); ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+                    byte[] buffer = new byte[8192];
+                    int bytesRead;
+                    while ((bytesRead = is.read(buffer)) != -1) {
+                        baos.write(buffer, 0, bytesRead);
+                    }
+                    fondoBytes = baos.toByteArray();
+                }
+                partidaDtoPersonalizacion.setFondoSeleccionado(fondoBytes);
+                AppContext.getInstance().set("partidaDtoPersonalizacion", partidaDtoPersonalizacion);
             } catch (Exception ex) {
                 CustomAlert.showInfo(
                         spBackgroundPersonalization,

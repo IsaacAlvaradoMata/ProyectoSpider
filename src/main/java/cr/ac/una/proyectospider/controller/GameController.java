@@ -29,6 +29,11 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import java.net.URL;
 import java.util.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import javafx.embed.swing.SwingFXUtils;
+import javax.imageio.ImageIO;
 
 public class GameController extends Controller implements Initializable {
 
@@ -226,12 +231,44 @@ public class GameController extends Controller implements Initializable {
         // 🧠 Agregar fondo y reverso seleccionados antes de guardar
         Object fondoSeleccionado = AppContext.getInstance().get(AppContext.KEY_FONDO_SELECCIONADO);
         Object reversoSeleccionado = AppContext.getInstance().get(AppContext.KEY_ESTILO_CARTAS);
-        if (fondoSeleccionado instanceof Image) {
-            String url = ((Image) fondoSeleccionado).getUrl();
-            if (url != null) {
-                partidaDto.setFondoSeleccionado(url);
+        String fondoRecurso = (String) AppContext.getInstance().get("fondoRecurso");
+        byte[] fondoBytes = null;
+        try {
+            if (fondoSeleccionado instanceof Image) {
+                Image img = (Image) fondoSeleccionado;
+                String url = img.getUrl();
+                if (url != null && url.startsWith("file:")) {
+                    try (InputStream is = new java.net.URL(url).openStream(); ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+                        byte[] buffer = new byte[8192];
+                        int bytesRead;
+                        while ((bytesRead = is.read(buffer)) != -1) {
+                            baos.write(buffer, 0, bytesRead);
+                        }
+                        fondoBytes = baos.toByteArray();
+                    }
+                } else if (fondoRecurso != null) {
+                    try (InputStream is = getClass().getResourceAsStream("/cr/ac/una/proyectospider/resources/" + fondoRecurso); ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+                        byte[] buffer = new byte[8192];
+                        int bytesRead;
+                        while ((bytesRead = is.read(buffer)) != -1) {
+                            baos.write(buffer, 0, bytesRead);
+                        }
+                        fondoBytes = baos.toByteArray();
+                    }
+                } else {
+                    java.awt.image.BufferedImage bImage = SwingFXUtils.fromFXImage(img, null);
+                    if (bImage != null) {
+                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                        ImageIO.write(bImage, "png", baos);
+                        fondoBytes = baos.toByteArray();
+                        baos.close();
+                    }
+                }
             }
+        } catch (Exception e) {
+            fondoBytes = null;
         }
+        partidaDto.setFondoSeleccionado(fondoBytes);
         if (reversoSeleccionado instanceof String) {
             partidaDto.setReversoSeleccionado((String) reversoSeleccionado);
         }
@@ -241,6 +278,8 @@ public class GameController extends Controller implements Initializable {
         System.out.println("🎯 [DEBUG] Puntaje final: " + partidaDto.getPuntos());
         System.out.println("⏱️ [DEBUG] Tiempo jugado (min:seg): " +
                 String.format("%02d:%02d", segundosTranscurridos / 60, segundosTranscurridos % 60));
+
+        System.out.println("Fondo en DTO antes de guardar: " + (partidaDto.getFondoSeleccionado() != null ? partidaDto.getFondoSeleccionado().length : "null"));
 
         PartidaService partidaService = new PartidaService();
 
@@ -377,17 +416,13 @@ public class GameController extends Controller implements Initializable {
         imgBackgroundGame.setVisible(true);
 
         imgBackgroundTablero.setEffect(new ColorAdjust(0, 0, -0.2, 0));
-        // --- USAR FONDO GUARDADO EN LA PARTIDA ---
-        String fondoGuardado = partidaDto.getFondoSeleccionado();
-        if (fondoGuardado != null && !fondoGuardado.isEmpty()) {
-            Image fondoImg;
-            if (fondoGuardado.startsWith("http") || fondoGuardado.startsWith("file:")) {
-                fondoImg = new Image(fondoGuardado);
-            } else {
-                fondoImg = new Image(getClass().getResourceAsStream("/cr/ac/una/proyectospider/resources/" + fondoGuardado));
-            }
+        byte[] fondoBytes = null;
+        if (partidaDto != null) {
+            fondoBytes = partidaDto.getFondoSeleccionado();
+        }
+        if (fondoBytes != null && fondoBytes.length > 0) {
+            Image fondoImg = new Image(new ByteArrayInputStream(fondoBytes));
             imgBackgroundTablero.setImage(fondoImg);
-            // Actualizar AppContext para que el resto de la lógica visual funcione
             AppContext.getInstance().set(AppContext.KEY_FONDO_SELECCIONADO, fondoImg);
         } else {
             Image fondoDefault = new Image(getClass().getResourceAsStream("/cr/ac/una/proyectospider/resources/DefaultBack3.png"));
