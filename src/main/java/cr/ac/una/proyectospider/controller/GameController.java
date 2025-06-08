@@ -106,7 +106,7 @@ public class GameController extends Controller implements Initializable {
     private boolean repartiendo = false;
 
     private static class Movimiento {
-        enum Tipo {MOVER, REPARTIR}
+        enum Tipo {MOVER, REPARTIR, COMPLETAR_SECUENCIA}
 
         Tipo tipo;
         List<CartasPartidaDto> cartasMovidas;
@@ -123,6 +123,15 @@ public class GameController extends Controller implements Initializable {
         // Para carta volteada debajo
         CartasPartidaDto cartaDebajoVolteada;
         Boolean cartaDebajoVolteadaEstadoAnterior;
+        // Para secuencia completa
+        List<CartasPartidaDto> cartasSecuencia;
+        List<Integer> columnasSecuencia;
+        List<Integer> ordenesSecuencia;
+        List<Boolean> bocasArribaSecuencia;
+        int columnaSecuencia;
+        int ordenInicioSecuencia;
+        CartasPartidaDto cartaDebajoSecuencia;
+        Boolean cartaDebajoSecuenciaEstadoAnterior;
 
         Movimiento(Tipo tipo) {
             this.tipo = tipo;
@@ -138,6 +147,14 @@ public class GameController extends Controller implements Initializable {
             ordenesRepartidas = new ArrayList<>();
             cartaDebajoVolteada = null;
             cartaDebajoVolteadaEstadoAnterior = null;
+            cartasSecuencia = new ArrayList<>();
+            columnasSecuencia = new ArrayList<>();
+            ordenesSecuencia = new ArrayList<>();
+            bocasArribaSecuencia = new ArrayList<>();
+            columnaSecuencia = -1;
+            ordenInicioSecuencia = -1;
+            cartaDebajoSecuencia = null;
+            cartaDebajoSecuenciaEstadoAnterior = null;
         }
     }
 
@@ -329,7 +346,7 @@ public class GameController extends Controller implements Initializable {
         }
 
         mostrarNombreJugador();
-        // — Fondo general “GameBackground.gif” —
+        // — Fondo general "GameBackground.gif" —
         // — Fondo general "GameBackground.gif" —
         if (!spGamebackground.getChildren().contains(imgBackgroundGame)) {
             spGamebackground.getChildren().add(0, imgBackgroundGame);
@@ -834,7 +851,7 @@ public class GameController extends Controller implements Initializable {
             }
         }
 
-        // 3) Por cada columna, ordenamos sus cartas y las “pintamos” en pantalla
+        // 3) Por cada columna, ordenamos sus cartas y las "pintamos" en pantalla
         // 3) Por cada columna, ordenamos sus cartas y las "pintamos" en pantalla
         for (int col = 0; col < 10; col++) {
             Pane columna = (Pane) hboxTablero.getChildren().get(col);
@@ -1033,13 +1050,13 @@ public class GameController extends Controller implements Initializable {
                     pila = new ImageView(new Image(getClass().getResourceAsStream(
                             "/cr/ac/una/proyectospider/resources/" + cartaAs.getImagenNombre())));
                 } else {
-                    // Si no consigo el As, le pongo un “1C.png” por defecto
+                    // Si no consigo el As, le pongo un "1C.png" por defecto
                     // Si no consigo el As, le pongo un "1C.png" por defecto
                     pila = new ImageView(new Image(getClass().getResourceAsStream(
                             "/cr/ac/una/proyectospider/resources/1C.png")));
                 }
             } else {
-                // Pila vacía: mostrar “white.png” o “whites.png   según estilo
+                // Pila vacía: mostrar "white.png" o "whites.png   según estilo
                 // Pila vacía: mostrar "white.png" o "whites.png   según estilo
                 String whiteImg = usarEstiloClasico ? "white.png" : "whites.png";
                 pila = new ImageView(new Image(getClass().getResourceAsStream(
@@ -1228,13 +1245,49 @@ public class GameController extends Controller implements Initializable {
             }
             movimientos = Math.max(0, movimientos - 1);
             puntaje = Math.max(0, puntaje - 1);
+            lblMovimientos.setText("" + movimientos);
+            lblPuntaje.setText("" + puntaje);
+            dibujarColumnasYCargarCartasEnTablero();
+            actualizarVistaDelMazoYPilas();
+        } else if (mov.tipo == Movimiento.Tipo.COMPLETAR_SECUENCIA) {
+            // Lanzar la animación visual y SOLO en el callback restaurar el modelo
+            AnimationDepartment.animarUndoVisual(
+                mov.cartasSecuencia,
+                mov.columnaSecuencia,
+                spGamebackground,
+                cartaToImageView,
+                hboxTablero,
+                cartasEnJuego,
+                (n) -> calcularEspaciadoVertical(n),
+                mov.cartaDebajoSecuencia,
+                mov.cartaDebajoSecuenciaEstadoAnterior != null ? !mov.cartaDebajoSecuenciaEstadoAnterior : null,
+                () -> {
+                    // Restaurar la secuencia completa a la columna y orden original
+                    for (int i = 0; i < mov.cartasSecuencia.size(); i++) {
+                        CartasPartidaDto carta = mov.cartasSecuencia.get(i);
+                        carta.setEnPila(false);
+                        carta.setColumna(mov.columnaSecuencia);
+                        carta.setOrden(mov.ordenesSecuencia.get(i));
+                        carta.setBocaArriba(mov.bocasArribaSecuencia.get(i));
+                    }
+                    // Restaurar carta debajo si existía
+                    if (mov.cartaDebajoSecuencia != null && mov.cartaDebajoSecuenciaEstadoAnterior != null) {
+                        mov.cartaDebajoSecuencia.setBocaArriba(mov.cartaDebajoSecuenciaEstadoAnterior);
+                    }
+                    puntaje = Math.max(0, puntaje - 100); // Quitar los 100 puntos de la secuencia
+                    lblPuntaje.setText("" + puntaje);
+                    lblMovimientos.setText("" + movimientos);
+                    dibujarColumnasYCargarCartasEnTablero();
+                    actualizarVistaDelMazoYPilas();
+                    // Deshacer automáticamente el movimiento anterior si existe
+                    if (!historialMovimientos.isEmpty()) {
+                        Platform.runLater(() -> deshacerUltimoMovimiento());
+                    }
+                }
+            );
+            return;
         }
-        lblMovimientos.setText("" + movimientos);
-        lblPuntaje.setText("" + puntaje);
-        dibujarColumnasYCargarCartasEnTablero();
-        actualizarVistaDelMazoYPilas();
     }
-
 
     @FXML
     private void onMouseClickedbtnUndoAll(MouseEvent event) {
@@ -1315,16 +1368,27 @@ public class GameController extends Controller implements Initializable {
 
                     // Determinar carta debajo (para el flip después de la animación)
                     Optional<CartasPartidaDto> cartaDebajoOpt;
+                    CartasPartidaDto cartaDebajo = null;
+                    Boolean cartaDebajoEstadoAnterior = null;
                     if (inicio > 0) {
                         CartasPartidaDto debajo = cartasColumna.get(inicio - 1);
+                        cartaDebajo = debajo;
+                        cartaDebajoEstadoAnterior = debajo.getBocaArriba();
                         debajo.setBocaArriba(true);
                         cartaDebajoOpt = Optional.of(debajo);
                     } else {
                         cartaDebajoOpt = cartasEnJuego.stream()
                                 .filter(c -> c.getColumna() == columna && !c.getBocaArriba())
                                 .max(Comparator.comparingInt(CartasPartidaDto::getOrden));
-                        cartaDebajoOpt.ifPresent(c -> c.setBocaArriba(true));
+                        if (cartaDebajoOpt.isPresent()) {
+                            cartaDebajo = cartaDebajoOpt.get();
+                            cartaDebajoEstadoAnterior = cartaDebajo.getBocaArriba();
+                            cartaDebajo.setBocaArriba(true);
+                        }
                     }
+
+                    // Guardar el movimiento de secuencia completa
+                    guardarMovimientoCompletarSecuencia(grupoDe13Cartas, columna, grupoDe13Cartas.get(0).getOrden(), cartaDebajo, cartaDebajoEstadoAnterior);
 
                     // *** PRIMERO redibujar el tablero con las cartas en la columna destino ***
                     dibujarColumnasYCargarCartasEnTablero();
@@ -1353,21 +1417,18 @@ public class GameController extends Controller implements Initializable {
                                 () -> {
                                     // Después de la animación → si hay carta debajo, hacer flip
                                     if (cartaDebajoOpt.isPresent()) {
-                                        CartasPartidaDto cartaDebajo = cartaDebajoOpt.get();
-                                        ImageView ivDebajo = cartaToImageView.get(cartaDebajo);
-                                        if (ivDebajo != null && cartaDebajo.getBocaArriba()) {
-                                            String imgArchivo = cartaDebajo.getImagenNombre();
+                                        CartasPartidaDto cartaDebajo2 = cartaDebajoOpt.get();
+                                        ImageView ivDebajo = cartaToImageView.get(cartaDebajo2);
+                                        if (ivDebajo != null && cartaDebajo2.getBocaArriba()) {
+                                            String imgArchivo = cartaDebajo2.getImagenNombre();
                                             Image imgBocaArriba = new Image(getClass().getResourceAsStream("/cr/ac/una/proyectospider/resources/" + imgArchivo));
                                             AnimationDepartment.flipCardAnimation(ivDebajo, imgBocaArriba, () -> {
-                                                // Al terminar el flip → redibujar tablero y pilas
                                                 dibujarColumnasYCargarCartasEnTablero();
                                                 actualizarVistaDelMazoYPilas();
                                             });
-                                            return; // esperar al flip
+                                            return;
                                         }
                                     }
-
-                                    // Si no hay flip → redibujar directamente
                                     dibujarColumnasYCargarCartasEnTablero();
                                     actualizarVistaDelMazoYPilas();
                                 }
@@ -1594,7 +1655,7 @@ public class GameController extends Controller implements Initializable {
                     }
                 }
             }
-        }
+        }   
         sugerencias.sort(Comparator.comparingInt((MovimientoSugerido m) -> -m.longitud)
                 .thenComparingInt(m -> -m.valorSuperior));
         return sugerencias;
@@ -1663,7 +1724,7 @@ public class GameController extends Controller implements Initializable {
     }
 
     private void shakeNode(Node node) {
-        TranslateTransition tt = new TranslateTransition(Duration.millis(60), node);
+        TranslateTransition tt = new TranslateTransition(Duration.millis(60), node);    
         tt.setFromX(0);
         tt.setByX(12);
         tt.setCycleCount(6);
@@ -1708,6 +1769,21 @@ public class GameController extends Controller implements Initializable {
         return cartasActuales;
     }
 
+    // Guarda el movimiento de completar secuencia (K-A)
+    private void guardarMovimientoCompletarSecuencia(List<CartasPartidaDto> grupoDe13Cartas, int columna, int ordenInicio, CartasPartidaDto cartaDebajo, Boolean cartaDebajoEstadoAnterior) {
+        Movimiento mov = new Movimiento(Movimiento.Tipo.COMPLETAR_SECUENCIA);
+        for (CartasPartidaDto carta : grupoDe13Cartas) {
+            mov.cartasSecuencia.add(carta);
+            mov.columnasSecuencia.add(columna);
+            mov.ordenesSecuencia.add(carta.getOrden());
+            mov.bocasArribaSecuencia.add(carta.getBocaArriba());
+        }
+        mov.columnaSecuencia = columna;
+        mov.ordenInicioSecuencia = ordenInicio;
+        mov.cartaDebajoSecuencia = cartaDebajo;
+        mov.cartaDebajoSecuenciaEstadoAnterior = cartaDebajoEstadoAnterior;
+        historialMovimientos.push(mov);
+    }
 
     @FXML
     void onMouseClickedbtnRendirse(MouseEvent event) {
