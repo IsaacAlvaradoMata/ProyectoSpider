@@ -1170,19 +1170,29 @@ public class GameController extends Controller implements Initializable {
             );
             return;
         } else if (mov.tipo == Movimiento.Tipo.REPARTIR) {
-            for (int i = 0; i < mov.cartasRepartidas.size(); i++) {
-                CartasPartidaDto carta = mov.cartasRepartidas.get(i);
-                carta.setEnMazo(true);
-                carta.setColumna(-1);
-                carta.setOrden(-1);
-                carta.setBocaArriba(false);
-            }
-            movimientos = Math.max(0, movimientos - 1);
-            puntaje = Math.max(0, puntaje - 1);
-            lblMovimientos.setText("" + movimientos);
-            lblPuntaje.setText("" + puntaje);
-            dibujarColumnasYCargarCartasEnTablero();
-            actualizarVistaDelMazoYPilas();
+            AnimationDepartment.animarCartasAlMazoVisual(
+                mov.cartasRepartidas,
+                spGamebackground,
+                cartaToImageView,
+                hboxTablero,
+                imgMazo,
+                () -> {
+                    for (int i = 0; i < mov.cartasRepartidas.size(); i++) {
+                        CartasPartidaDto carta = mov.cartasRepartidas.get(i);
+                        carta.setEnMazo(true);
+                        carta.setColumna(-1);
+                        carta.setOrden(-1);
+                        carta.setBocaArriba(false);
+                    }
+                    movimientos = Math.max(0, movimientos - 1);
+                    puntaje = Math.max(0, puntaje - 1);
+                    lblMovimientos.setText("" + movimientos);
+                    lblPuntaje.setText("" + puntaje);
+                    dibujarColumnasYCargarCartasEnTablero();
+                    actualizarVistaDelMazoYPilas();
+                }
+            );
+            return;
         } else if (mov.tipo == Movimiento.Tipo.COMPLETAR_SECUENCIA) {
             AnimationDepartment.animarUndoVisual(
                     mov.cartasSecuencia,
@@ -1279,20 +1289,29 @@ public class GameController extends Controller implements Initializable {
             );
             return;
         } else if (mov.tipo == Movimiento.Tipo.REPARTIR) {
-            for (int i = 0; i < mov.cartasRepartidas.size(); i++) {
-                CartasPartidaDto carta = mov.cartasRepartidas.get(i);
-                carta.setEnMazo(true);
-                carta.setColumna(-1);
-                carta.setOrden(-1);
-                carta.setBocaArriba(false);
-            }
-            movimientos = Math.max(0, movimientos - 1);
-            puntaje = Math.max(0, puntaje - 1);
-            lblMovimientos.setText("" + movimientos);
-            lblPuntaje.setText("" + puntaje);
-            dibujarColumnasYCargarCartasEnTablero();
-            actualizarVistaDelMazoYPilas();
-            if (onFinished != null) onFinished.run();
+            AnimationDepartment.animarCartasAlMazoVisual(
+                mov.cartasRepartidas,
+                spGamebackground,
+                cartaToImageView,
+                hboxTablero,
+                imgMazo,
+                () -> {
+                    for (int i = 0; i < mov.cartasRepartidas.size(); i++) {
+                        CartasPartidaDto carta = mov.cartasRepartidas.get(i);
+                        carta.setEnMazo(true);
+                        carta.setColumna(-1);
+                        carta.setOrden(-1);
+                        carta.setBocaArriba(false);
+                    }
+                    movimientos = Math.max(0, movimientos - 1);
+                    puntaje = Math.max(0, puntaje - 1);
+                    lblMovimientos.setText("" + movimientos);
+                    lblPuntaje.setText("" + puntaje);
+                    dibujarColumnasYCargarCartasEnTablero();
+                    actualizarVistaDelMazoYPilas();
+                }
+            );
+            return;
         } else if (mov.tipo == Movimiento.Tipo.COMPLETAR_SECUENCIA) {
             AnimationDepartment.animarUndoVisual(
                     mov.cartasSecuencia,
@@ -1320,7 +1339,9 @@ public class GameController extends Controller implements Initializable {
                         lblMovimientos.setText("" + movimientos);
                         dibujarColumnasYCargarCartasEnTablero();
                         actualizarVistaDelMazoYPilas();
-                        if (onFinished != null) onFinished.run();
+                        if (!historialMovimientos.isEmpty()) {
+                            Platform.runLater(() -> deshacerUltimoMovimiento());
+                        }
                     }
             );
             return;
