@@ -168,4 +168,18 @@ public class PartidaService {
             em.close();
         }
     }
+
+    public List<PartidaDto> listarTerminadasPorJugador(Long idJugador) {
+        EntityManager em = emf.createEntityManager();
+        try {
+            TypedQuery<Partida> query = em.createQuery(
+                "SELECT p FROM Partida p WHERE p.jugador.idJugador = :idJugador AND p.estado = 'TERMINADA' ORDER BY p.fechaInicio DESC",
+                Partida.class
+            );
+            query.setParameter("idJugador", idJugador);
+            return query.getResultList().stream().map(PartidaDto::new).collect(Collectors.toList());
+        } finally {
+            em.close();
+        }
+    }
 }

@@ -122,9 +122,15 @@ public class MenuController extends Controller implements Initializable {
         ResetMenuView();
         JugadorDto jugador = (JugadorDto) AppContext.getInstance().get("jugadorActivo");
         if (jugador != null) {
+            PartidaService partidaService = new PartidaService();
+            java.util.List<PartidaDto> partidasTerminadas = partidaService.listarTerminadasPorJugador(jugador.getIdJugador());
+            int partidasGanadas = partidasTerminadas.size();
+            int puntosAcumulados = partidasTerminadas.stream()
+                .mapToInt(p -> p.getPuntos() != null ? p.getPuntos() : 0)
+                .sum();
             lblJugadorRegistradoDinamico.setText(jugador.nombreUsuarioProperty().get() != null ? jugador.nombreUsuarioProperty().get() : "-");
-            lblPuntajeAcomuladoDinamico.setText(String.valueOf(jugador.puntosAcumuladosProperty().get()));
-            lblTotalPartidasGanadasDinamico.setText(String.valueOf(jugador.partidasGanadasProperty().get()));
+            lblPuntajeAcomuladoDinamico.setText(String.valueOf(puntosAcumulados));
+            lblTotalPartidasGanadasDinamico.setText(String.valueOf(partidasGanadas));
         }
 
         Object fondoEnContext = AppContext.getInstance().get(AppContext.KEY_FONDO_SELECCIONADO);

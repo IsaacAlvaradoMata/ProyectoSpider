@@ -19,4 +19,3 @@ public class PartidaCompletaDto {
         return cartas;
     }
 }
-
