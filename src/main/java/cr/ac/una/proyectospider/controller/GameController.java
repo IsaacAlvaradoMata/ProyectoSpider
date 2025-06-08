@@ -144,123 +144,119 @@ public class GameController extends Controller implements Initializable {
     @FXML
     void onMouseClickedbtnGuardarySalir(MouseEvent event) {
         SoundDepartment.playExitnSave();
-        System.out.println("🚨 [DEBUG] Iniciando proceso de Guardar y Salir...");
-        btnGuardarySalir.setDisable(true);
-        AnimationDepartment.stopAllAnimations();
-        detenerTemporizador();
-        tiempoIniciado = false;
+        CustomAlert.showConfirmation(
+            spGamebackground,
+            "Guardar partida",
+            "¿Guardar partida y salir?",
+            (Boolean usuarioDijoSi) -> {
+                if (usuarioDijoSi) {
+                    btnGuardarySalir.setDisable(true);
+                    AnimationDepartment.stopAllAnimations();
+                    detenerTemporizador();
+                    tiempoIniciado = false;
 
-        List<CartasPartidaDto> cartasActuales = obtenerEstadoDelTablero();
-        System.out.println("📦 [DEBUG] Total cartas del tablero: " + cartasActuales.size());
+                    List<CartasPartidaDto> cartasActuales = obtenerEstadoDelTablero();
 
-        partidaDto.setEstado("PAUSADA");
-        partidaDto.setFechaFin(new Date());
+                    partidaDto.setEstado("PAUSADA");
+                    partidaDto.setFechaFin(new Date());
 
-        partidaDto.setPuntos(puntaje);
-        partidaDto.setTiempoJugado(segundosTranscurridos);
-        partidaDto.setMovimientos(movimientos);
+                    partidaDto.setPuntos(puntaje);
+                    partidaDto.setTiempoJugado(segundosTranscurridos);
+                    partidaDto.setMovimientos(movimientos);
 
-        Object fondoSeleccionado = AppContext.getInstance().get(AppContext.KEY_FONDO_SELECCIONADO);
-        Object reversoSeleccionado = AppContext.getInstance().get(AppContext.KEY_ESTILO_CARTAS);
-        String fondoRecurso = (String) AppContext.getInstance().get("fondoRecurso");
-        byte[] fondoBytes = null;
-        try {
-            if (fondoSeleccionado instanceof Image) {
-                Image img = (Image) fondoSeleccionado;
-                String url = img.getUrl();
-                if (url != null && url.startsWith("file:")) {
-                    try (InputStream is = new java.net.URL(url).openStream(); ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-                        byte[] buffer = new byte[8192];
-                        int bytesRead;
-                        while ((bytesRead = is.read(buffer)) != -1) {
-                            baos.write(buffer, 0, bytesRead);
+                    Object fondoSeleccionado = AppContext.getInstance().get(AppContext.KEY_FONDO_SELECCIONADO);
+                    Object reversoSeleccionado = AppContext.getInstance().get(AppContext.KEY_ESTILO_CARTAS);
+                    String fondoRecurso = (String) AppContext.getInstance().get("fondoRecurso");
+                    byte[] fondoBytes = null;
+                    try {
+                        if (fondoSeleccionado instanceof Image) {
+                            Image img = (Image) fondoSeleccionado;
+                            String url = img.getUrl();
+                            if (url != null && url.startsWith("file:")) {
+                                try (InputStream is = new java.net.URL(url).openStream(); ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+                                    byte[] buffer = new byte[8192];
+                                    int bytesRead;
+                                    while ((bytesRead = is.read(buffer)) != -1) {
+                                        baos.write(buffer, 0, bytesRead);
+                                    }
+                                    fondoBytes = baos.toByteArray();
+                                }
+                            } else if (fondoRecurso != null) {
+                                try (InputStream is = getClass().getResourceAsStream("/cr/ac/una/proyectospider/resources/" + fondoRecurso); ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+                                    byte[] buffer = new byte[8192];
+                                    int bytesRead;
+                                    while ((bytesRead = is.read(buffer)) != -1) {
+                                        baos.write(buffer, 0, bytesRead);
+                                    }
+                                    fondoBytes = baos.toByteArray();
+                                }
+                            } else {
+                                java.awt.image.BufferedImage bImage = SwingFXUtils.fromFXImage(img, null);
+                                if (bImage != null) {
+                                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                                    ImageIO.write(bImage, "png", baos);
+                                    fondoBytes = baos.toByteArray();
+                                    baos.close();
+                                }
+                            }
                         }
-                        fondoBytes = baos.toByteArray();
+                    } catch (Exception e) {
+                        fondoBytes = null;
                     }
-                } else if (fondoRecurso != null) {
-                    try (InputStream is = getClass().getResourceAsStream("/cr/ac/una/proyectospider/resources/" + fondoRecurso); ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-                        byte[] buffer = new byte[8192];
-                        int bytesRead;
-                        while ((bytesRead = is.read(buffer)) != -1) {
-                            baos.write(buffer, 0, bytesRead);
+                    if (partidaDto.getFondoSeleccionado() == null || partidaDto.getFondoSeleccionado().length == 0) {
+                        partidaDto.setFondoSeleccionado(fondoBytes);
+                    }
+                    if (partidaDto.getReversoSeleccionado() == null || partidaDto.getReversoSeleccionado().isEmpty()) {
+                        if (reversoSeleccionado instanceof String) {
+                            partidaDto.setReversoSeleccionado((String) reversoSeleccionado);
                         }
-                        fondoBytes = baos.toByteArray();
                     }
+
+                    PartidaService partidaService = new PartidaService();
+
+                    if (partidaDto.getIdPartida() == null) {
+                        PartidaDto nuevaPartida = partidaService.crearPartida(partidaDto);
+                        if (nuevaPartida == null) {
+                            btnGuardarySalir.setDisable(false);
+                            return;
+                        }
+                        partidaDto = nuevaPartida;
+                    }
+
+                    for (CartasPartidaDto carta : cartasActuales) {
+                        carta.setPartida(partidaDto);
+                    }
+
+                    boolean exito = partidaService.guardarPartidaCompleta(partidaDto, cartasActuales);
+                    if (!exito) {
+                        System.err.println("No se pudo guardar la partida completa");
+                    }
+
+                    cartasEnJuego = null;
+                    cartaToImageView.clear();
+                    movimientos = 0;
+                    puntaje = 500;
+
+                    AnimationDepartment.glitchFadeOut(spGamebackground, Duration.seconds(1.1), () -> {
+                        FlowController.getInstance().goView("MenuView");
+                        MenuController controller = (MenuController) FlowController.getInstance().getController("MenuView");
+                        controller.RunMenuView();
+
+                        Platform.runLater(() -> btnGuardarySalir.setDisable(false));
+                    });
                 } else {
-                    java.awt.image.BufferedImage bImage = SwingFXUtils.fromFXImage(img, null);
-                    if (bImage != null) {
-                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                        ImageIO.write(bImage, "png", baos);
-                        fondoBytes = baos.toByteArray();
-                        baos.close();
-                    }
+                    btnGuardarySalir.setDisable(false);
                 }
             }
-        } catch (Exception e) {
-            fondoBytes = null;
-        }
-        if (partidaDto.getFondoSeleccionado() == null || partidaDto.getFondoSeleccionado().length == 0) {
-            partidaDto.setFondoSeleccionado(fondoBytes);
-        }
-        if (partidaDto.getReversoSeleccionado() == null || partidaDto.getReversoSeleccionado().isEmpty()) {
-            if (reversoSeleccionado instanceof String) {
-                partidaDto.setReversoSeleccionado((String) reversoSeleccionado);
-            }
-        }
-
-        System.out.println("🕒 [DEBUG] Estado de la partida: " + partidaDto.getEstado());
-        System.out.println("🕒 [DEBUG] Fecha fin de partida: " + partidaDto.getFechaFin());
-        System.out.println("🎯 [DEBUG] Puntaje final: " + partidaDto.getPuntos());
-        System.out.println("⏱️ [DEBUG] Tiempo jugado (min:seg): " +
-                String.format("%02d:%02d", segundosTranscurridos / 60, segundosTranscurridos % 60));
-
-        System.out.println("Fondo en DTO antes de guardar: " + (partidaDto.getFondoSeleccionado() != null ? partidaDto.getFondoSeleccionado().length : "null"));
-
-        PartidaService partidaService = new PartidaService();
-
-        if (partidaDto.getIdPartida() == null) {
-            System.out.println("         [DEBUG] Partida sin ID, se procederá a crearla...");
-            PartidaDto nuevaPartida = partidaService.crearPartida(partidaDto);
-            if (nuevaPartida == null) {
-                System.err.println("❌ No se pudo crear la partida.");
-                btnGuardarySalir.setDisable(false);
-                return;
-            }
-            partidaDto = nuevaPartida;
-        }
-
-        for (CartasPartidaDto carta : cartasActuales) {
-            carta.setPartida(partidaDto);
-            System.out.println("🧩 [DEBUG] Asignando ID_PARTIDA a carta: " + carta.getOrden() + " ➜ " + partidaDto.getIdPartida());
-        }
-
-        boolean exito = partidaService.guardarPartidaCompleta(partidaDto, cartasActuales);
-        if (!exito) {
-            System.err.println("❌ [ERROR] No se pudo guardar la partida completa.");
-        }
-
-        cartasEnJuego = null;
-        cartaToImageView.clear();
-        movimientos = 0;
-        puntaje = 500;
-
-        AnimationDepartment.glitchFadeOut(spGamebackground, Duration.seconds(1.1), () -> {
-            FlowController.getInstance().goView("MenuView");
-            MenuController controller = (MenuController) FlowController.getInstance().getController("MenuView");
-            controller.RunMenuView();
-
-            Platform.runLater(() -> btnGuardarySalir.setDisable(false));
-        });
+        );
     }
 
     private void mostrarNombreJugador() {
         JugadorDto jugador = (JugadorDto) AppContext.getInstance().get("jugador");
         if (jugador != null && jugador.getNombreUsuario() != null) {
             lblNombreJugador1.setText(" " + jugador.getNombreUsuario().toUpperCase());
-            System.out.println("✅ Jugador mostrado en pantalla: " + jugador.getNombreUsuario());
         } else {
             lblNombreJugador1.setText("INVÁLIDO");
-            System.err.println("⚠️ [ERROR] Jugador no encontrado o sin nombre.");
         }
     }
 
@@ -279,18 +275,16 @@ public class GameController extends Controller implements Initializable {
     }
 
     public void RunGameView(PartidaCompletaDto partidaCompletaDto) {
-        System.out.println("[DEBUG] RunGameView(PartidaCompletaDto) llamado");
         if (partidaCompletaDto == null) {
-            System.out.println("[DEBUG] partidaCompletaDto es null");
             return;
         }
         if (partidaCompletaDto.getPartida() == null) {
-            System.out.println("[DEBUG] partidaCompletaDto.getPartida() es null");
+            System.out.println("partidaCompletaDto.getPartida() es null");
         }
         if (partidaCompletaDto.getCartas() == null) {
-            System.out.println("[DEBUG] partidaCompletaDto.getCartas() es null");
+            System.out.println("partidaCompletaDto.getCartas() es null");
         } else {
-            System.out.println("[DEBUG] Cartas recuperadas: " + partidaCompletaDto.getCartas().size());
+            System.out.println("Cartas recuperadas: " + partidaCompletaDto.getCartas().size());
         }
         this.cartasEnJuego = partidaCompletaDto.getCartas();
         this.partidaDto = partidaCompletaDto.getPartida();
@@ -299,11 +293,8 @@ public class GameController extends Controller implements Initializable {
             this.puntaje = partidaDto.getPuntos() != null ? partidaDto.getPuntos() : 500;
             this.movimientos = partidaDto.getMovimientos() != null ? partidaDto.getMovimientos() : 0;
             this.segundosTranscurridos = partidaDto.getTiempoJugado() != null ? partidaDto.getTiempoJugado() : 0;
-            System.out.println("[DEBUG] Puntaje restaurado: " + puntaje);
-            System.out.println("[DEBUG] Movimientos restaurados: " + movimientos);
-            System.out.println("[DEBUG] Tiempo restaurado: " + segundosTranscurridos);
+
         } else {
-            System.out.println("[DEBUG] partidaDto es null, se usan valores por defecto");
             this.puntaje = 500;
             this.movimientos = 0;
             this.segundosTranscurridos = 0;

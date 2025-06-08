@@ -356,34 +356,49 @@ public class MenuController extends Controller implements Initializable {
                     partidaDto.setReversoSeleccionado(reverso);
                 }
             } else {
-                Object fondoSeleccionado = AppContext.getInstance().get(AppContext.KEY_FONDO_SELECCIONADO);
-                Object reversoSeleccionado = AppContext.getInstance().get(AppContext.KEY_ESTILO_CARTAS);
-                if (fondoSeleccionado instanceof Image) {
-                    Image img = (Image) fondoSeleccionado;
-                    String url = img.getUrl();
-                    byte[] fondoBytes = null;
-                    try {
-                        if (url != null && url.startsWith("file:")) {
-                            java.io.InputStream is = new java.net.URL(url).openStream();
-                            java.io.ByteArrayOutputStream baos = new java.io.ByteArrayOutputStream();
-                            byte[] buffer = new byte[8192];
-                            int bytesRead;
-                            while ((bytesRead = is.read(buffer)) != -1) {
-                                baos.write(buffer, 0, bytesRead);
+                if (jugadorActivo != null) {
+                    byte[] fondoJugador = jugadorActivo.imagenFondoProperty().get();
+                    if (fondoJugador != null && fondoJugador.length > 0) {
+                        partidaDto.setFondoSeleccionado(fondoJugador);
+                    }
+                    int estiloCartas = jugadorActivo.estiloCartasProperty().get();
+                    String reverso;
+                    if (estiloCartas == 2) {
+                        reverso = AppContext.RUTA_CARTAS_CYBERPUNK;
+                    } else {
+                        reverso = AppContext.RUTA_CARTAS_CLASICAS;
+                    }
+                    partidaDto.setReversoSeleccionado(reverso);
+                } else {
+                    Object fondoSeleccionado = AppContext.getInstance().get(AppContext.KEY_FONDO_SELECCIONADO);
+                    Object reversoSeleccionado = AppContext.getInstance().get(AppContext.KEY_ESTILO_CARTAS);
+                    if (fondoSeleccionado instanceof Image) {
+                        Image img = (Image) fondoSeleccionado;
+                        String url = img.getUrl();
+                        byte[] fondoBytes = null;
+                        try {
+                            if (url != null && url.startsWith("file:")) {
+                                java.io.InputStream is = new java.net.URL(url).openStream();
+                                java.io.ByteArrayOutputStream baos = new java.io.ByteArrayOutputStream();
+                                byte[] buffer = new byte[8192];
+                                int bytesRead;
+                                while ((bytesRead = is.read(buffer)) != -1) {
+                                    baos.write(buffer, 0, bytesRead);
+                                }
+                                fondoBytes = baos.toByteArray();
+                                is.close();
+                                baos.close();
                             }
-                            fondoBytes = baos.toByteArray();
-                            is.close();
-                            baos.close();
+                        } catch (Exception e) {
+                            fondoBytes = null;
                         }
-                    } catch (Exception e) {
-                        fondoBytes = null;
+                        if (fondoBytes != null && fondoBytes.length > 0) {
+                            partidaDto.setFondoSeleccionado(fondoBytes);
+                        }
                     }
-                    if (fondoBytes != null && fondoBytes.length > 0) {
-                        partidaDto.setFondoSeleccionado(fondoBytes);
+                    if (reversoSeleccionado instanceof String) {
+                        partidaDto.setReversoSeleccionado((String) reversoSeleccionado);
                     }
-                }
-                if (reversoSeleccionado instanceof String) {
-                    partidaDto.setReversoSeleccionado((String) reversoSeleccionado);
                 }
             }
 
