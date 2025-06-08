@@ -336,6 +336,31 @@ public class MenuController extends Controller implements Initializable {
             JugadorDto jugadorActivo = (JugadorDto) AppContext.getInstance().get("jugadorActivo");
             partidaDto.setJugador(jugadorActivo);
 
+            // Asignar fondo y reverso seleccionados desde AppContext o desde la personalización
+            PartidaDto partidaDtoPersonalizacion = (PartidaDto) AppContext.getInstance().get("partidaDtoPersonalizacion");
+            if (partidaDtoPersonalizacion != null) {
+                String fondo = partidaDtoPersonalizacion.getFondoSeleccionado();
+                String reverso = partidaDtoPersonalizacion.getReversoSeleccionado();
+                if (fondo != null && !fondo.isEmpty()) {
+                    partidaDto.setFondoSeleccionado(fondo);
+                }
+                if (reverso != null && !reverso.isEmpty()) {
+                    partidaDto.setReversoSeleccionado(reverso);
+                }
+            } else {
+                Object fondoSeleccionado = AppContext.getInstance().get(AppContext.KEY_FONDO_SELECCIONADO);
+                Object reversoSeleccionado = AppContext.getInstance().get(AppContext.KEY_ESTILO_CARTAS);
+                if (fondoSeleccionado instanceof Image) {
+                    String url = ((Image) fondoSeleccionado).getUrl();
+                    if (url != null) {
+                        partidaDto.setFondoSeleccionado(url);
+                    }
+                }
+                if (reversoSeleccionado instanceof String) {
+                    partidaDto.setReversoSeleccionado((String) reversoSeleccionado);
+                }
+            }
+
             FlowController.getInstance().goView("GameView");
             GameController controladorJuego =
                     (GameController) FlowController.getInstance().getController("GameView");

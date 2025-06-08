@@ -223,6 +223,19 @@ public class GameController extends Controller implements Initializable {
         partidaDto.setTiempoJugado(segundosTranscurridos);
         partidaDto.setMovimientos(movimientos);
 
+        // 🧠 Agregar fondo y reverso seleccionados antes de guardar
+        Object fondoSeleccionado = AppContext.getInstance().get(AppContext.KEY_FONDO_SELECCIONADO);
+        Object reversoSeleccionado = AppContext.getInstance().get(AppContext.KEY_ESTILO_CARTAS);
+        if (fondoSeleccionado instanceof Image) {
+            String url = ((Image) fondoSeleccionado).getUrl();
+            if (url != null) {
+                partidaDto.setFondoSeleccionado(url);
+            }
+        }
+        if (reversoSeleccionado instanceof String) {
+            partidaDto.setReversoSeleccionado((String) reversoSeleccionado);
+        }
+
         System.out.println("🕒 [DEBUG] Estado de la partida: " + partidaDto.getEstado());
         System.out.println("🕒 [DEBUG] Fecha fin de partida: " + partidaDto.getFechaFin());
         System.out.println("🎯 [DEBUG] Puntaje final: " + partidaDto.getPuntos());
@@ -344,6 +357,7 @@ public class GameController extends Controller implements Initializable {
         }
 
         mostrarNombreJugador();
+        // — Fondo general "GameBackground.gif" —
         if (!spGamebackground.getChildren().contains(imgBackgroundGame)) {
             spGamebackground.getChildren().add(0, imgBackgroundGame);
         } else {
@@ -363,20 +377,30 @@ public class GameController extends Controller implements Initializable {
         imgBackgroundGame.setVisible(true);
 
         imgBackgroundTablero.setEffect(new ColorAdjust(0, 0, -0.2, 0));
-        Object fondoEnContext = AppContext.getInstance().get(AppContext.KEY_FONDO_SELECCIONADO);
-        if (fondoEnContext instanceof Image) {
-            imgBackgroundTablero.setImage((Image) fondoEnContext);
+        // --- USAR FONDO GUARDADO EN LA PARTIDA ---
+        String fondoGuardado = partidaDto.getFondoSeleccionado();
+        if (fondoGuardado != null && !fondoGuardado.isEmpty()) {
+            Image fondoImg;
+            if (fondoGuardado.startsWith("http") || fondoGuardado.startsWith("file:")) {
+                fondoImg = new Image(fondoGuardado);
+            } else {
+                fondoImg = new Image(getClass().getResourceAsStream("/cr/ac/una/proyectospider/resources/" + fondoGuardado));
+            }
+            imgBackgroundTablero.setImage(fondoImg);
+            // Actualizar AppContext para que el resto de la lógica visual funcione
+            AppContext.getInstance().set(AppContext.KEY_FONDO_SELECCIONADO, fondoImg);
         } else {
-            imgBackgroundTablero.setImage(new Image(
-                    getClass().getResourceAsStream(
-                            "/cr/ac/una/proyectospider/resources/DefaultBack3.png")));
+            Image fondoDefault = new Image(getClass().getResourceAsStream("/cr/ac/una/proyectospider/resources/DefaultBack3.png"));
+            imgBackgroundTablero.setImage(fondoDefault);
+            AppContext.getInstance().set(AppContext.KEY_FONDO_SELECCIONADO, fondoDefault);
         }
         AnimationDepartment.animateNeonGlow2(spTableroBackground);
 
-        Object estiloEnContext = AppContext.getInstance().get(AppContext.KEY_ESTILO_CARTAS);
-        if (estiloEnContext instanceof String) {
-            String rutaEstilo = (String) estiloEnContext;
-            usarEstiloClasico = rutaEstilo.equals(AppContext.RUTA_CARTAS_CLASICAS);
+        // --- USAR REVERSO GUARDADO EN LA PARTIDA ---
+        String reversoGuardado = partidaDto.getReversoSeleccionado();
+        if (reversoGuardado != null && !reversoGuardado.isEmpty()) {
+            AppContext.getInstance().set(AppContext.KEY_ESTILO_CARTAS, reversoGuardado);
+            usarEstiloClasico = reversoGuardado.equals(AppContext.RUTA_CARTAS_CLASICAS);
         } else {
             usarEstiloClasico = false;
         }
@@ -955,9 +979,11 @@ public class GameController extends Controller implements Initializable {
     private void actualizarVistaDelMazoYPilas() {
         hboxTableroSuperior.getChildren().clear();
 
+        // 1) Verificar si hay cartas en el mazo:
         boolean hayCartasEnMazo = cartasEnJuego.stream()
                 .anyMatch(c -> c.getEnMazo());
 
+        // 2) Si hay cartas en el mazo, creamos el ImageView del mazo con evento click → repartirCartasDelMazo()
         if (hayCartasEnMazo) {
             imgMazo = new ImageView(new Image(getClass().getResourceAsStream(
                     "/cr/ac/una/proyectospider/resources/" +
@@ -968,23 +994,28 @@ public class GameController extends Controller implements Initializable {
             imgMazo.setOnMouseClicked(e -> repartirCartasDelMazo());
             hboxTableroSuperior.getChildren().add(imgMazo);
         } else {
+            // Si no hay cartas en mazo, solo ponemos un espacio vacío de 70px
             Region espacioMazo = new Region();
             espacioMazo.setPrefWidth(70);
             hboxTableroSuperior.getChildren().add(espacioMazo);
         }
 
+        // 3) Añadir un espaciador fijo de 70px al lado derecho del mazo
         Region espacio = new Region();
         espacio.setPrefWidth(70);
         hboxTableroSuperior.getChildren().add(espacio);
 
+        // 4) Contar cuántas secuencias completas (K→A) ya pasaron a pilas
         long secuenciasCompletadas = cartasEnJuego.stream()
                 .filter(c -> c.getEnPila())
-                .count() / 13;
+                .count() / 13; // cada secuencia son 13 cartas
 
+        // 5) Mostrar las 8 pilas (las completadas muestran As; las vacías muestran white.png o whites.png)
         for (int i = 0; i < 8; i++) {
             ImageView pila;
             if (i < secuenciasCompletadas) {
                 int pilaActual = i;
+                // Tomamos uno de los As de esa secuencia por palo
                 String paloSecuencia = cartasEnJuego.stream()
                         .filter(c -> c.getEnPila())
                         .skip(pilaActual * 13)
@@ -1002,12 +1033,14 @@ public class GameController extends Controller implements Initializable {
                     pila = new ImageView(new Image(getClass().getResourceAsStream(
                             "/cr/ac/una/proyectospider/resources/" + cartaAs.getImagenNombre())));
                 } else {
-
+                    // Si no consigo el As, le pongo un "1C.png" por defecto
+                    // Si no consigo el As, le pongo un "1C.png" por defecto
                     pila = new ImageView(new Image(getClass().getResourceAsStream(
                             "/cr/ac/una/proyectospider/resources/1C.png")));
                 }
             } else {
-
+                // Pila vacía: mostrar "white.png" o "whites.png   según estilo
+                // Pila vacía: mostrar "white.png" o "whites.png   según estilo
                 String whiteImg = usarEstiloClasico ? "white.png" : "whites.png";
                 pila = new ImageView(new Image(getClass().getResourceAsStream(
                         "/cr/ac/una/proyectospider/resources/" + whiteImg)));
@@ -1018,7 +1051,7 @@ public class GameController extends Controller implements Initializable {
             hboxTableroSuperior.getChildren().add(pila);
         }
 
-
+        // 6) Verificar si hay victoria (y pop‐up si corresponde):
         verificarVictoria();
     }
 
@@ -1049,6 +1082,7 @@ public class GameController extends Controller implements Initializable {
                 .max()
                 .orElse(-1) + 1;
 
+        // Evitar mover si ya están en la misma columna y orden
         if (cartasSeleccionadas.size() == 1) {
             CartasPartidaDto carta = cartasSeleccionadas.get(0);
             if (carta.getColumna() == nuevaColumna && carta.getOrden() == nuevoOrden - 1) {
@@ -1086,6 +1120,7 @@ public class GameController extends Controller implements Initializable {
                     carta.getColumna(), carta.getOrden());
         }
 
+        // Voltear carta debajo en la columna origen, si existe
         CartasPartidaDto cartaOrigen = cartasSeleccionadas.get(0);
         int colAnterior = cartaOrigen.getColumna();
         int ordenAnterior = cartaOrigen.getOrden();
@@ -1101,6 +1136,7 @@ public class GameController extends Controller implements Initializable {
 
         System.out.println("Movimiento terminado.\n");
 
+        // Verificar si se ha completado una secuencia después del movimiento
         verificarSecuenciaCompleta();
     }
 
@@ -1121,6 +1157,7 @@ public class GameController extends Controller implements Initializable {
             mov.ordenesDestino.add(nuevoOrden + i);
             mov.bocasArribaDestino.add(true);
         }
+        // Guardar carta debajo que podría voltearse
         CartasPartidaDto cartaOrigen = cartas.get(0);
         int colAnterior = cartaOrigen.getColumna();
         int ordenAnterior = cartaOrigen.getOrden();
@@ -1144,7 +1181,121 @@ public class GameController extends Controller implements Initializable {
         historialMovimientos.push(mov);
     }
 
-    private void deshacerUltimoMovimiento(Runnable onFinished) {
+    private void deshacerUltimoMovimiento() {
+        if (historialMovimientos.isEmpty()) return;
+        Movimiento mov = historialMovimientos.pop();
+        if (mov.tipo == Movimiento.Tipo.MOVER) {
+            List<CartasPartidaDto> cartasAMover = new ArrayList<>(mov.cartasMovidas);
+            int columnaOrigen = mov.columnasOrigen.get(0); // Todas vuelven a la misma columna origen
+            Object cartaDebajo = mov.cartaDebajoVolteada; // Puede ser null
+            Boolean cartaDebajoEstabaBocaAbajo = (mov.cartaDebajoVolteadaEstadoAnterior != null) ? !mov.cartaDebajoVolteadaEstadoAnterior : null;
+            AnimationDepartment.animarUndoVisual(
+                    cartasAMover,
+                    columnaOrigen,
+                    spGamebackground,
+                    cartaToImageView,
+                    hboxTablero,
+                    cartasEnJuego,
+                    (n) -> calcularEspaciadoVertical(n),
+                    cartaDebajo,
+                    cartaDebajoEstabaBocaAbajo,
+                    () -> {
+                        for (int i = 0; i < mov.cartasMovidas.size(); i++) {
+                            CartasPartidaDto carta = mov.cartasMovidas.get(i);
+                            carta.setColumna(mov.columnasOrigen.get(i));
+                            carta.setOrden(mov.ordenesOrigen.get(i));
+                            carta.setBocaArriba(mov.bocasArribaOrigen.get(i));
+                        }
+                        if (mov.cartaDebajoVolteada != null && mov.cartaDebajoVolteadaEstadoAnterior != null) {
+                            mov.cartaDebajoVolteada.setBocaArriba(mov.cartaDebajoVolteadaEstadoAnterior);
+                        }
+                        movimientos = Math.max(0, movimientos - 1);
+                        puntaje = Math.max(0, puntaje - 1);
+                        lblMovimientos.setText("" + movimientos);
+                        lblPuntaje.setText("" + puntaje);
+                        dibujarColumnasYCargarCartasEnTablero();
+                        actualizarVistaDelMazoYPilas();
+                    }
+            );
+            return;
+        } else if (mov.tipo == Movimiento.Tipo.REPARTIR) {
+            for (int i = 0; i < mov.cartasRepartidas.size(); i++) {
+                CartasPartidaDto carta = mov.cartasRepartidas.get(i);
+                carta.setEnMazo(true);
+                carta.setColumna(-1);
+                carta.setOrden(-1);
+                carta.setBocaArriba(false);
+            }
+            movimientos = Math.max(0, movimientos - 1);
+            puntaje = Math.max(0, puntaje - 1);
+            lblMovimientos.setText("" + movimientos);
+            lblPuntaje.setText("" + puntaje);
+            dibujarColumnasYCargarCartasEnTablero();
+            actualizarVistaDelMazoYPilas();
+        } else if (mov.tipo == Movimiento.Tipo.COMPLETAR_SECUENCIA) {
+            // Lanzar la animación visual y SOLO en el callback restaurar el modelo
+            AnimationDepartment.animarUndoVisual(
+                mov.cartasSecuencia,
+                mov.columnaSecuencia,
+                spGamebackground,
+                cartaToImageView,
+                hboxTablero,
+                cartasEnJuego,
+                (n) -> calcularEspaciadoVertical(n),
+                mov.cartaDebajoSecuencia,
+                mov.cartaDebajoSecuenciaEstadoAnterior != null ? !mov.cartaDebajoSecuenciaEstadoAnterior : null,
+                () -> {
+                    // Restaurar la secuencia completa a la columna y orden original
+                    for (int i = 0; i < mov.cartasSecuencia.size(); i++) {
+                        CartasPartidaDto carta = mov.cartasSecuencia.get(i);
+                        carta.setEnPila(false);
+                        carta.setColumna(mov.columnaSecuencia);
+                        carta.setOrden(mov.ordenesSecuencia.get(i));
+                        carta.setBocaArriba(mov.bocasArribaSecuencia.get(i));
+                    }
+                    // Restaurar carta debajo si existía
+                    if (mov.cartaDebajoSecuencia != null && mov.cartaDebajoSecuenciaEstadoAnterior != null) {
+                        mov.cartaDebajoSecuencia.setBocaArriba(mov.cartaDebajoSecuenciaEstadoAnterior);
+                    }
+                    puntaje = Math.max(0, puntaje - 100); // Quitar los 100 puntos de la secuencia
+                    lblPuntaje.setText("" + puntaje);
+                    lblMovimientos.setText("" + movimientos);
+                    dibujarColumnasYCargarCartasEnTablero();
+                    actualizarVistaDelMazoYPilas();
+                    // Deshacer automáticamente el movimiento anterior si existe
+                    if (!historialMovimientos.isEmpty()) {
+                        Platform.runLater(() -> deshacerUltimoMovimiento());
+                    }
+                }
+            );
+            return;
+        }
+    }
+
+    @FXML
+    private void onMouseClickedbtnUndoAll(MouseEvent event) {
+        SoundDepartment.playUndoAll();
+        deshacerTodosLosMovimientosPasoAPaso();
+    }
+
+    /**
+     * Deshace todos los movimientos uno a uno, esperando a que termine la animación de cada uno antes de continuar.
+     * Usa un pequeño delay para que sea fluido pero sin errores visuales.
+     */
+    private void deshacerTodosLosMovimientosPasoAPaso() {
+        if (historialMovimientos.isEmpty()) return;
+        deshacerUltimoMovimientoConCallback(() -> {
+            // Pequeño delay antes de deshacer el siguiente (ajustable)
+            PauseTransition pause = new PauseTransition(Duration.millis(5));
+            pause.setOnFinished(e -> deshacerTodosLosMovimientosPasoAPaso());
+            pause.play();
+        });
+    }
+
+    /**
+     * Igual que deshacerUltimoMovimiento, pero acepta un callback para saber cuándo terminó (tras la animación).
+     */
+    private void deshacerUltimoMovimientoConCallback(Runnable onFinished) {
         if (historialMovimientos.isEmpty()) {
             if (onFinished != null) onFinished.run();
             return;
@@ -1186,30 +1337,20 @@ public class GameController extends Controller implements Initializable {
             );
             return;
         } else if (mov.tipo == Movimiento.Tipo.REPARTIR) {
-            AnimationDepartment.animarCartasAlMazoVisual(
-                mov.cartasRepartidas,
-                spGamebackground,
-                cartaToImageView,
-                hboxTablero,
-                imgMazo,
-                () -> {
-                    for (int i = 0; i < mov.cartasRepartidas.size(); i++) {
-                        CartasPartidaDto carta = mov.cartasRepartidas.get(i);
-                        carta.setEnMazo(true);
-                        carta.setColumna(-1);
-                        carta.setOrden(-1);
-                        carta.setBocaArriba(false);
-                    }
-                    movimientos = Math.max(0, movimientos - 1);
-                    puntaje = Math.max(0, puntaje - 1);
-                    lblMovimientos.setText("" + movimientos);
-                    lblPuntaje.setText("" + puntaje);
-                    dibujarColumnasYCargarCartasEnTablero();
-                    actualizarVistaDelMazoYPilas();
-                    if (onFinished != null) onFinished.run();
-                }
-            );
-            return;
+            for (int i = 0; i < mov.cartasRepartidas.size(); i++) {
+                CartasPartidaDto carta = mov.cartasRepartidas.get(i);
+                carta.setEnMazo(true);
+                carta.setColumna(-1);
+                carta.setOrden(-1);
+                carta.setBocaArriba(false);
+            }
+            movimientos = Math.max(0, movimientos - 1);
+            puntaje = Math.max(0, puntaje - 1);
+            lblMovimientos.setText("" + movimientos);
+            lblPuntaje.setText("" + puntaje);
+            dibujarColumnasYCargarCartasEnTablero();
+            actualizarVistaDelMazoYPilas();
+            if (onFinished != null) onFinished.run();
         } else if (mov.tipo == Movimiento.Tipo.COMPLETAR_SECUENCIA) {
             AnimationDepartment.animarUndoVisual(
                 mov.cartasSecuencia,
@@ -1237,81 +1378,20 @@ public class GameController extends Controller implements Initializable {
                     lblMovimientos.setText("" + movimientos);
                     dibujarColumnasYCargarCartasEnTablero();
                     actualizarVistaDelMazoYPilas();
-                    if (!historialMovimientos.isEmpty()) {
-                        Platform.runLater(() -> deshacerUltimoMovimiento(onFinished));
-                    } else {
-                        if (onFinished != null) onFinished.run();
-                    }
+                    // Deshacer automáticamente el movimiento anterior si existe (solo para undo normal, no undo all)
+                    if (onFinished != null) onFinished.run();
                 }
             );
             return;
         }
-    }
-
-    private void deshacerUltimoMovimiento() {
-        deshacerUltimoMovimiento(null);
-    }
-
-    @FXML
-    private void onMouseClickedbtnUndoAll(MouseEvent event) {
-        SoundDepartment.playUndoAll();
-        restaurarEstadoInicialSinAnimaciones();
-    }
-
-
-    private void restaurarEstadoInicialSinAnimaciones() {
-        if (historialMovimientos.isEmpty()) return;
-        while (!historialMovimientos.isEmpty()) {
-            Movimiento mov = historialMovimientos.pop();
-            if (mov.tipo == Movimiento.Tipo.MOVER) {
-                for (int i = 0; i < mov.cartasMovidas.size(); i++) {
-                    CartasPartidaDto carta = mov.cartasMovidas.get(i);
-                    carta.setColumna(mov.columnasOrigen.get(i));
-                    carta.setOrden(mov.ordenesOrigen.get(i));
-                    carta.setBocaArriba(mov.bocasArribaOrigen.get(i));
-                }
-                if (mov.cartaDebajoVolteada != null && mov.cartaDebajoVolteadaEstadoAnterior != null) {
-                    mov.cartaDebajoVolteada.setBocaArriba(mov.cartaDebajoVolteadaEstadoAnterior);
-                }
-                movimientos = Math.max(0, movimientos - 1);
-                puntaje = Math.max(0, puntaje - 1);
-            } else if (mov.tipo == Movimiento.Tipo.REPARTIR) {
-                for (int i = 0; i < mov.cartasRepartidas.size(); i++) {
-                    CartasPartidaDto carta = mov.cartasRepartidas.get(i);
-                    carta.setEnMazo(true);
-                    carta.setColumna(-1);
-                    carta.setOrden(-1);
-                    carta.setBocaArriba(false);
-                }
-                movimientos = Math.max(0, movimientos - 1);
-                puntaje = Math.max(0, puntaje - 1);
-            } else if (mov.tipo == Movimiento.Tipo.COMPLETAR_SECUENCIA) {
-                for (int i = 0; i < mov.cartasSecuencia.size(); i++) {
-                    CartasPartidaDto carta = mov.cartasSecuencia.get(i);
-                    carta.setEnPila(false);
-                    carta.setColumna(mov.columnaSecuencia);
-                    carta.setOrden(mov.ordenesSecuencia.get(i));
-                    carta.setBocaArriba(mov.bocasArribaSecuencia.get(i));
-                }
-                if (mov.cartaDebajoSecuencia != null && mov.cartaDebajoSecuenciaEstadoAnterior != null) {
-                    mov.cartaDebajoSecuencia.setBocaArriba(mov.cartaDebajoSecuenciaEstadoAnterior);
-                }
-                puntaje = Math.max(0, puntaje - 100);
-            }
-        }
-        lblMovimientos.setText("" + movimientos);
-        lblPuntaje.setText("" + puntaje);
-        dibujarColumnasYCargarCartasEnTablero();
-        actualizarVistaDelMazoYPilas();
+        // Si no es ninguno de los tipos, continuar
+        if (onFinished != null) onFinished.run();
     }
 
     @FXML
     private void onMouseClickedbtnUndo(MouseEvent event) {
         SoundDepartment.playUndo();
-        if (btnUndo != null) btnUndo.setDisable(true);
-        deshacerUltimoMovimiento(() -> {
-            if (btnUndo != null) btnUndo.setDisable(false);
-        });
+        deshacerUltimoMovimiento();
     }
 
     private boolean esGrupoValido(List<CartasPartidaDto> grupo) {
@@ -1324,6 +1404,7 @@ public class GameController extends Controller implements Initializable {
         for (int i = 1; i < grupo.size(); i++) {
             CartasPartidaDto actual = grupo.get(i);
             int valorActual = Integer.parseInt(actual.getValor());
+            // Debe ser descendente y del mismo palo
             if (valorActual != valor - 1 || actual.getBocaArriba() != true || !actual.getPalo().equals(palo)) {
                 return false;
             }
@@ -1365,6 +1446,7 @@ public class GameController extends Controller implements Initializable {
                         && Integer.parseInt(primera.getValor()) == 13
                         && Integer.parseInt(ultima.getValor()) == 1) {
 
+                    // Guardar referencia al grupo de 13 cartas (pero NO marcar enPila aún)
                     List<CartasPartidaDto> grupoDe13Cartas = new ArrayList<>();
                     for (int i = 0; i < 13; i++) {
                         CartasPartidaDto carta = cartasColumna.get(inicio + i);
@@ -1374,6 +1456,7 @@ public class GameController extends Controller implements Initializable {
                     puntaje += 100;
                     lblPuntaje.setText("" + puntaje);
 
+                    // Determinar carta debajo (para el flip después de la animación)
                     Optional<CartasPartidaDto> cartaDebajoOpt;
                     CartasPartidaDto cartaDebajo = null;
                     Boolean cartaDebajoEstadoAnterior = null;
@@ -1394,16 +1477,21 @@ public class GameController extends Controller implements Initializable {
                         }
                     }
 
+                    // Guardar el movimiento de secuencia completa
                     guardarMovimientoCompletarSecuencia(grupoDe13Cartas, columna, grupoDe13Cartas.get(0).getOrden(), cartaDebajo, cartaDebajoEstadoAnterior);
 
+                    // *** PRIMERO redibujar el tablero con las cartas en la columna destino ***
                     dibujarColumnasYCargarCartasEnTablero();
                     actualizarVistaDelMazoYPilas();
 
+                    // Calcular cuántas pilas completas hay antes de marcar las cartas como enPila
                     long pilasCompletas = cartasEnJuego.stream()
                             .filter(c -> c.getEnPila())
                             .count() / 13;
 
+                    // Lanzar la animación en el siguiente frame para que las cartas estén visibles en la columna destino
                     Platform.runLater(() -> {
+                        // Marcar las 13 cartas como enPila justo ANTES de la animación
                         for (CartasPartidaDto carta : grupoDe13Cartas) {
                             carta.setEnPila(true);
                             carta.setColumna(-1);
@@ -1417,6 +1505,7 @@ public class GameController extends Controller implements Initializable {
                                 spGamebackground,
                                 hboxTableroSuperior,
                                 () -> {
+                                    // Después de la animación → si hay carta debajo, hacer flip
                                     if (cartaDebajoOpt.isPresent()) {
                                         CartasPartidaDto cartaDebajo2 = cartaDebajoOpt.get();
                                         ImageView ivDebajo = cartaToImageView.get(cartaDebajo2);
@@ -1436,7 +1525,7 @@ public class GameController extends Controller implements Initializable {
                         );
                     });
 
-                    return;
+                    return; // Importante: solo procesar una secuencia por llamada
                 }
             }
         }
@@ -1446,12 +1535,15 @@ public class GameController extends Controller implements Initializable {
         if (grupo == null || grupo.isEmpty()) return -1;
         CartasPartidaDto cartaOrigen = grupo.get(0);
         int valorOrigen = Integer.parseInt(cartaOrigen.getValor());
+        // Buscar en todas las columnas
         for (int col = 0; col < 10; col++) {
             if (col == cartaOrigen.getColumna()) continue;
             CartasPartidaDto cartaDestino = obtenerUltimaCartaVisible(col);
             if (cartaDestino == null) {
+                // Columna vacía: aceptar cualquier grupo válido
                 if (esGrupoValido(grupo)) return col;
             } else {
+                // Permitir mover cualquier grupo válido si el valor es descendente en uno, sin importar el palo
                 if (esGrupoValido(grupo)
                         && Integer.parseInt(cartaOrigen.getValor()) == Integer.parseInt(cartaDestino.getValor()) - 1) {
                     return col;
@@ -1464,6 +1556,7 @@ public class GameController extends Controller implements Initializable {
     private void iniciarTemporizadorSiEsNecesario() {
         if (!tiempoIniciado) {
             tiempoIniciado = true;
+            //segundosTranscurridos = 0;
             timeline = new Timeline(new KeyFrame(Duration.seconds(1), e -> {
                 segundosTranscurridos++;
                 actualizarLabelTiempo();
@@ -1534,8 +1627,10 @@ public class GameController extends Controller implements Initializable {
         int totalCartasDespues = cartasEnColDest + grupo.size();
         double spacing = calcularEspaciadoVertical(totalCartasDespues);
 
+        // Calcular la posición Y real del primer clon: justo después de la última carta visible
         double baseY;
         if (cartasEnColDest > 0) {
+            // Buscar la última carta visible en la columna destino
             CartasPartidaDto ultima = cartasEnJuego.stream()
                     .filter(c -> c.getColumna() == columnaDestino)
                     .max(Comparator.comparingInt(CartasPartidaDto::getOrden))
@@ -1684,23 +1779,26 @@ public class GameController extends Controller implements Initializable {
                 .count();
 
         if (cartasEnPila == 104 && !victoryTriggered) {
-            victoryTriggered = true;
+            victoryTriggered = true;   // evita re-entradas durante esta victoria
 
             Platform.runLater(() -> {
                 detenerTemporizador();
 
+                // ACTUALIZAR ESTADO DE LA PARTIDA EN BD Y GUARDAR CARTAS
                 partidaDto.setEstado("TERMINADA");
                 partidaDto.setFechaFin(new Date());
                 partidaDto.setPuntos(puntaje);
                 partidaDto.setTiempoJugado(segundosTranscurridos);
                 partidaDto.setMovimientos(movimientos);
 
+                // Obtener el estado final de las cartas
                 List<CartasPartidaDto> cartasActuales = obtenerEstadoDelTablero();
                 for (CartasPartidaDto carta : cartasActuales) {
                     carta.setPartida(partidaDto);
                 }
                 PartidaService partidaService = new PartidaService();
                 if (partidaDto.getIdPartida() == null) {
+                    // Si la partida no existe, crearla primero
                     PartidaDto nuevaPartida = partidaService.crearPartida(partidaDto);
                     if (nuevaPartida != null) {
                         partidaDto = nuevaPartida;
@@ -1710,6 +1808,7 @@ public class GameController extends Controller implements Initializable {
                         partidaService.guardarPartidaCompleta(partidaDto, cartasActuales);
                     }
                 } else {
+                    // Si ya existe, guardar el estado final de la partida y cartas
                     partidaService.guardarPartidaCompleta(partidaDto, cartasActuales);
                 }
 
@@ -1717,6 +1816,7 @@ public class GameController extends Controller implements Initializable {
                         spGamebackground,
                         usarEstiloClasico,
                         () -> {
+                            // --- Callback tras la animación completa ---
                             primerIngreso = true;
                             cartasEnJuego = null;
                             cartaToImageView.clear();
@@ -1724,12 +1824,14 @@ public class GameController extends Controller implements Initializable {
                             puntaje = 500;
                             tiempoIniciado = false;
 
+                            // 1) Navegar al menú
                             FlowController.getInstance().goView("MenuView");
                             MenuController controller =
                                     (MenuController) FlowController.getInstance()
                                             .getController("MenuView");
                             controller.RunMenuView();
 
+                            // 2) Permitimos lanzar otra victoria en próximas partidas
                             victoryTriggered = false;
                         }
                 );
@@ -1737,6 +1839,16 @@ public class GameController extends Controller implements Initializable {
             return true;
         }
         return false;
+    }
+
+    private void shakeNode(Node node) {
+        TranslateTransition tt = new TranslateTransition(Duration.millis(60), node);    
+        tt.setFromX(0);
+        tt.setByX(12);
+        tt.setCycleCount(6);
+        tt.setAutoReverse(true);
+        tt.setOnFinished(e -> node.setTranslateX(0));
+        tt.play();
     }
 
     private List<CartasPartidaDto> obtenerEstadoDelTablero() {
@@ -1775,6 +1887,7 @@ public class GameController extends Controller implements Initializable {
         return cartasActuales;
     }
 
+    // Guarda el movimiento de completar secuencia (K-A)
     private void guardarMovimientoCompletarSecuencia(List<CartasPartidaDto> grupoDe13Cartas, int columna, int ordenInicio, CartasPartidaDto cartaDebajo, Boolean cartaDebajoEstadoAnterior) {
         Movimiento mov = new Movimiento(Movimiento.Tipo.COMPLETAR_SECUENCIA);
         for (CartasPartidaDto carta : grupoDe13Cartas) {
@@ -1792,18 +1905,22 @@ public class GameController extends Controller implements Initializable {
 
     @FXML
     void onMouseClickedbtnRendirse(MouseEvent event) {
+        // 1) Deshabilitamos el botón para evitar clics múltiples mientras aparece la alerta
         btnRendirse.setDisable(true);
         SoundDepartment.playSurrender();
 
+        // 2) Llamamos a nuestra CustomAlert
         CustomAlert.showConfirmation(
-                spGamebackground,
-                "Confirmar Rendirse",
+                spGamebackground,                                 // El StackPane padre donde se pintará la capa semi‐transparente
+                "Confirmar Rendirse",                             // Título que aparecerá en la cabecera del diálogo
                 "¿Estás seguro de que deseas rendirte?\n" +
                         "Si te rindes, la partida se descartará y volverás al menú.",
                 (Boolean usuarioDijoSi) -> {
-
+                    // Este callback se ejecuta después de que el usuario cierre la alerta.
+                    // 'usuarioDijoSi' es true si pinchó "Sí", false si pinchó "No".
 
                     if (usuarioDijoSi) {
+                        // → El usuario pinchó "Sí", así que ejecutamos el flujo de "rendirse":
                         AnimationDepartment.stopAllAnimations();
                         detenerTemporizador();
                         primerIngreso = true;
@@ -1813,6 +1930,7 @@ public class GameController extends Controller implements Initializable {
                         puntaje = 500;
                         tiempoIniciado = false;
 
+                        // Una vez cancelada la partida, hacemos el glitchFadeOut y cambiamos a menú:
                         AnimationDepartment.glitchFadeOut(spGamebackground, Duration.seconds(1.1), () -> {
                             FlowController.getInstance().goView("MenuView");
                             MenuController controller =
@@ -1821,11 +1939,10 @@ public class GameController extends Controller implements Initializable {
                             Platform.runLater(() -> btnRendirse.setDisable(false));
                         });
                     } else {
+                        // → El usuario pinchó "No", así que solo re‐habilitamos el botón
                         btnRendirse.setDisable(false);
                     }
                 }
         );
     }
 }
-
-

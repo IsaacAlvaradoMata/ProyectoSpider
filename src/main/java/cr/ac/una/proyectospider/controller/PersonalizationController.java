@@ -24,6 +24,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Window;
 import javafx.util.Duration;
+import cr.ac.una.proyectospider.model.PartidaDto;
 
 
 public class PersonalizationController extends Controller implements Initializable {
@@ -276,15 +277,31 @@ public class PersonalizationController extends Controller implements Initializab
     private void onMouseClickedbtnGuardarCambios(MouseEvent event) {
         SoundDepartment.playClick();
         Image fondoSeleccionado = imgPrevistaFondo.getImage();
-        AppContext.getInstance().set(AppContext.KEY_FONDO_SELECCIONADO, fondoSeleccionado);
-
         String claveEstilo;
         if (rbtnCyberpunk.isSelected()) {
             claveEstilo = AppContext.RUTA_CARTAS_CYBERPUNK;
         } else {
             claveEstilo = AppContext.RUTA_CARTAS_CLASICAS;
         }
+
+        // Guardar en AppContext
+        AppContext.getInstance().set(AppContext.KEY_FONDO_SELECCIONADO, fondoSeleccionado);
         AppContext.getInstance().set(AppContext.KEY_ESTILO_CARTAS, claveEstilo);
+
+        // Guardar en un PartidaDto temporal en AppContext para persistencia entre pantallas
+        PartidaDto partidaDtoPersonalizacion = (PartidaDto) AppContext.getInstance().get("partidaDtoPersonalizacion");
+        if (partidaDtoPersonalizacion == null) {
+            partidaDtoPersonalizacion = new PartidaDto();
+        }
+        String fondoStr;
+        if (fondosPredeterminados.contains(fondoSeleccionado)) {
+            fondoStr = "DefaultBack" + (fondosPredeterminados.indexOf(fondoSeleccionado) + 1) + ".png";
+        } else {
+            fondoStr = fondoSeleccionado.getUrl();
+        }
+        partidaDtoPersonalizacion.setFondoSeleccionado(fondoStr);
+        partidaDtoPersonalizacion.setReversoSeleccionado(claveEstilo);
+        AppContext.getInstance().set("partidaDtoPersonalizacion", partidaDtoPersonalizacion);
 
         CustomAlert.showInfo(
                 spBackgroundPersonalization,
@@ -292,7 +309,6 @@ public class PersonalizationController extends Controller implements Initializab
                 "El fondo y el estilo de cartas han sido guardados correctamente.",
                 null
         );
-
     }
 
 

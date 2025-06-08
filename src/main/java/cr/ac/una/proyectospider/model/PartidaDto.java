@@ -15,6 +15,8 @@ public class PartidaDto {
     private final StringProperty dificultad;
     private final ObjectProperty<JugadorDto> jugador;
     private Long version;
+    private final StringProperty fondoSeleccionado = new SimpleStringProperty("");
+    private final StringProperty reversoSeleccionado = new SimpleStringProperty("");
 
     public PartidaDto() {
         this.idPartida = new SimpleObjectProperty<>(null);
@@ -42,6 +44,8 @@ public class PartidaDto {
             this.jugador.set(new JugadorDto(partida.getJugador()));
         }
         this.version = partida.getVersion();
+        this.fondoSeleccionado.set(partida.getFondoSeleccionado());
+        this.reversoSeleccionado.set(partida.getReversoSeleccionado());
     }
 
     public Partida toEntitySinJugador() {
@@ -55,6 +59,8 @@ public class PartidaDto {
         partida.setEstado(this.getEstado());
         partida.setDificultad(this.getDificultad());
         partida.setVersion(this.version);
+        partida.setFondoSeleccionado(this.getFondoSeleccionado());
+        partida.setReversoSeleccionado(this.getReversoSeleccionado());
         return partida;
     }
 
@@ -74,6 +80,12 @@ public class PartidaDto {
     public StringProperty estadoProperty() { return estado; }
     public StringProperty dificultadProperty() { return dificultad; }
     public ObjectProperty<JugadorDto> jugadorProperty() { return jugador; }
+    public StringProperty fondoSeleccionadoProperty() { return fondoSeleccionado; }
+    public String getFondoSeleccionado() { return fondoSeleccionado.get(); }
+    public void setFondoSeleccionado(String fondo) { this.fondoSeleccionado.set(fondo); }
+    public StringProperty reversoSeleccionadoProperty() { return reversoSeleccionado; }
+    public String getReversoSeleccionado() { return reversoSeleccionado.get(); }
+    public void setReversoSeleccionado(String reverso) { this.reversoSeleccionado.set(reverso); }
 
     public Long getIdPartida() { return idPartida.get(); }
     public Date getFechaInicio() { return fechaInicio.get(); }

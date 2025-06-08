@@ -42,7 +42,9 @@ CREATE TABLE Partida (
                          Tiempo_Jugado NUMBER CONSTRAINT CK_PARTIDA_TIEMPO_JUGADO CHECK (Tiempo_Jugado >= 0),
                          Movimientos NUMBER DEFAULT 0 CONSTRAINT CK_PARTIDA_MOVIMIENTOS CHECK (Movimientos >= 0),
                          Estado VARCHAR2(20) NOT NULL CONSTRAINT CK_PARTIDA_ESTADO CHECK (Estado IN ('EN_JUEGO', 'PAUSADA', 'TERMINADA', 'PERDIDA')),
-                         Dificultad VARCHAR2(20) DEFAULT 'MEDIA' NOT NULL CONSTRAINT CK_PARTIDA_DIFICULTAD CHECK (Dificultad IN ('FACIL', 'MEDIA', 'DIFICIL'))
+                         Dificultad VARCHAR2(20) DEFAULT 'MEDIA' NOT NULL CONSTRAINT CK_PARTIDA_DIFICULTAD CHECK (Dificultad IN ('FACIL', 'MEDIA', 'DIFICIL')),
+                         Fondo_Seleccionado VARCHAR2(100),
+                         Reverso_Seleccionado VARCHAR2(100)
 );
 
 COMMENT ON COLUMN Partida.Id_Partida IS 'Id de la partida';
@@ -55,6 +57,8 @@ COMMENT ON COLUMN Partida.Movimientos IS 'Cantidad total de movimientos realizad
 COMMENT ON COLUMN Partida.Estado IS 'Estado de la partida';
 COMMENT ON COLUMN Partida.Dificultad IS 'Dificultad de la partida';
 COMMENT ON COLUMN Partida.Version IS 'Número de versión para control de concurrencia optimista';
+COMMENT ON COLUMN Partida.Fondo_Seleccionado IS 'Nombre del archivo de fondo seleccionado al iniciar la partida';
+COMMENT ON COLUMN Partida.Reverso_Seleccionado IS 'Nombre del archivo del reverso de carta seleccionado al iniciar la partida';
 
 CREATE INDEX IX_Relationship2 ON Partida (Id_Jugador);
 

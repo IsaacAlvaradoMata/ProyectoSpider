@@ -53,6 +53,12 @@ public class Partida implements Serializable {
     @Column(name = "DIFICULTAD")
     private String dificultad;
 
+    @Column(name = "FONDO_SELECCIONADO")
+    private String fondoSeleccionado;
+
+    @Column(name = "REVERSO_SELECCIONADO")
+    private String reversoSeleccionado;
+
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_JUGADOR", referencedColumnName = "ID_JUGADOR")
     private Jugador jugador;
@@ -80,6 +86,8 @@ public class Partida implements Serializable {
         this.estado = dto.getEstado();
         this.dificultad = dto.getDificultad();
         this.version = dto.getVersion();
+        this.fondoSeleccionado = dto.getFondoSeleccionado();
+        this.reversoSeleccionado = dto.getReversoSeleccionado();
     }
 
     public void actualizar(PartidaDto dto) {
@@ -91,6 +99,8 @@ public class Partida implements Serializable {
         this.estado = dto.getEstado();
         this.dificultad = dto.getDificultad();
         this.version = dto.getVersion();
+        this.fondoSeleccionado = dto.getFondoSeleccionado();
+        this.reversoSeleccionado = dto.getReversoSeleccionado();
     }
 
     public Long getIdPartida() {
@@ -155,6 +165,22 @@ public class Partida implements Serializable {
 
     public void setDificultad(String dificultad) {
         this.dificultad = dificultad;
+    }
+
+    public String getFondoSeleccionado() {
+        return fondoSeleccionado;
+    }
+
+    public void setFondoSeleccionado(String fondoSeleccionado) {
+        this.fondoSeleccionado = fondoSeleccionado;
+    }
+
+    public String getReversoSeleccionado() {
+        return reversoSeleccionado;
+    }
+
+    public void setReversoSeleccionado(String reversoSeleccionado) {
+        this.reversoSeleccionado = reversoSeleccionado;
     }
 
     public Jugador getJugador() {
