@@ -1226,13 +1226,14 @@ public class GameController extends Controller implements Initializable {
         deshacerTodosLosMovimientosPasoAPaso();
     }
 
+    private void deshacerTodosLosMovimientosInstantaneo() {
+        while (!historialMovimientos.isEmpty()) {
+            deshacerUltimoMovimientoSinAnimacion();
+        }
+    }
+
     private void deshacerTodosLosMovimientosPasoAPaso() {
-        if (historialMovimientos.isEmpty()) return;
-        deshacerUltimoMovimientoConCallback(() -> {
-            PauseTransition pause = new PauseTransition(Duration.millis(5));
-            pause.setOnFinished(e -> deshacerTodosLosMovimientosPasoAPaso());
-            pause.play();
-        });
+        deshacerTodosLosMovimientosInstantaneo();
     }
 
     /**
@@ -1933,5 +1934,49 @@ public class GameController extends Controller implements Initializable {
             this.longitud = grupo.size();
             this.valorSuperior = Integer.parseInt(grupo.get(0).getValor());
         }
+    }
+
+    private void deshacerUltimoMovimientoSinAnimacion() {
+        if (historialMovimientos.isEmpty()) return;
+        Movimiento mov = historialMovimientos.pop();
+        if (mov.tipo == Movimiento.Tipo.MOVER) {
+            for (int i = 0; i < mov.cartasMovidas.size(); i++) {
+                CartasPartidaDto carta = mov.cartasMovidas.get(i);
+                carta.setColumna(mov.columnasOrigen.get(i));
+                carta.setOrden(mov.ordenesOrigen.get(i));
+                carta.setBocaArriba(mov.bocasArribaOrigen.get(i));
+            }
+            if (mov.cartaDebajoVolteada != null && mov.cartaDebajoVolteadaEstadoAnterior != null) {
+                mov.cartaDebajoVolteada.setBocaArriba(mov.cartaDebajoVolteadaEstadoAnterior);
+            }
+            movimientos = Math.max(0, movimientos - 1);
+            puntaje = Math.max(0, puntaje - 1);
+        } else if (mov.tipo == Movimiento.Tipo.REPARTIR) {
+            for (int i = 0; i < mov.cartasRepartidas.size(); i++) {
+                CartasPartidaDto carta = mov.cartasRepartidas.get(i);
+                carta.setEnMazo(true);
+                carta.setColumna(-1);
+                carta.setOrden(-1);
+                carta.setBocaArriba(false);
+            }
+            movimientos = Math.max(0, movimientos - 1);
+            puntaje = Math.max(0, puntaje - 1);
+        } else if (mov.tipo == Movimiento.Tipo.COMPLETAR_SECUENCIA) {
+            for (int i = 0; i < mov.cartasSecuencia.size(); i++) {
+                CartasPartidaDto carta = mov.cartasSecuencia.get(i);
+                carta.setEnPila(false);
+                carta.setColumna(mov.columnaSecuencia);
+                carta.setOrden(mov.ordenesSecuencia.get(i));
+                carta.setBocaArriba(mov.bocasArribaSecuencia.get(i));
+            }
+            if (mov.cartaDebajoSecuencia != null && mov.cartaDebajoSecuenciaEstadoAnterior != null) {
+                mov.cartaDebajoSecuencia.setBocaArriba(mov.cartaDebajoSecuenciaEstadoAnterior);
+            }
+            puntaje = Math.max(0, puntaje - 100);
+        }
+        lblMovimientos.setText("" + movimientos);
+        lblPuntaje.setText("" + puntaje);
+        dibujarColumnasYCargarCartasEnTablero();
+        actualizarVistaDelMazoYPilas();
     }
 }
