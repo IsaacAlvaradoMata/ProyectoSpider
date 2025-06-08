@@ -84,6 +84,8 @@ public class GameController extends Controller implements Initializable {
     private ImageView btnUndo;
     @FXML
     private ImageView btnRendirse;
+    @FXML
+    private Label lblNombreJugador1;
 
     private List<CartasPartidaDto> cartasEnJuego;
     private List<CartasPartidaDto> cartasSeleccionadas = new ArrayList<>();
@@ -104,6 +106,7 @@ public class GameController extends Controller implements Initializable {
 
     // Flag para evitar repartir mientras la animación está en curso
     private boolean repartiendo = false;
+
 
     private static class Movimiento {
         enum Tipo {MOVER, REPARTIR, COMPLETAR_SECUENCIA}
@@ -270,10 +273,10 @@ public class GameController extends Controller implements Initializable {
     private void mostrarNombreJugador() {
         JugadorDto jugador = (JugadorDto) AppContext.getInstance().get("jugador");
         if (jugador != null && jugador.getNombreUsuario() != null) {
-            lblNombreJugador.setText("NOMBRE DE JUGADOR: " + jugador.getNombreUsuario().toUpperCase());
+            lblNombreJugador1.setText(" " + jugador.getNombreUsuario().toUpperCase());
             System.out.println("✅ Jugador mostrado en pantalla: " + jugador.getNombreUsuario());
         } else {
-            lblNombreJugador.setText("NOMBRE DE JUGADOR: INVÁLIDO");
+            lblNombreJugador1.setText("INVÁLIDO");
             System.err.println("⚠️ [ERROR] Jugador no encontrado o sin nombre.");
         }
     }
@@ -451,6 +454,7 @@ public class GameController extends Controller implements Initializable {
         PauseTransition t2 = new PauseTransition(Duration.seconds(2.5));
         t2.setOnFinished(e -> {
             AnimationDepartment.slideFromLeft(lblNombreJugador, Duration.ZERO);
+            AnimationDepartment.slideFromLeft(lblNombreJugador1, Duration.ZERO);
             AnimationDepartment.slideFromRight(lblPuntaje, Duration.ZERO);
             AnimationDepartment.slideFromRight(lblTiempo, Duration.ZERO);
             AnimationDepartment.slideFromRight(lblPuntaje1, Duration.ZERO);
@@ -524,6 +528,12 @@ public class GameController extends Controller implements Initializable {
         lblNombreJugador.setTranslateY(0);
         lblNombreJugador.setScaleX(1.0);
         lblNombreJugador.setScaleY(1.0);
+        
+        lblNombreJugador1.setOpacity(0);
+        lblNombreJugador1.setTranslateX(0);
+        lblNombreJugador1.setTranslateY(0);
+        lblNombreJugador1.setScaleX(1.0);
+        lblNombreJugador1.setScaleY(1.0);
 
         lblPuntaje.setOpacity(0);
         lblPuntaje.setTranslateX(0);

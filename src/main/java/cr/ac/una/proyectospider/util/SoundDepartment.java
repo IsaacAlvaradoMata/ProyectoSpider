@@ -24,6 +24,7 @@ public class SoundDepartment {
     private static MediaPlayer Spider3;
     private static MediaPlayer Spider4;
     private static MediaPlayer Victory;
+    private static MediaPlayer Pila;
 
     public static void playFlip() {
         try {
@@ -37,6 +38,7 @@ public class SoundDepartment {
             }
             Media sound = new Media(url.toExternalForm());
             flipPlayer = new MediaPlayer(sound);
+            flipPlayer.setVolume(1);
             flipPlayer.play();
         } catch (Exception e) {
             System.err.println("[SoundDepartment] Could not play flip sound: " + e.getMessage());
@@ -55,6 +57,7 @@ public class SoundDepartment {
             }
             Media sound = new Media(url.toExternalForm());
             errorPlayer = new MediaPlayer(sound);
+            errorPlayer.setVolume(0.9);
             errorPlayer.play();
         } catch (Exception e) {
             System.err.println("[SoundDepartment] Could not play error sound: " + e.getMessage());
@@ -73,6 +76,7 @@ public class SoundDepartment {
             }
             Media sound = new Media(url.toExternalForm());
             hintPlayer = new MediaPlayer(sound);
+            hintPlayer.setVolume(0.7);
             hintPlayer.play();
         } catch (Exception e) {
             System.err.println("[SoundDepartment] Could not play hint sound: " + e.getMessage());
@@ -91,6 +95,7 @@ public class SoundDepartment {
             }
             Media sound = new Media(url.toExternalForm());
             undoPlayer = new MediaPlayer(sound);
+            undoPlayer.setVolume(1);
             undoPlayer.play();
         } catch (Exception e) {
             System.err.println("[SoundDepartment] Could not play undo sound: " + e.getMessage());
@@ -109,6 +114,7 @@ public class SoundDepartment {
             }
             Media sound = new Media(url.toExternalForm());
             undoAllPlayer = new MediaPlayer(sound);
+            undoAllPlayer.setVolume(0.5);
             undoAllPlayer.play();
         } catch (Exception e) {
             System.err.println("[SoundDepartment] Could not play undoall sound: " + e.getMessage());
@@ -128,7 +134,7 @@ public class SoundDepartment {
             }
             Media sound = new Media(url.toExternalForm());
             Alert = new MediaPlayer(sound);
-            Alert.setVolume(0.2);
+            Alert.setVolume(0.6);
             Alert.play();
         } catch (Exception e) {
             System.err.println("[SoundDepartment] Could not play undoall sound: " + e.getMessage());
@@ -147,7 +153,7 @@ public class SoundDepartment {
             }
             Media sound = new Media(url.toExternalForm());
             Click = new MediaPlayer(sound);
-
+            Click.setVolume(0.5);
             Click.play();
         } catch (Exception e) {
             System.err.println("[SoundDepartment] Could not play undoall sound: " + e.getMessage());
@@ -166,6 +172,7 @@ public class SoundDepartment {
             }
             Media sound = new Media(url.toExternalForm());
             Transition = new MediaPlayer(sound);
+            Transition.setVolume(0.8);
             Transition.play();
         } catch (Exception e) {
             System.err.println("[SoundDepartment] Could not play undoall sound: " + e.getMessage());
@@ -184,6 +191,7 @@ public class SoundDepartment {
             }
             Media sound = new Media(url.toExternalForm());
             Transition2 = new MediaPlayer(sound);
+            Transition2.setVolume(0.8);
             Transition2.play();
         } catch (Exception e) {
             System.err.println("[SoundDepartment] Could not play undoall sound: " + e.getMessage());
@@ -202,25 +210,8 @@ public class SoundDepartment {
             }
             Media sound = new Media(url.toExternalForm());
             RadioButton = new MediaPlayer(sound);
+            RadioButton.setVolume(0.6);
             RadioButton.play();
-        } catch (Exception e) {
-            System.err.println("[SoundDepartment] Could not play undoall sound: " + e.getMessage());
-        }
-    }
-
-    public static void playWin() {
-        try {
-            var url = SoundDepartment.class.getResource("/cr/ac/una/proyectospider/resources/EnterWin.mp3");
-            if (url == null) {
-                System.err.println("[SoundDepartment] EnterWin.mp3 not found in resources. No undoall sound will be played.");
-                return;
-            }
-            if (Win != null) {
-                Win.stop();
-            }
-            Media sound = new Media(url.toExternalForm());
-            Win = new MediaPlayer(sound);
-            Win.play();
         } catch (Exception e) {
             System.err.println("[SoundDepartment] Could not play undoall sound: " + e.getMessage());
         }
@@ -238,6 +229,7 @@ public class SoundDepartment {
             }
             Media sound = new Media(url.toExternalForm());
             Deal = new MediaPlayer(sound);
+            Deal.setVolume(0.9);
             Deal.play();
         } catch (Exception e) {
             System.err.println("[SoundDepartment] Could not play undoall sound: " + e.getMessage());
@@ -256,6 +248,7 @@ public class SoundDepartment {
             }
             Media sound = new Media(url.toExternalForm());
             Surrender = new MediaPlayer(sound);
+            Surrender.setVolume(1);
             Surrender.play();
         } catch (Exception e) {
             System.err.println("[SoundDepartment] Could not play undoall sound: " + e.getMessage());
@@ -274,6 +267,7 @@ public class SoundDepartment {
             }
             Media sound = new Media(url.toExternalForm());
             ExitnSave = new MediaPlayer(sound);
+            ExitnSave.setVolume(0.8);
             ExitnSave.play();
         } catch (Exception e) {
             System.err.println("[SoundDepartment] Could not play undoall sound: " + e.getMessage());
@@ -292,6 +286,7 @@ public class SoundDepartment {
             }
             Media sound = new Media(url.toExternalForm());
             Spider1 = new MediaPlayer(sound);
+            Spider1.setVolume(0.8);
             Spider1.play();
         } catch (Exception e) {
             System.err.println("[SoundDepartment] Could not play undoall sound: " + e.getMessage());
@@ -310,6 +305,7 @@ public class SoundDepartment {
             }
             Media sound = new Media(url.toExternalForm());
             Spider2 = new MediaPlayer(sound);
+            Spider2.setVolume(0.8);
             Spider2.play();
         } catch (Exception e) {
             System.err.println("[SoundDepartment] Could not play undoall sound: " + e.getMessage());
@@ -328,6 +324,7 @@ public class SoundDepartment {
             }
             Media sound = new Media(url.toExternalForm());
             Spider3 = new MediaPlayer(sound);
+            Spider3.setVolume(0.8);
             Spider3.play();
         } catch (Exception e) {
             System.err.println("[SoundDepartment] Could not play undoall sound: " + e.getMessage());
@@ -346,6 +343,7 @@ public class SoundDepartment {
             }
             Media sound = new Media(url.toExternalForm());
             Spider4 = new MediaPlayer(sound);
+            Spider4.setVolume(0.8);
             Spider4.play();
         } catch (Exception e) {
             System.err.println("[SoundDepartment] Could not play undoall sound: " + e.getMessage());
@@ -377,6 +375,7 @@ public class SoundDepartment {
             }
             Media sound = new Media(url.toExternalForm());
             PutCard = new MediaPlayer(sound);
+            PutCard.setVolume(0.9);
             PutCard.play();
         } catch (Exception e) {
             System.err.println("[SoundDepartment] Could not play undoall sound: " + e.getMessage());
@@ -395,7 +394,27 @@ public class SoundDepartment {
             }
             Media sound = new Media(url.toExternalForm());
             Victory = new MediaPlayer(sound);
+            Victory.setVolume(0.8);
             Victory.play();
+        } catch (Exception e) {
+            System.err.println("[SoundDepartment] Could not play undoall sound: " + e.getMessage());
+        }
+    }
+
+    public static void playPila() {
+        try {
+            var url = SoundDepartment.class.getResource("/cr/ac/una/proyectospider/resources/pilas2.mp3");
+            if (url == null) {
+                System.err.println("[SoundDepartment] pilas2.mp3 not found in resources. No undoall sound will be played.");
+                return;
+            }
+            if (Pila != null) {
+                Pila.stop();
+            }
+            Media sound = new Media(url.toExternalForm());
+            Pila = new MediaPlayer(sound);
+            Pila.setVolume(0.7);
+            Pila.play();
         } catch (Exception e) {
             System.err.println("[SoundDepartment] Could not play undoall sound: " + e.getMessage());
         }

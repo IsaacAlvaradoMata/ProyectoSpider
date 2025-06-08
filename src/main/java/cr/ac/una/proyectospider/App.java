@@ -37,7 +37,7 @@ public class App extends Application {
             Media media = new Media(musicPath);
             mediaPlayer = new MediaPlayer(media);
             mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE); // Loop
-            mediaPlayer.setVolume(0.05); // Volumen bajo
+            mediaPlayer.setVolume(0.08); // Volumen bajo
             mediaPlayer.play();
         }
 

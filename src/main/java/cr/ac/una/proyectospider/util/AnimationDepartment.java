@@ -1457,6 +1457,7 @@ public class AnimationDepartment {
         toDest.play();
     }
     public static void animarSecuenciaAHaciaPila(
+
             List<CartasPartidaDto> grupoDe13Cartas,
             int pilaDestinoIndex,
             Map<CartasPartidaDto, ImageView> cartaToImageView,
@@ -1468,7 +1469,7 @@ public class AnimationDepartment {
             if (onFinished != null) onFinished.run();
             return;
         }
-
+        SoundDepartment.playPila();
         // Crear un Pane temporal para las animaciones
         Pane animPane = new Pane();
         animPane.setPickOnBounds(false);
