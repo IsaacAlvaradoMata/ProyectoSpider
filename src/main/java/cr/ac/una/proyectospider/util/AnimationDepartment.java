@@ -1265,18 +1265,7 @@ public class AnimationDepartment {
         doMove.run();
     }
 
-    /**
-     * Animación visual de reparto de cartas desde el mazo a las columnas.
-     *
-     * @param cartasRepartidas          Lista de cartas a repartir (en orden de columna)
-     * @param spGamebackground          Pane principal de fondo
-     * @param cartaToImageView          Mapa de cartas a sus ImageView (solo cartas en mazo)
-     * @param hboxTablero               HBox del tablero
-     * @param imgMazo                   ImageView del mazo
-     * @param calcularEspaciadoVertical Función para calcular el espaciado vertical
-     * @param cartasEnJuego             Lista de cartas en juego
-     * @param onFinished                Runnable opcional para ejecutar al terminar
-     */
+
     public static void animarRepartoCartasVisual(
             List<?> cartasRepartidas,
             Pane spGamebackground,

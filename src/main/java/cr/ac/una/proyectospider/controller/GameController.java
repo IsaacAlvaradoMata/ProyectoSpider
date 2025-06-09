@@ -112,16 +112,7 @@ public class GameController extends Controller implements Initializable {
     private boolean repartiendo = false;
     private boolean victoryTriggered = false;
 
-    /**
-     * Calcula el layoutY correcto para una carta en una columna de solitario,
-     * usando espaciado vertical dinámico para que todas quepan en el Pane de 600px.
-     * Si hay 7 cartas o menos, el espaciado es 22px. Si hay 30 o más, es 8px.
-     * Para cantidades intermedias, interpola entre 22 y 8.
-     *
-     * @param orden       El índice de la carta en la columna (0 para la primera carta)
-     * @param totalCartas El número total de cartas en la columna
-     * @return El valor de layoutY para la carta
-     */
+
     public static double calcularLayoutY(int orden, int totalCartas) {
         final double ALTURA_PANE = 600.0;
         final double SPACING_MAX = 22.0;
@@ -1238,9 +1229,7 @@ public class GameController extends Controller implements Initializable {
         deshacerTodosLosMovimientosInstantaneo();
     }
 
-    /**
-     * Igual que deshacerUltimoMovimiento, pero acepta un callback para saber cuándo terminó (tras la animación).
-     */
+
     private void deshacerUltimoMovimientoConCallback(Runnable onFinished) {
         if (historialMovimientos.isEmpty()) {
             if (onFinished != null) onFinished.run();
