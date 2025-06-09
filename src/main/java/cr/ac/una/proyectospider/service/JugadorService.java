@@ -42,7 +42,7 @@ public class JugadorService {
             return new JugadorDto(nuevo);
         } catch (Exception e) {
             em.getTransaction().rollback();
-            System.err.println("❌ Error al registrar jugador: " + e.getMessage());
+            System.err.println("Error al registrar jugador: " + e.getMessage());
             return null;
         } finally {
             em.close();
@@ -76,7 +76,7 @@ public class JugadorService {
             em.getTransaction().commit();
         } catch (Exception e) {
             em.getTransaction().rollback();
-            System.err.println("❌ Error al actualizar personalización: " + e.getMessage());
+            System.err.println("Error al actualizar personalización: " + e.getMessage());
         } finally {
             em.close();
         }
@@ -101,7 +101,7 @@ public class JugadorService {
             em.getTransaction().commit();
         } catch (Exception e) {
             if (em.getTransaction().isActive()) em.getTransaction().rollback();
-            System.err.println("❌ Error al actualizar estadísticas: " + e.getMessage());
+            System.err.println("Error al actualizar estadísticas: " + e.getMessage());
         } finally {
             em.close();
         }

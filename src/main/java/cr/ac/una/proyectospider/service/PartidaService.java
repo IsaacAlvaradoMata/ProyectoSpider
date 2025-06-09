@@ -26,7 +26,7 @@ public class PartidaService {
             return new PartidaDto(partida);
         } catch (Exception e) {
             if (em.getTransaction().isActive()) em.getTransaction().rollback();
-            System.err.println("❌ Error al crear partida: " + e.getMessage());
+            System.err.println("Error al crear partida: " + e.getMessage());
             return null;
         } finally {
             em.close();
@@ -74,7 +74,7 @@ public class PartidaService {
             return true;
         } catch (Exception e) {
             if (em.getTransaction().isActive()) em.getTransaction().rollback();
-            System.err.println("❌ [ERROR] Error al guardar partida completa: " + e);
+            System.err.println("[ERROR] Error al guardar partida completa: " + e);
             return false;
         } finally {
             em.close();
@@ -96,7 +96,7 @@ public class PartidaService {
 
             return new PartidaCompletaDto(partidaDto, cartas);
         } catch (NoResultException e) {
-            System.err.println("❌ No se encontró la partida con ID: " + idPartida);
+            System.err.println("No se encontró la partida con ID: " + idPartida);
             return null;
         } finally {
             em.close();
@@ -137,7 +137,7 @@ public class PartidaService {
             return true;
         } catch (Exception e) {
             if (em.getTransaction().isActive()) em.getTransaction().rollback();
-            System.err.println("❌ Error al actualizar partida: " + e.getMessage());
+            System.err.println("Error al actualizar partida: " + e.getMessage());
             return false;
         } finally {
             em.close();
@@ -157,7 +157,7 @@ public class PartidaService {
             return false;
         } catch (Exception e) {
             if (em.getTransaction().isActive()) em.getTransaction().rollback();
-            System.err.println("❌ Error al eliminar partida: " + e.getMessage());
+            System.err.println("Error al eliminar partida: " + e.getMessage());
             return false;
         } finally {
             em.close();
